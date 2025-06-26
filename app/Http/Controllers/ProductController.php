@@ -10,8 +10,21 @@ class ProductController extends Controller
     {
         $products = Product::all();
 
+        $saleproducts = Product::where('price', '<', 100)->get();
+
         return view('products.index', [
             'products' => $products,
+            'saleProducts' => $saleproducts,
         ]);
+    }
+
+    public function show(int $id)
+    {
+        $product = Product::findorFail($id);
+
+        return view('products.show', [
+            'product' => $product,
+        ]
+    );
     }
 }
