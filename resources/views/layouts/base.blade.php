@@ -1,0 +1,11 @@
+<html>
+    <head>
+        @vite(['resources/css/app.css'])
+    </head>
+    <body>
+        <h1>野菜販売.com</h1>
+        <div>
+            @yield('content')
+        </div>
+    </body>
+</html>

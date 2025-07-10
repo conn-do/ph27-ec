@@ -68,6 +68,7 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
+
     *,
     ::after,
     ::before,
@@ -156,4 +157,30 @@
     body {
         @apply bg-background text-foreground;
     }
+}
+
+h1 {
+    font-size: 25px;
+    background: #cfcfcf;
+}
+
+h2 {
+    font-size: 23px;
+}
+
+a {
+    text-decoration: underline;
+}
+
+input {
+    border: 1px solid #ccc;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
 }
