@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use App\Models\Product;
 
@@ -14,7 +13,9 @@ class CartController extends Controller
             'quantity' => ['required', 'integer', 'min:1']
         ],
         [
-            'quantity' => '正しい個数を入れて下さい',
+            'quantity.required' => '個数は必須です',
+            'quantity.integer' => '数字で入力してください',
+            'quantity.min' => '正しい個数を入れて下さい',
         ],
     );
         $productId = $request->input('productId');

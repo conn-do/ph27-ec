@@ -11,14 +11,16 @@
 
     <form action="{{ route('cart.store') }}" method="post">
         @csrf
-        @error('quantity')
-            <p style="font-size: 16px;">
-                {{ $message }}
-            </p>
-        @enderror
-        <input type="hidden" name="productId" value="{{ $product->id }}">
-        <input type="number" class="number" name="quantity">
-        <span class="span">個</span> <br>
-        <input type="submit" class="submit-btn" value="カートに入れる">
+        <div class="gap-1">
+            @error('quantity')
+                <p class="error-msg mx-2">
+                    {{ $message }}
+                </p>
+            @enderror
+            <input type="hidden" name="productId" value="{{ $product->id }}">
+            <input type="number" class="focus:outline-2 mx-2 " name="quantity" value="{{ old('quantity') }}">
+            <span class="span">個</span> <br>
+            <input type="submit" class="submit-btn mx-2" value="カートに入れる">
+        </div>
     </form>
 @endsection

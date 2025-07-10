@@ -6,6 +6,7 @@
     <ul>
         @foreach ($products as $product)
             <li>
+                {{ $product->id }}
                 <a href="{{ route('products.show', ['id' => $product->id]) }}">
                     {{ $product->name }}
                 </a>

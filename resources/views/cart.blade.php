@@ -24,4 +24,9 @@
         @method('DELETE')
         <input type="submit" class="submit-btn" value="カートを空にする">
     </form>
+
+    <form action="{{ route('order') }}" method="POST">
+        @csrf
+        <input type="submit" value="購入する">
+    </form>
 @endsection

@@ -154,61 +154,37 @@
     }
 
     body {
-        @apply bg-background text-foreground;
+        @apply bg-background text-foreground mx-3;
     }
-}
-html {
-    font-size: 62.5%;
-}
-
-body {
-    width: 100%;
-    padding-block: 2rem;
-    padding-inline: 2rem;
 }
 
 h1 {
-    font-size: clamp(3.5rem, 2vw, 4.2rem);
-    color: black;
+    font-size: 25px;
 }
 
 h2 {
-    font-size: clamp(2.8rem, 2vw, 3.2rem);
-    color: rgb(29, 26, 26);
-}
-ul {
-    width: 50%;
-    height: auto;
-    display: flex;
-    gap: 1.5rem;
-    flex-direction: column;
-    align-items: flex-start;
-    margin-top: 1rem;
+    font-size: 23px;
 }
 
-ul li {
-    font-size: clamp(1.4rem, 2vw, 1.6rem);
-    padding-block: 1rem;
-    padding-inline: 1.5rem;
-}
 a {
     text-decoration: underline;
-    font-size: clamp(1.4rem, 2vw, 1.6rem);
 }
 
-.number {
+ul {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-block: 10px;
+}
+input {
     border: 1px solid #ccc;
-    border-radius: 5px;
+    margin-inline: 16px;
+}
+input:focus {
+    outline: 1px solid red !important;
 }
 
-span {
+.error-msg {
     font-size: 16px;
-}
-
-.submit-btn {
-    margin-top: 8px;
-    border: 1px solid var(--border);
-    border-radius: 5px;
-    padding-inline: 16px;
-    padding-block: 8px;
+    color: red;
 }
