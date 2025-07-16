@@ -5,6 +5,11 @@
     <div>
         {{ $product->price }}円
     </div>
+    @if ($product->stock < 5)
+        <div>
+            残りわずか！
+        </div>
+    @endif
     <form action="{{ route('cart.store') }}" method="post">
         @csrf
         @error('quantity')
