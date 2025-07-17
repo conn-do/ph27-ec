@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Order;
 use App\Models\orderDetails;
+use Exception;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -27,9 +29,10 @@ class OrderController extends Controller
                 'product' => $product,
                 'quantity' => $quantity,
             ];
-        echo '注文しました';
+        // echo '注文しました';
         }
-
+        try {
+            DB::beginTransaction();
         $order = new Order();
         $order->user_id = $request->user()->id;
         $order->total_price = $totalPrice;
@@ -46,16 +49,29 @@ class OrderController extends Controller
             $orderDetails->qunantity = $quantity;
             $orderDetails->save();
 
-
+            $stock = $product->stock;
+            $stock -= $quantity;
+            if ($stock < 0) {
+                throw new Exception('在庫がないです');
+            }
+            $product->stock = $stock;
+            $product->save();
         }
 
         foreach ($items as $item) {
+            echo '<br>';
             echo $item['product']->name;
             echo '<br>';
         }
 
         session()->forget('cart');
-        echo "  合計金額 {$totalPrice}<br> ";
+        echo "  合計金額: {$totalPrice}<br> ";
         echo '注文しました';
+        DB::commit();
+    } catch (Exception $e) {
+        echo 'エラーが起こりました!<br>';
+        echo $e->getMessage();
+        DB::rollBack();
     }
+}
 }
