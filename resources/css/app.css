@@ -184,3 +184,34 @@ button {
     border-radius: 5px;
     cursor: pointer;
 }
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.cart-table {
+    padding: 10%;
+}
+
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.table-bordered {
+    border: 1px solid #ddd;
+}
+
+.table-bordered th,
+.table-bordered td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.is-invalid {
+    border: 1px solid red;
+}

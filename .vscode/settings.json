@@ -2,7 +2,7 @@
     "editor.formatOnSave": true,
     "laravel-pint.enable": true,
     "[php]": {
-        "editor.defaultFormatter": "open-southeners.laravel-pint"
+        "editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
     },
     "[typescript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"

@@ -16,6 +16,7 @@ class ProductSeeder extends Seeder
         $daikon = Product::create([
             'name' => '大根',
             'price' => 100,
+            'stock' => 100,
             // 'description' => '大根の説明',
         ]);
         $daikon->save();
@@ -23,6 +24,7 @@ class ProductSeeder extends Seeder
         $ninjin = Product::create([
             'name' => 'ニンジン',
             'price' => 80,
+            'stock' => 100,
             // 'description' => 'ニンジンの説明',
         ]);
         $ninjin->save();
@@ -30,6 +32,7 @@ class ProductSeeder extends Seeder
         $kabocha = Product::create([
             'name' => 'カボチャ',
             'price' => 120,
+            'stock' => 100,
             // 'description' => 'カボチャの説明',
         ]);
         $kabocha->save();
