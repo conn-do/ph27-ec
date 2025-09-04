@@ -5,6 +5,9 @@
     <h2>
         {{ $product->name }}
         <div>
+            <img src="{{ $product->image }}" alt="{{ $product->name }}" style="max-width: 300px; max-height: 300px;">
+        </div>
+        <div>
             {{ $product->price }} 円
         </div>
     </h2>

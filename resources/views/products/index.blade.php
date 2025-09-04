@@ -10,6 +10,9 @@
                 <a href="{{ route('products.show', ['id' => $product->id]) }}">
                     {{ $product->name }}
                 </a>
+                <div>
+                    <img src="{{ $product->image }}" alt="{{ $product->name }}" style="max-width: 150px; max-height: 150px;">
+                </div>
                 {{ $product->price }} 円
             </li>
         @endforeach

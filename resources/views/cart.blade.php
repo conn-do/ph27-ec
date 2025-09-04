@@ -8,6 +8,9 @@
         <div style="font-size: 16px;">
             {{ $item['product']->id }}
             {{ $item['product']->name }}
+            <div>
+                <img src="{{ $item['product']->image }}" alt="{{ $item['product']->name }}" style="max-width: 150px; max-height: 150px;">
+            </div>
             {{ $item['product']->price }} 円
             {{ $item['quantity'] }} 個
         </div>
