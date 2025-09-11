@@ -1,4 +1,3 @@
-/* 页面整体样式 */
 body {
     max-width: 768px;
     margin: 0 auto;
@@ -9,7 +8,6 @@ body {
     font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
 }
 
-/* 顶部标题 h1 */
 h1 {
     font-size: 1.8rem;
     font-weight: bold;
@@ -21,7 +19,6 @@ h1 {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* 二级标题 h2 */
 h2 {
     font-size: 1.5rem;
     font-weight: 600;
@@ -51,7 +48,6 @@ li:hover {
     background-color: #f9f9f9;
 }
 
-/* 商品链接 */
 a {
     color: #2563eb;
     text-decoration: underline;
@@ -62,18 +58,15 @@ a:hover {
     color: #1e40af;
 }
 
-/* 价格样式 */
 li span {
     font-weight: 500;
 }
 
-/* セール商品高亮 */
 h2+ul li {
     color: #dc2626;
     font-weight: 600;
 }
 
-/* 输入框样式 */
 input {
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -86,7 +79,6 @@ input:focus {
     box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
 }
 
-/* 商品详情标题 */
 h2 {
     font-size: 1.8rem;
     font-weight: bold;
@@ -95,7 +87,6 @@ h2 {
     text-align: center;
 }
 
-/* 商品价格 */
 h2+div {
     font-size: 1.5rem;
     font-weight: 600;
@@ -105,7 +96,6 @@ h2+div {
     margin-bottom: 1rem;
 }
 
-/* 商品图片 */
 h2+div+div img {
     max-width: 100%;
     height: auto;
@@ -115,7 +105,6 @@ h2+div+div img {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-/* 表单整体 */
 form {
     max-width: 320px;
     margin: 0 auto;
@@ -123,7 +112,6 @@ form {
     padding: 1rem;
 }
 
-/* 数量输入框 */
 input[type="number"] {
     width: 80px;
     padding: 0.4rem;
@@ -141,7 +129,7 @@ input[type="number"]:focus {
     box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
 }
 
-/* 错误提示 */
+
 .input-error {
     background: #ffe4e6;
     border-color: #f87171;
@@ -153,7 +141,6 @@ form p {
     margin-bottom: 0.5rem;
 }
 
-/* 提交按钮 */
 input[type="submit"] {
     background-color: #3b82f6;
     color: white;
