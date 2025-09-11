@@ -160,15 +160,14 @@
 
 h1 {
     font-size: 25px;
-    background: #cfcfcf;
 }
 
 h2 {
     font-size: 23px;
 }
 
-a {
-    text-decoration: underline;
+button:hover {
+    cursor: pointer;
 }
 
 input {
