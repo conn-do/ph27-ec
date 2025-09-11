@@ -158,6 +158,12 @@
     }
 }
 
+/* 内容区域样式 */
+.content-wrapper {
+    width: 1080px;
+    margin: 0 auto;
+}
+
 h1 {
     font-size: 25px;
     background: #cfcfcf;
@@ -177,4 +183,12 @@ input {
 
 .input-error {
     background: pink;
+}
+
+/* 正方形图片样式 */
+img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
 }

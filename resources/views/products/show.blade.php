@@ -6,7 +6,7 @@
         {{ $product->price }}円
     </div>
     <div>
-        <img src="{{ $product->image }}">
+        <img src="{{ $product->image }}" alt="{{ $product->name }}">
     </div>
     <form action="{{ route('cart.store') }}" method="post">
         @csrf

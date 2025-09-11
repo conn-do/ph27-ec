@@ -3,10 +3,11 @@
 @section('content')
     <h2>商品一覧</h2>
 
-    <ul>
+    <ul class="grid grid-cols-3 gap-4">
         @foreach ($products as $product)
             <li>
                 <a href="{{ route('products.show', ['id' => $product->id]) }}">
+                    <img src="{{ $product->image }}" alt="{{ $product->name }}">
                     {{ $product->name }}
                 </a>
                 {{ $product->price }} 円
