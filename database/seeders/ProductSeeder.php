@@ -17,6 +17,7 @@ class ProductSeeder extends Seeder
             'name' => '大根',
             'price' => 100,
             'stock' => 100,
+            'image' => 'product_images/daikon.png',
             // 'description' => '大根の説明',
         ]);
         $daikon->save();
@@ -25,14 +26,16 @@ class ProductSeeder extends Seeder
             'name' => 'ニンジン',
             'price' => 80,
             'stock' => 100,
+            'image' => 'product_images/ninjin.png',
             // 'description' => 'ニンジンの説明',
         ]);
         $ninjin->save();
-        
+
         $kabocha = Product::create([
             'name' => 'カボチャ',
             'price' => 120,
             'stock' => 100,
+            'image' => 'product_images/kabocha.png',
             // 'description' => 'カボチャの説明',
         ]);
         $kabocha->save();
