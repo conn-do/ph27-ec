@@ -178,3 +178,159 @@ input {
 .input-error {
     background: pink;
 }
+
+/* ===== 基础排版 ===== */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
+  color: #222;
+  background: #fafafa;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+/* 页面包裹：如果你的 Blade 里没有容器，也没关系；下面给 body 加内边距 */
+.container {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 24px;
+}
+body { padding: 24px; } /* 简单兜底 */
+
+/* ===== 顶部站名（h1） ===== */
+h1 {
+  margin: 0 0 16px;
+  padding: 14px 16px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(180deg, #ff9ccf, #ff78b5);
+  border-radius: 10px;
+}
+
+/* ===== 版块标题（h2） ===== */
+h2 {
+  margin: 24px 0 12px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+  border-left: 6px solid #ff78b5;
+  padding-left: 10px;
+}
+
+/* ===== 列表美化（商品一覧） ===== */
+ul { padding-left: 0; margin: 0; }
+li {
+  list-style: none;
+  background: #fff;
+  margin: 10px 0;
+  padding: 12px 14px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  transition: transform .1s ease, box-shadow .2s ease;
+}
+li:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0,0,0,.06);
+}
+
+/* 商品名链接 */
+a {
+  color: #222;
+  text-decoration: none;
+}
+a:hover { color: #ff4da0; text-decoration: underline; }
+
+/* 价格徽章 */
+.price {
+  color: #ff4da0;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* ===== 商品详情页 ===== */
+.product {
+  display: grid;
+  grid-template-columns: minmax(0,1fr);
+  gap: 16px;
+}
+.product h2 { margin-top: 0; }
+.product .price-lg {
+  font-size: 22px;
+  color: #ff4da0;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+.product img {
+  max-width: 420px;
+  width: 100%;
+  height: auto;
+  border-radius: 14px;
+  border: 1px solid #eee;
+  box-shadow: 0 6px 16px rgba(0,0,0,.06);
+}
+
+/* 宽屏时图文左右布局 */
+@media (min-width: 800px) {
+  .product {
+    grid-template-columns: 1.1fr .9fr;
+    align-items: start;
+  }
+}
+
+/* ===== 表单与按钮（加入购物车） ===== */
+form { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+input[type="number"], input[type="text"] {
+  width: 90px;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  transition: box-shadow .2s, border-color .2s;
+}
+input[type="number"]:focus, input[type="text"]:focus {
+  border-color: #ff78b5;
+  box-shadow: 0 0 0 3px rgba(255,120,181,.25);
+}
+
+/* 通用按钮 */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  background: linear-gradient(180deg, #ff8fc5, #ff63ad);
+  color: #fff;
+  cursor: pointer;
+  transition: transform .06s ease, box-shadow .2s ease, opacity .2s ease;
+}
+.btn:hover { opacity: .92; box-shadow: 0 6px 16px rgba(255,99,173,.35); }
+.btn:active { transform: translateY(1px); }
+
+/* 次按钮（可选） */
+.btn-outline {
+  background: #fff; color: #333; border-color: #ddd;
+}
+.btn-outline:hover { border-color: #ccc; background: #f7f7f7; }
+
+/* 小提示/标签（如“セール中の商品”） */
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #ffe8f3;
+  color: #c21865;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* 页脚留白 */
+footer { margin: 36px 0 12px; color: #666; font-size: 12px; text-align: center; }
