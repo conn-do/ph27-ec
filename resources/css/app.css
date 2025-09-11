@@ -160,21 +160,33 @@
 
 h1 {
     font-size: 25px;
-    background: #cfcfcf;
-}
-
-h2 {
-    font-size: 23px;
+    background: #fce4ec; /* 薄いピンクに変更 */
+    color: #d81b60;      /* 文字色も濃いピンクに */
+    padding: 8px 12px;
+    border-radius: 8px;
 }
 
 a {
-    text-decoration: underline;
+    text-decoration: none;
+    font-weight: bold;
+    color: #e91e63; /* ピンクのリンク */
+    border: 2px solid #f8bbd0;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: 0.2s;
+}
+
+a:hover {
+    background: #f8bbd0;
+    color: white;
 }
 
 input {
-    border: 1px solid #ccc;
+    border: 2px solid #f8bbd0;
+    border-radius: 6px;
+    padding: 6px;
 }
 
 .input-error {
-    background: pink;
+    background: #f8bbd0; /* エラーメッセージもピンク系で統一 */
 }
