@@ -68,6 +68,7 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
+
     *,
     ::after,
     ::before,
@@ -155,26 +156,118 @@
 
     body {
         @apply bg-background text-foreground;
+        font-family: 'Hiragino Sans', 'Yu Gothic', 'Meiryo', sans-serif;
+        line-height: 1.6;
     }
 }
 
+/* ヘッダー */
 h1 {
-    font-size: 25px;
-    background: #cfcfcf;
+    font-size: 28px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    padding: 15px 0;
+    text-align: center;
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 h2 {
-    font-size: 23px;
+    font-size: 24px;
+    font-weight: 600;
+    color: #34495e;
+    margin-bottom: 15px;
 }
 
+/* ボタン */
+input[type="submit"] {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin: 5px;
+}
+
+input[type="submit"]:hover {
+    background: #45a049;
+}
+
+/* カートアイテム */
+.cart-item {
+    background: #f8f9fa;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 6px;
+    border-left: 4px solid #4CAF50;
+}
+
+/* 合計金額 */
+.total-price {
+    background: #667eea;
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    margin: 20px 0;
+}
+
+/* リンク */
 a {
+    color: #4CAF50;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #45a049;
     text-decoration: underline;
 }
 
+/* 入力フィールド */
 input {
-    border: 1px solid #ccc;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 16px;
+}
+
+input:focus {
+    outline: none;
+    border-color: #4CAF50;
 }
 
 .input-error {
-    background: pink;
+    background: #ffe6e6;
+    border-color: #e74c3c;
+}
+
+/* 注文完了メッセージ */
+.order-success {
+    background: #4CAF50;
+    color: white;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    margin: 20px 0;
+}
+
+/* エラーメッセージ */
+.order-error {
+    background: #e74c3c;
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    margin: 20px 0;
 }
