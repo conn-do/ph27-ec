@@ -34,14 +34,14 @@ class RegisteredUserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'prefecture' => 'required|string|max:255',
+            'state' => 'required|string|max:255',
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'prefecture' => $request->prefecture,
+            'state' => $request->state,
         ]);
 
         event(new Registered($user));
@@ -49,5 +49,7 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         return to_route('dashboard');
+
+        // すごい機能を追加しました
     }
 }

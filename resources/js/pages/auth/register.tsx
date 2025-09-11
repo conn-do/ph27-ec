@@ -14,7 +14,7 @@ type RegisterForm = {
     email: string;
     password: string;
     password_confirmation: string;
-    prefecture: string;
+    state: string;
 };
 
 export default function Register() {
@@ -23,7 +23,7 @@ export default function Register() {
         email: '',
         password: '',
         password_confirmation: '',
-        prefecture: '',
+        state: '',
     });
 
     const submit: FormEventHandler = (e) => {
@@ -103,19 +103,17 @@ export default function Register() {
                         <InputError message={errors.password_confirmation} />
                     </div>
 
-                    <h3>配送先</h3>
-
                     <div className="grid gap-2">
-                        <Label htmlFor="prefecture">都道府県</Label>
+                        <Label htmlFor="state">都道府県</Label>
                         <Input
-                            id="prefecture"
+                            id="state"
                             type="text"
-                            value={data.prefecture}
-                            onChange={(e) => setData('prefecture', e.target.value)}
+                            value={data.state}
+                            onChange={(e) => setData('state', e.target.value)}
                             disabled={processing}
                             placeholder="東京都"
                         />
-                        <InputError message={errors.prefecture} />
+                        <InputError message={errors.state} />
                     </div>
 
                     <Button type="submit" className="mt-2 w-full" tabIndex={5} disabled={processing}>
