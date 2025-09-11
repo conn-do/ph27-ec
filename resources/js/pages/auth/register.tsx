@@ -102,6 +102,18 @@ export default function Register() {
                         />
                         <InputError message={errors.password_confirmation} />
                     </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="state">都道府県</Label>
+                        <Input
+                            id="state"
+                            type="text"
+                            value={data.state}
+                            onChange={(e) => setData('state', e.target.value)}
+                            disabled={processing}
+                            placeholder="東京都"
+                        />
+                        <InputError message={errors.state} />
+                    </div>
 
                     <div className="grid gap-2">
                         <Label htmlFor="state">都道府県</Label>
