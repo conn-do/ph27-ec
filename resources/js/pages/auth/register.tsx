@@ -14,6 +14,7 @@ type RegisterForm = {
     email: string;
     password: string;
     password_confirmation: string;
+    address: string;
 };
 
 export default function Register() {
@@ -22,6 +23,7 @@ export default function Register() {
         email: '',
         password: '',
         password_confirmation: '',
+        address: '',
     });
 
     const submit: FormEventHandler = (e) => {
@@ -99,6 +101,23 @@ export default function Register() {
                             placeholder="Confirm password"
                         />
                         <InputError message={errors.password_confirmation} />
+                    </div>
+
+                    {/* TODO: Add Address */}
+                    <div className="grid gap-2">
+                        <Label htmlFor="address">都道府県</Label>
+                        <Input
+                            id="address"
+                            type="text"
+                            required
+                            tabIndex={4}
+                            autoComplete="address"
+                            value={data.address}
+                            onChange={(e) => setData('address', e.target.value)}
+                            disabled={processing}
+                            placeholder="住所"
+                        />
+                        <InputError message={errors.address} />
                     </div>
 
                     <Button type="submit" className="mt-2 w-full" tabIndex={5} disabled={processing}>

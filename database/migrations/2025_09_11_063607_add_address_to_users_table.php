@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            // For SQLite compatibility: adding a NOT NULL column requires a default.
-            $table->string('image')->default('');
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('address')->nullable();
         });
     }
 
@@ -22,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn('image');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('address');
         });
     }
 };
