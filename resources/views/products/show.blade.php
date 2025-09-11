@@ -18,7 +18,9 @@
                 <input type="number" id="quantity" name="quantity" class="border rounded-lg px-3 py-2 w-24 text-center @error('quantity') input-error @enderror" min="1" value="1">
             </div>
             <div class="flex justify-center">
-                <input type="submit" value="カートに入れる" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full shadow transition-colors duration-200 cursor-pointer text-lg">
+                <button type="button" onclick="window.location.href='{{ route('register') }}'" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full shadow transition-colors duration-200 cursor-pointer text-lg">
+                    カートに入れる
+                </button>
             </div>
         </form>
     </div>
