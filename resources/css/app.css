@@ -160,8 +160,8 @@
 
 h1 {
     font-size: 25px;
-    background: #fce4ec; /* 薄いピンクに変更 */
-    color: #d81b60;      /* 文字色も濃いピンクに */
+    background: #fce4ec;
+    color: #d81b60;
     padding: 8px 12px;
     border-radius: 8px;
 }
@@ -169,11 +169,15 @@ h1 {
 a {
     text-decoration: none;
     font-weight: bold;
-    color: #e91e63; /* ピンクのリンク */
+    color: #e91e63;
     border: 2px solid #f8bbd0;
-    padding: 6px 10px;
+    padding: 6px 12px;
     border-radius: 6px;
     transition: 0.2s;
+    font-size: 18px;
+    display: inline-block;
+    margin: 10px 0;
+    transition: transform 0.2s ease;
 }
 
 a:hover {
@@ -188,5 +192,5 @@ input {
 }
 
 .input-error {
-    background: #f8bbd0; /* エラーメッセージもピンク系で統一 */
+    background: #f8bbd0;
 }
