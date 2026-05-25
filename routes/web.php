@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
+use App\Http\Controllers\ChirpController;
 
 Route::inertia('/', 'welcome', [
     'canRegister' => Features::enabled(Features::registration()),
@@ -13,6 +14,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 require __DIR__ . '/settings.php';
 
-Route::get('/chirps', function () {
-    return view('home');
-});
+Route::get(
+    '/chirps',
+    [ChirpController::class, 'index']
+);
