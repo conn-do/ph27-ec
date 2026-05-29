@@ -17,5 +17,15 @@ class ProductSeeder extends Seeder
             'description' => 'かっこいいえんぴつです',
             'price' => 100,
         ]);
+        Product::create([
+            'name' => 'ペン',
+            'description' => 'かわいいペンです',
+            'price' => 200,
+        ]);
+        Product::create([
+            'name' => 'ノート',
+            'description' => 'きれいなノートです',
+            'price' => 300,
+        ]);
     }
 }
