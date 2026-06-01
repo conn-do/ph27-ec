@@ -15,6 +15,12 @@
         <h1>
             @yield('title', '') すごい文房具ECサイト
         </h1>
+        @auth
+            <a href="{{ route('my-page') }}">マイページ</a>
+        @endauth
+        @guest
+            <a href="{{ route('login') }}">ログイン</a>
+        @endguest
     </header>
     <main>
         @yield('content')

@@ -4,6 +4,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\ChirpController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\MyPageController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -25,4 +26,5 @@ Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear')
 Route::middleware(['auth'])->group(function () {
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/orders/complete', [OrderController::class, 'complete'])->name('orders.complete');
+    Route::get('/my-page', [MyPageController::class, 'index'])->name('my-page');
 });
