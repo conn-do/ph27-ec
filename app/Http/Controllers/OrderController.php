@@ -13,7 +13,6 @@ class OrderController extends Controller
         $cart = session()->get('cart', []);
         $totalPrice = 0;
         foreach ($cart as $productId => $quantity) {
-            /** @disregard */
             $product = Product::find($productId);
             $totalPrice += $product->price * $quantity;
         }
@@ -30,5 +29,14 @@ class OrderController extends Controller
     public function complete()
     {
         return view('orders.complete');
+    }
+
+    public function index(Request $request)
+    {
+        // $orders = Order::where('user_id', $request->user()->id)->get();
+        $orders = $request->user()->orders;
+        return view('orders.index', [
+            'orders' => $orders,
+        ]);
     }
 }

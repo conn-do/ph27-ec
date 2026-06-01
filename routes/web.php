@@ -26,5 +26,6 @@ Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear')
 Route::middleware(['auth'])->group(function () {
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/orders/complete', [OrderController::class, 'complete'])->name('orders.complete');
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/my-page', [MyPageController::class, 'index'])->name('my-page');
 });
