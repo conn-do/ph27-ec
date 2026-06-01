@@ -26,7 +26,6 @@ class CartController extends Controller
     {
         $cart = session()->get('cart', []);
         foreach ($cart as $productId => $quantity) {
-            /** @disregard */
             $product = Product::find($productId);
             $cart[$productId] = [
                 'product' => $product,
