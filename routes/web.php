@@ -24,8 +24,3 @@ Route::post(
     '/chirps',
     [ChirpController::class, 'store']
 );
-
-Route::get(
-    '/',
-    [ProductController::class, 'index']
-);
