@@ -3,10 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use App\Http\Controllers\ChirpController;
+use App\Http\Controllers\ProductController;
 
-Route::inertia('/', 'welcome', [
-    'canRegister' => Features::enabled(Features::registration()),
-])->name('home');
+// Route::inertia('/', 'welcome', [
+//     'canRegister' => Features::enabled(Features::registration()),
+// ])->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
@@ -18,7 +19,13 @@ Route::get(
     '/chirps',
     [ChirpController::class, 'index']
 );
+
 Route::post(
     '/chirps',
     [ChirpController::class, 'store']
+);
+
+Route::get(
+    '/',
+    [ProductController::class, 'index']
 );
