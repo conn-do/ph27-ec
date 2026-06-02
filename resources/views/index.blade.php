@@ -7,7 +7,11 @@
     <h2>商品一覧</h2>
     @foreach ($products as $product)
         <ul>
-            <li>{{ $product['name'] }}</li>
+            <li>
+                <a href="/products/{{ $product->id }}">
+                    {{ $product['name'] }}
+                </a>
+            </li>
         </ul>
     @endforeach
 @endsection
