@@ -15,7 +15,7 @@
         @csrf
         <input type="hidden" name="productId" value="{{ $product->id }}">
         <input type="number" name="quantity" value="{{ old('quantity', 1) }}" min="1" max="{{ $product->stock }}"
-            @if ($errors->has('quantity')) style="border-color: red;" @endif>
+            @error('quantity') class="error" @enderror>
         <button type="submit">カートに追加</button>
     </form>
     <a href="{{ route('home') }}">戻る</a>
