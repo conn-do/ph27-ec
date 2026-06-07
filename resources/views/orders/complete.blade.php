@@ -9,5 +9,5 @@
             {{ session('message') }}
         </article>
     @endif
-    <a href="{{ route('home') }}">買い物を続ける</a>
+    <a href="{{ route('products.index') }}">買い物を続ける</a>
 @endsection

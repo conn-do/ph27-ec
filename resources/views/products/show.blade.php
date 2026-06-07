@@ -18,5 +18,5 @@
             @error('quantity') class="error" @enderror>
         <button type="submit">カートに追加</button>
     </form>
-    <a href="{{ route('home') }}">戻る</a>
+    <a href="{{ route('products.index') }}">戻る</a>
 @endsection

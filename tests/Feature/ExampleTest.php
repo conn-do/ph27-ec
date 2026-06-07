@@ -1,8 +1,10 @@
 <?php
 
+use Tests\TestCase;
+
 test('returns a successful response', function () {
-    /** @var \Tests\TestCase $this */
-    $response = $this->get(route('home'));
+    /** @var TestCase $this */
+    $response = $this->get(route('products.index'));
 
     $response->assertOk();
 });

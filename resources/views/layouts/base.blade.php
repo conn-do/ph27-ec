@@ -13,12 +13,12 @@
 <body class="container">
     <header>
         <h1>
-            <a href="{{ route('home') }}">
+            <a href="{{ route('products.index') }}">
                 @yield('title', '') すごい文房具ECサイト
             </a>
         </h1>
         @auth
-            <a href="{{ route('my-page') }}">マイページ</a>
+            <a href="{{ route('home') }}">マイページ</a>
         @endauth
         @guest
             <a href="{{ route('login') }}">ログイン</a>

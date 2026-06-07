@@ -4,14 +4,15 @@ use App\Models\User;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Support\Facades\Notification;
 use Laravel\Fortify\Features;
+use Tests\TestCase;
 
 beforeEach(function () {
-    /** @var \Tests\TestCase $this */
+    /** @var TestCase $this */
     $this->skipUnlessFortifyHas(Features::emailVerification());
 });
 
 test('sends verification notification', function () {
-    /** @var \Tests\TestCase $this */
+    /** @var TestCase $this */
     Notification::fake();
 
     /** @var User $user */
@@ -19,13 +20,13 @@ test('sends verification notification', function () {
 
     $this->actingAs($user)
         ->post(route('verification.send'))
-        ->assertRedirect(route('home'));
+        ->assertRedirect('/');
 
     Notification::assertSentTo($user, VerifyEmail::class);
 });
 
 test('does not send verification notification if email is verified', function () {
-    /** @var \Tests\TestCase $this */
+    /** @var TestCase $this */
     Notification::fake();
 
     /** @var User $user */
@@ -33,7 +34,7 @@ test('does not send verification notification if email is verified', function ()
 
     $this->actingAs($user)
         ->post(route('verification.send'))
-        ->assertRedirect(route('dashboard', absolute: false));
+        ->assertRedirect(route('home', absolute: false));
 
     Notification::assertNothingSent();
 });
