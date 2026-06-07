@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\OrderDetail;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -21,6 +22,14 @@ class OrderController extends Controller
         $order->total_price = $totalPrice;
         $order->save();
 
+        foreach ($cart as $productId => $quantity) {
+            $orderDetail = new OrderDetail;
+            $orderDetail->order_id = $order->id;
+            $orderDetail->product_id = $productId;
+            $orderDetail->quantity = $quantity;
+            $orderDetail->save();
+        }
+
         session()->forget('cart');
 
         return redirect()->route('orders.complete')->with('message', '注文が完了しました');
@@ -37,6 +46,13 @@ class OrderController extends Controller
         $orders = $request->user()->orders;
         return view('orders.index', [
             'orders' => $orders,
+        ]);
+    }
+
+    public function show(Order $order)
+    {
+        return view('orders.show', [
+            'order' => $order,
         ]);
     }
 }

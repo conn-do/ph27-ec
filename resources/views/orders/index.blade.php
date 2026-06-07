@@ -10,6 +10,7 @@
                 <td>{{ $order->id }}</td>
                 <td>{{ $order->total_price }}</td>
                 <td>{{ $order->created_at }}</td>
+                <td><a href="{{ route('orders.show', $order->id) }}">詳細</a></td>
             </tr>
         @endforeach
     </table>

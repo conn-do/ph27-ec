@@ -13,7 +13,9 @@
 <body class="container">
     <header>
         <h1>
-            @yield('title', '') すごい文房具ECサイト
+            <a href="{{ route('home') }}">
+                @yield('title', '') すごい文房具ECサイト
+            </a>
         </h1>
         @auth
             <a href="{{ route('my-page') }}">マイページ</a>
