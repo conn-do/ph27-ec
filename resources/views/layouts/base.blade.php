@@ -12,10 +12,11 @@
 
 <body class="container">
     <header>
+        <a href="{{ route('products.index') }}">
+            <img src="{{ asset('img/ec-logo.png') }}">
+        </a>
         <h1>
-            <a href="{{ route('products.index') }}">
-                @yield('title', '') すごい文房具ECサイト
-            </a>
+            @yield('title', '')
         </h1>
         @auth
             <a href="{{ route('home') }}">マイページ</a>

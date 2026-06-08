@@ -25,3 +25,14 @@
 .error {
     border: 1px solid red;
 }
+
+header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+header img {
+    width: 100px;
+    height: 100px;
+}
