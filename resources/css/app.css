@@ -12,12 +12,20 @@
     --animate-fade-out: fade-out 4s ease-in-out forwards;
 
     @keyframes fade-out {
-        0%, 70% {
+
+        0%,
+        70% {
             opacity: 1;
         }
+
         100% {
             opacity: 0;
             pointer-events: none;
         }
     }
+}
+
+.error {
+    color: red;
+    border: 1px solid red;
 }
