@@ -9,7 +9,9 @@
 
 <body class="container">
     <header>
-        <h1>すごい文房具サイト</h1>
+        <a href="/">
+            <img src="{{ asset('images/ec-logo.png') }}" width="100">
+        </a>
     </header>
     <main>
         @yield('content')

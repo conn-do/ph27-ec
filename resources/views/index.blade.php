@@ -10,6 +10,7 @@
             <li>
                 <a href="/products/{{ $product->id }}">
                     {{ $product['name'] }}
+                    <img src="{{ asset($product->image) }}" width="200">
                 </a>
             </li>
         </ul>

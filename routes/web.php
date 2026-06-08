@@ -34,3 +34,7 @@ Route::post(
     '/cart',
     [CartController::class, 'store']
 );
+Route::get(
+    '/cart',
+    [CartController::class, 'index']
+);
