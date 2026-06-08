@@ -12,6 +12,7 @@
         <a href="/">
             <img src="{{ asset('images/ec-logo.png') }}" width="100">
         </a>
+        <a href="/cart">カートを見る</a>
     </header>
     <main>
         @yield('content')

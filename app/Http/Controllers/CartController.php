@@ -23,5 +23,37 @@ class CartController extends Controller
         // [1 => 2, 2 => 3] （商品ID => 個数）
         $cart[$validated['productId']] = $validated['quantity'];
         session()->put('cart', $cart);
+
+        $request->session()->flash('message', 'カートに追加しました。');
+
+        return redirect('/cart');
+    }
+
+    public function index()
+    {
+        // [1 => 2, 2 => 3] （商品ID => 個数）
+        $cart = session()->get('cart', []);
+        $items = [];
+        $totalPrice = 0;
+        foreach ($cart as $productId => $quantity) {
+            $product = Product::find($productId);
+            $items[] = [
+                'product' => $product,
+                'quantity' => $quantity,
+            ];
+            $totalPrice += $product->price * $quantity;
+        }
+
+        return view('cart', [
+            'items' => $items,
+            'totalPrice' => $totalPrice, // 合計金額
+        ]);
+    }
+
+    public function clear(Request $request)
+    {
+        session()->forget('cart');
+        $request->session()->flash('message', 'カートを空にしました。');
+        return redirect('/cart');
     }
 }
