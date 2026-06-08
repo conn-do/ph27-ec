@@ -16,16 +16,19 @@ class ProductSeeder extends Seeder
             'name' => 'えんぴつ',
             'description' => 'かっこいいえんぴつです',
             'price' => 100,
+            'image' => 'img/products/pencil.png',
         ]);
         Product::create([
             'name' => 'ペン',
             'description' => 'かわいいペンです',
             'price' => 200,
+            'image' => 'img/products/pen.png',
         ]);
         Product::create([
             'name' => 'ノート',
             'description' => 'きれいなノートです',
             'price' => 300,
+            'image' => 'img/products/note.png',
         ]);
     }
 }

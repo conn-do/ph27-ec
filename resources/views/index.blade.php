@@ -7,7 +7,10 @@
     <ul>
         @foreach ($products as $product)
             <li>
-                <a href="{{ route('products.show', $product) }}">{{ $product->name }}</a>
+                <a href="{{ route('products.show', $product) }}">
+                    {{ $product->name }}
+                    <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" width="200">
+                </a>
             </li>
         @endforeach
     </ul>
