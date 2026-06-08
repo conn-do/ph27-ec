@@ -17,6 +17,10 @@
     </table>
     @empty($items)
         <p>カートに商品がありません。</p>
+    @else
+        <form action="/orders" method="post">
+            <button type="submit">購入する</button>
+        </form>
     @endempty
     <p>合計: {{ $totalPrice }}円</p>
     <a href="/cart/clear">カートを空にする</a>
