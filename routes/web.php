@@ -5,6 +5,7 @@ use Laravel\Fortify\Features;
 use App\Http\Controllers\ChirpController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
 
 // Route::inertia('/', 'welcome', [
 //     'canRegister' => Features::enabled(Features::registration()),
@@ -41,4 +42,8 @@ Route::get(
 Route::get(
     '/cart/clear',
     [CartController::class, 'clear']
+);
+Route::post(
+    '/orders',
+    [OrderController::class, 'store']
 );
