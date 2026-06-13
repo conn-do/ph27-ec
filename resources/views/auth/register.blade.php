@@ -2,6 +2,10 @@
 
 @section('title', '会員登録')
 
+@section('head')
+    @vite(['resources/css/register.css'])
+@endsection
+
 @section('content')
     <h2>会員登録</h2>
 
@@ -26,8 +30,8 @@
             @if ($errors->has('password')) style="border-color: red;" @endif>
 
         <label for="password_confirmation">パスワード（確認）</label>
-        <input type="password" id="password_confirmation" name="password_confirmation" required
-            autocomplete="new-password" @if ($errors->has('password_confirmation')) style="border-color: red;" @endif>
+        <input type="password" id="password_confirmation" name="password_confirmation" required autocomplete="new-password"
+            @if ($errors->has('password_confirmation')) style="border-color: red;" @endif>
 
         <button type="submit">登録する</button>
     </form>
