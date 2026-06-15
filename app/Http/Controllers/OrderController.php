@@ -45,7 +45,7 @@ class OrderController extends Controller
         // $orders = Order::where('user_id', $request->user()->id)->get();
         $orders = $request->user()->orders;
         return view('orders.index', [
-            'orders' => $orders->reverse(),
+            'orders' => $orders->sortByDesc('created_at'),
         ]);
     }
 
