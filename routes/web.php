@@ -11,9 +11,9 @@ use App\Http\Controllers\OrderController;
 //     'canRegister' => Features::enabled(Features::registration()),
 // ])->name('home');
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('dashboard', 'dashboard')->name('dashboard');
-});
+// Route::middleware(['auth', 'verified'])->group(function () {
+//     Route::inertia('dashboard', 'dashboard')->name('dashboard');
+// });
 
 require __DIR__ . '/settings.php';
 
@@ -43,7 +43,10 @@ Route::get(
     '/cart/clear',
     [CartController::class, 'clear']
 );
-Route::post(
-    '/orders',
-    [OrderController::class, 'store']
-);
+// ログイン必須にする
+Route::middleware(['auth'])->group(function () {
+    Route::post(
+        '/orders',
+        [OrderController::class, 'store']
+    );
+});
