@@ -16,8 +16,11 @@
         </div>
         <div>
             メールアドレス:
-            <input type="email" name="email">
+            <input type="email" name="email" class="@error('email') error @enderror" value="{{ old('email') }}">
         </div>
+        @error('email')
+            <div class="error">{{ $message }}</div>
+        @enderror
         <div>
             パスワード:
             <input type="password" name="password">

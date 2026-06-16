@@ -4,10 +4,16 @@
 
 @section('content')
     <h1>ログイン</h1>
+    @if ($errors->any())
+        @foreach ($errors->all() as $error)
+            <article>{{ $error }}</article>
+        @endforeach
+    @endif
+
     <form action="{{ route('login') }}" method="post">
         <div>
             メールアドレス:
-            <input type="email" name="email">
+            <input type="email" name="email" value="{{ old('email') }}">
         </div>
         <div>
             パスワード:
