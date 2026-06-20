@@ -14,7 +14,8 @@ class ProductInfolist
             ->components([
                 TextEntry::make('name'),
                 TextEntry::make('description'),
-                ImageEntry::make('image'),
+                ImageEntry::make('image')
+                    ->disk('public'),
                 TextEntry::make('price')
                     ->money(),
                 TextEntry::make('created_at')

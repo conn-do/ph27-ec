@@ -18,7 +18,10 @@ class ProductForm
                     ->required(),
                 FileUpload::make('image')
                     ->image()
-                    ->required(),
+                    ->required()
+                    ->disk('public')
+                    ->directory('img/products')
+                    ->visibility('public'),
                 TextInput::make('price')
                     ->required()
                     ->numeric()

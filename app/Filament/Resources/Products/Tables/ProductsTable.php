@@ -20,7 +20,8 @@ class ProductsTable
                     ->searchable(),
                 TextColumn::make('description')
                     ->searchable(),
-                ImageColumn::make('image'),
+                ImageColumn::make('image')
+                    ->disk('public'),
                 TextColumn::make('price')
                     ->money()
                     ->sortable(),

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Product;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Storage;
 
 class ProductSeeder extends Seeder
 {
@@ -12,6 +13,9 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
+        Storage::disk('public')->put('img/products/pencil.png', file_get_contents('public/img/products/pencil.png'));
+        Storage::disk('public')->put('img/products/pen.png', file_get_contents('public/img/products/pen.png'));
+        Storage::disk('public')->put('img/products/note.png', file_get_contents('public/img/products/note.png'));
         Product::create([
             'name' => 'えんぴつ',
             'description' => 'かっこいいえんぴつです',

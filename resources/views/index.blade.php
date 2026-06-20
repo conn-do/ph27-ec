@@ -9,7 +9,7 @@
             <li>
                 <a href="{{ route('products.show', $product) }}">
                     {{ $product->name }}
-                    <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" width="200">
+                    <img src="{{ asset($product->imageUrl()) }}" alt="{{ $product->name }}" width="200">
                 </a>
             </li>
         @endforeach
