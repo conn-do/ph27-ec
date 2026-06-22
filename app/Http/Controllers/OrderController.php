@@ -8,7 +8,7 @@ use App\Models\Product;
 
 class OrderController extends Controller
 {
-    public function store()
+    public function store(Request $request)
     {
         // [1 => 3, 2 => 5] (商品ID => 数量)
         $cart = session()->get('cart', []);
@@ -20,6 +20,7 @@ class OrderController extends Controller
 
         $order = new Order();
         $order->total_price = $totalPrice;
+        $order->user_id = $request->user()->id;
         $order->save();
 
         session()->forget('cart');
@@ -28,6 +29,14 @@ class OrderController extends Controller
 
         return view('orders.complete', [
             'order' => $order,
+        ]);
+    }
+
+    public function index(Request $request)
+    {
+        $orders = $request->user()->orders;
+        return view('orders.index', [
+            'orders' => $orders,
         ]);
     }
 }

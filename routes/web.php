@@ -6,6 +6,7 @@ use App\Http\Controllers\ChirpController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\MyPageController;
 
 // Route::inertia('/', 'welcome', [
 //     'canRegister' => Features::enabled(Features::registration()),
@@ -48,5 +49,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post(
         '/orders',
         [OrderController::class, 'store']
+    );
+    Route::get(
+        '/orders',
+        [OrderController::class, 'index']
+    );
+    Route::get(
+        '/mypage',
+        [MyPageController::class, 'index']
     );
 });
