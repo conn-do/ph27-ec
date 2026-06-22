@@ -7,7 +7,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
-require __DIR__.'/settings.php';
+require __DIR__ . '/settings.php';
 
 Route::get(
     '/chirps',
@@ -19,6 +19,7 @@ Route::get('/products/{product}', [ProductController::class, 'show'])->name('pro
 Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+Route::get('/search', [ProductController::class, 'search'])->name('search');
 Route::middleware(['auth'])->group(function () {
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/orders/complete', [OrderController::class, 'complete'])->name('orders.complete');
