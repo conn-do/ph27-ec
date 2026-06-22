@@ -18,6 +18,9 @@ class ProductInfolist
                     ->disk('public'),
                 TextEntry::make('price')
                     ->money(),
+                TextEntry::make('stock')
+                    ->numeric()
+                    ->label('在庫数'),
                 TextEntry::make('created_at')
                     ->dateTime()
                     ->placeholder('-'),

@@ -11,6 +11,7 @@ class Product extends Model
         'description',
         'price',
         'image',
+        'stock',
     ];
 
     public function imageUrl(): string

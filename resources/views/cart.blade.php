@@ -6,7 +6,7 @@
     <h2>カート</h2>
     @if (session('message'))
         <article>
-            {{ session('message') }}
+            {!! session('message') !!}
         </article>
     @endif
     <table>

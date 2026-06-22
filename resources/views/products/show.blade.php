@@ -12,10 +12,17 @@
             <article>{{ $error }}</article>
         @endforeach
     @endif
+    @if ($product->stock === 0)
+        <p>売り切れ！</p>
+    @elseif ($product->stock <= 5)
+        <p>残り{{ $product->stock }}個！</p>
+    @else
+        <p>在庫があります</p>
+    @endif
     <form action="{{ route('cart.store') }}" method="post">
         @csrf
         <input type="hidden" name="productId" value="{{ $product->id }}">
-        <input type="number" name="quantity" value="{{ old('quantity', 1) }}" min="1" max="{{ $product->stock }}"
+        <input type="number" name="quantity" value="{{ old('quantity', 1) }}" min="1"
             @error('quantity') class="error" @enderror>
         <button type="submit">カートに追加</button>
     </form>

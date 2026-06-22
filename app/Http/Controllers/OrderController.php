@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -17,17 +18,31 @@ class OrderController extends Controller
             $product = Product::find($productId);
             $totalPrice += $product->price * $quantity;
         }
-        $order = new Order;
-        $order->user_id = $request->user()->id;
-        $order->total_price = $totalPrice;
-        $order->save();
+        try {
+            DB::beginTransaction();
+            $order = new Order;
+            $order->user_id = $request->user()->id;
+            $order->total_price = $totalPrice;
+            $order->save();
 
-        foreach ($cart as $productId => $quantity) {
-            $orderDetail = new OrderDetail;
-            $orderDetail->order_id = $order->id;
-            $orderDetail->product_id = $productId;
-            $orderDetail->quantity = $quantity;
-            $orderDetail->save();
+            foreach ($cart as $productId => $quantity) {
+                $orderDetail = new OrderDetail;
+                $orderDetail->order_id = $order->id;
+                $orderDetail->product_id = $productId;
+                $orderDetail->quantity = $quantity;
+                $orderDetail->save();
+
+                /** @var Product $product */
+                $product = Product::find($productId);
+                $product->stock -= $quantity;
+                $product->save();
+            }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $message = '申し訳ございません！エラーが発生しました。最初からやり直してください。<br>';
+            $message .= $e->getMessage();
+            return redirect()->route('cart.index')->with('message', $message);
         }
 
         session()->forget('cart');

@@ -25,6 +25,10 @@ class ProductsTable
                 TextColumn::make('price')
                     ->money()
                     ->sortable(),
+                TextColumn::make('stock')
+                    ->numeric()
+                    ->label('在庫数')
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

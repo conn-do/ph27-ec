@@ -26,6 +26,10 @@ class ProductForm
                     ->required()
                     ->numeric()
                     ->prefix('$'),
+                TextInput::make('stock')
+                    ->required()
+                    ->numeric()
+                    ->label('在庫数'),
             ]);
     }
 }
