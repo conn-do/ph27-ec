@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call(ProductSeeder::class);
         $this->call(ChirpSeeder::class);
-        $this->call(ProductSeeder::class);
+       
 
         $user = new User();
         $user->name = 'Test';
