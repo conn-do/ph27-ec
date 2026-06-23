@@ -14,6 +14,7 @@
         </a>
         <a href="/cart">カートを見る</a>
         @auth
+            <a href="/mypage">マイページ</a>
             <form method="POST" action="{{ route('logout') }}">
                 <button type="submit">ログアウト</button>
             </form>
