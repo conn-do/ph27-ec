@@ -55,6 +55,10 @@ Route::middleware(['auth'])->group(function () {
         [OrderController::class, 'index']
     );
     Route::get(
+        '/orders/{order}',
+        [OrderController::class, 'show']
+    );
+    Route::get(
         '/mypage',
         [MyPageController::class, 'index']
     );
