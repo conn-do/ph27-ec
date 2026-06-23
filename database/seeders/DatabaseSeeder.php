@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
-        $this->call(ChirpSeeder::class);
+        // $this->call(ChirpSeeder::class);
         $this->call(ProductSeeder::class);
 
         $user = new User();
@@ -28,5 +28,7 @@ class DatabaseSeeder extends Seeder
         $user->email = 'test@example.com';
         $user->password = Hash::make('password');
         $user->save();
+
+        $this->call(OrderSeeder::class);
     }
 }
