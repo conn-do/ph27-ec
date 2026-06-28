@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -10,9 +11,11 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::all();
+        $categories = Category::all();
 
         return view('index', [
             'products' => $products,
+            'categories' => $categories,
         ]);
     }
 
@@ -28,6 +31,15 @@ class ProductController extends Controller
         $keyword = $request->input('keyword');
         $products = Product::where('name', 'like', "%$keyword%")->get();
         return view('index', [
+            'products' => $products,
+        ]);
+    }
+
+    public function category(Category $category)
+    {
+        $products = Product::where('category_id', $category->id)->orderBy('id', 'desc')->get();
+        return view('category', [
+            'category' => $category,
             'products' => $products,
         ]);
     }

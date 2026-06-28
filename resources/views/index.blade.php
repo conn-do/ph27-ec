@@ -8,6 +8,18 @@
         <input type="text" name="keyword" placeholder="商品検索" value="{{ request('keyword') }}">
         <button type="submit">検索</button>
     </form>
+    <div>
+        <h3>カテゴリ</h3>
+        <ul>
+            @foreach ($categories as $category)
+                <li>
+                    <a href="{{ route('products.category', $category) }}">
+                        {{ $category->name }}
+                    </a>
+                </li>
+            @endforeach
+        </ul>
+    </div>
     @if (request('keyword'))
         <a href="{{ route('products.index') }}">検索結果をクリア</a>
     @endif

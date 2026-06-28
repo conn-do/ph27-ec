@@ -7,6 +7,12 @@
     <img src="{{ asset($product->imageUrl()) }}" alt="{{ $product->name }}" width="500">
     <p>{{ $product->description }}</p>
     <p>{{ $product->price }}円</p>
+    <p>
+        カテゴリ：
+        <a href="{{ route('products.category', $product->category) }}">
+            {{ $product->category->name }}
+        </a>
+    </p>
     @if ($errors->any())
         @foreach ($errors->all() as $error)
             <article>{{ $error }}</article>
