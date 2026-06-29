@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\News;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -12,10 +13,11 @@ class ProductController extends Controller
     {
         $products = Product::all();
         $categories = Category::all();
-
+        $news = News::orderBy('id', 'desc')->limit(3)->get();
         return view('index', [
             'products' => $products,
             'categories' => $categories,
+            'news' => $news,
         ]);
     }
 

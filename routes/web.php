@@ -5,6 +5,7 @@ use App\Http\Controllers\ChirpController;
 use App\Http\Controllers\MyPageController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\NewsController;
 use Illuminate\Support\Facades\Route;
 
 require __DIR__ . '/settings.php';
@@ -21,6 +22,7 @@ Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 Route::get('/search', [ProductController::class, 'search'])->name('search');
 Route::get('/categories/{category}', [ProductController::class, 'category'])->name('products.category');
+Route::get('/news/{news}', [NewsController::class, 'show'])->name('news.show');
 Route::middleware(['auth'])->group(function () {
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/orders/complete', [OrderController::class, 'complete'])->name('orders.complete');

@@ -33,4 +33,14 @@
             </li>
         @endforeach
     </ul>
+    <h2>新着情報</h2>
+    <ul>
+        @foreach ($news as $news)
+            <li>
+                <a href="{{ route('news.show', $news) }}">
+                    {{ $news->title }}
+                </a>
+            </li>
+        @endforeach
+    </ul>
 @endsection
