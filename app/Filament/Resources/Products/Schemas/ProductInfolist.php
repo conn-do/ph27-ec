@@ -17,7 +17,7 @@ class ProductInfolist
                 ImageEntry::make('image')
                     ->disk('public'),
                 TextEntry::make('price')
-                    ->money(),
+                    ->money('JPY'),
                 TextEntry::make('stock')
                     ->numeric()
                     ->label('在庫数'),

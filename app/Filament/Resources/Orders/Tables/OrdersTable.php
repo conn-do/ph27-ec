@@ -21,7 +21,7 @@ class OrdersTable
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('total_price')
-                    ->money()
+                    ->money('JPY')
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()

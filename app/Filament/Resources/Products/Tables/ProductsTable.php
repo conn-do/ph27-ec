@@ -23,7 +23,7 @@ class ProductsTable
                 ImageColumn::make('image')
                     ->disk('public'),
                 TextColumn::make('price')
-                    ->money()
+                    ->money('JPY')
                     ->sortable(),
                 TextColumn::make('stock')
                     ->numeric()

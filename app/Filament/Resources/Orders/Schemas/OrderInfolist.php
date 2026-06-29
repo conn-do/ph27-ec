@@ -17,7 +17,7 @@ class OrderInfolist
                 Section::make('Order')
                     ->schema([
                         TextEntry::make('total_price')
-                            ->money(),
+                            ->money('JPY'),
                         TextEntry::make('created_at')
                             ->dateTime()
                             ->placeholder('-'),
