@@ -24,7 +24,10 @@ class ProductForm
                     ->columnSpanFull(),
                 FileUpload::make('image')
                     ->image()
-                    ->required(),
+                    ->required()
+                    ->disk('public')
+                    ->directory('images/products')
+                    ->visibility('public'),
             ]);
     }
 }
