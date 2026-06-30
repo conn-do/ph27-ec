@@ -44,6 +44,10 @@ Route::get(
     '/cart/clear',
     [CartController::class, 'clear']
 );
+Route::get(
+    '/search',
+    [ProductController::class, 'search']
+);
 // ログイン必須にする
 Route::middleware(['auth'])->group(function () {
     Route::post(

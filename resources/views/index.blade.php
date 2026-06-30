@@ -5,6 +5,13 @@
 
 @section('content')
     <h2>商品一覧</h2>
+    <form action="/search" method="GET">
+        <input type="text" name="keyword" value="{{ request('keyword') }}">
+        <input type="submit" value="検索">
+    </form>
+    @if (request('keyword'))
+        <a href="/">検索結果をクリア</a>
+    @endif
     @foreach ($products as $product)
         <ul>
             <li>

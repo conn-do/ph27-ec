@@ -21,4 +21,13 @@ class ProductController extends Controller
             'product' => $product,
         ]);
     }
+
+    public function search(Request $request)
+    {
+        $keyword = $request->input('keyword');
+        $products = Product::where('name', 'like', "%{$keyword}%")->get();
+        return view('index', [
+            'products' => $products,
+        ]);
+    }
 }
