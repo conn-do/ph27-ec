@@ -33,7 +33,7 @@ Route::get(
     '/products/{product}',
     [ProductController::class, 'show']
 );
-    Route::get('/news/{news}', [NewsController::class, 'show']);
+Route::get('/news/{news}', [NewsController::class, 'show']);
 
 Route::post(
     '/cart',

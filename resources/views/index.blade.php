@@ -16,7 +16,7 @@
         </ul>
     @endforeach
 
-    <div>
+    <div class="news">
         <h3>最新ニュース</h3>
         <ul>
             @foreach ($news as $item)
