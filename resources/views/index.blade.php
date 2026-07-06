@@ -34,6 +34,9 @@
             <li>
                 <a href="/news/3">サイトメンテナンスのお知らせ</a>
             </li>
+            <li>
+                <a href="/news/4">新機能追加のお知らせ</a>
+            </li>
         </ul>
     </div>
 @endsection
