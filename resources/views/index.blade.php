@@ -22,4 +22,15 @@
             </li>
         </ul>
     @endforeach
+    <h3>最新情報</h3>
+    <ul>
+        <li>
+            <a href="/news/1">ニュース1</a>
+        </li>
+        <li>
+            <a href="/news/2">ニュース2</a>
+        </li>
+    </ul>
+    </li>
+    </ul>
 @endsection

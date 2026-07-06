@@ -1,0 +1,3 @@
+<div>
+    {!! $news->content !!}
+</div>
