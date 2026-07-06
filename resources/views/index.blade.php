@@ -22,4 +22,18 @@
             </li>
         </ul>
     @endforeach
+    <div>
+        <h3>最新情報</h3>
+        <ul>
+            <li>
+                <a href="/news/1">新商品入荷のお知らせ</a>
+            </li>
+            <li>
+                <a href="/news/2">セール開催のお知らせ</a>
+            </li>
+            <li>
+                <a href="/news/3">サイトメンテナンスのお知らせ</a>
+            </li>
+        </ul>
+    </div>
 @endsection
