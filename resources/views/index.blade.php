@@ -22,4 +22,14 @@
             </li>
         </ul>
     @endforeach
+
+    @foreach ($news as $item)
+        <ul>
+            <li>
+                <a href="/news/{{ $item->id }}">
+                    {{ $item['title'] }}                    
+                </a>
+            </li>
+        </ul>
+    @endforeach
 @endsection

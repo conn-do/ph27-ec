@@ -26,6 +26,10 @@ class ProductSeeder extends Seeder
             'images/products/pencil.png',
             file_get_contents('public/images/products/pencil.png')
         );
+        Storage::disk('public')->put(
+            'images/products/パイの実.jpg',
+            file_get_contents('public/images/products/パイの実.jpg')
+        );
 
         $p1 = new Product();
         $p1->name = 'すごいペン';
@@ -47,5 +51,12 @@ class ProductSeeder extends Seeder
         $p3->description = 'とてもよく消える鉛筆です。';
         $p3->image = 'images/products/pencil.png';
         $p3->save();
+
+        $p4 = new Product();
+        $p4->name = 'パイの実';
+        $p4->price = fake()->randomNumber(3);
+        $p4->description = 'とてもおいしいパイの実です。';
+        $p4->image = 'images/products/パイの実.jpg';
+        $p4->save();
     }
 }
