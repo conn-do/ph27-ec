@@ -31,3 +31,5 @@ class ProductController extends Controller
         ]);
     }
 }
+
+// hogehoge
