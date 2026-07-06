@@ -1,4 +1,4 @@
-<?php
+show.blade.php<?php
 
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\SecurityController;

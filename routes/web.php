@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\MyPageController;
+use App\Http\Controllers\NewsController; // 追加：NewsConnewstroller
 
 // Route::inertia('/', 'welcome', [
 //     'canRegister' => Features::enabled(Features::registration()),
@@ -48,6 +49,13 @@ Route::get(
     '/search',
     [ProductController::class, 'search']
 );
+
+// 追加：お知らせ詳細画面とばす
+Route::get(
+    '/news/{news}',
+    [NewsController::class, 'show']
+)->name('news.show');
+
 // ログイン必須にする
 Route::middleware(['auth'])->group(function () {
     Route::post(
