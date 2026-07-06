@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Pest\Expectation;
 use Tests\TestCase;
 
 /*
@@ -16,6 +17,9 @@ use Tests\TestCase;
 
 pest()->extend(TestCase::class)
     ->use(RefreshDatabase::class)
+    ->beforeEach(function (): void {
+        $this->withoutVite();
+    })
     ->in('Feature');
 
 /*
@@ -30,7 +34,7 @@ pest()->extend(TestCase::class)
 */
 
 expect()->extend('toBeOne', function () {
-    /** @var \Pest\Expectation<int> $this */
+    /** @var Expectation<int> $this */
     return $this->toBe(1);
 });
 

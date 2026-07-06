@@ -1,22 +1,22 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Laravel\Fortify\Features;
-use App\Http\Controllers\ChirpController;
-use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
-use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ChirpController;
 use App\Http\Controllers\MyPageController;
+use App\Http\Controllers\NewsController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProductController;
+use Illuminate\Support\Facades\Route;
 
 // Route::inertia('/', 'welcome', [
 //     'canRegister' => Features::enabled(Features::registration()),
 // ])->name('home');
 
-// Route::middleware(['auth', 'verified'])->group(function () {
-//     Route::inertia('dashboard', 'dashboard')->name('dashboard');
-// });
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::inertia('dashboard', 'dashboard')->name('dashboard');
+});
 
-require __DIR__ . '/settings.php';
+require __DIR__.'/settings.php';
 
 Route::get(
     '/chirps',
@@ -27,11 +27,15 @@ Route::post(
     [ChirpController::class, 'store']
 );
 
-Route::get('/', [ProductController::class, 'index']);
+Route::get('/', [ProductController::class, 'index'])->name('home');
 Route::get(
     '/products/{product}',
     [ProductController::class, 'show']
 );
+Route::get(
+    '/news/{news}',
+    [NewsController::class, 'show']
+)->name('news.show');
 Route::post(
     '/cart',
     [CartController::class, 'store']
