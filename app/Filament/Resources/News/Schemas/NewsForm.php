@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\News\Schemas;
 
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
 
 class NewsForm
@@ -10,7 +12,11 @@ class NewsForm
     {
         return $schema
             ->components([
-                //
+                TextInput::make('title')
+                    ->required(),
+                Textarea::make('body')
+                    ->required()
+                    ->columnSpanFull(),
             ]);
     }
 }

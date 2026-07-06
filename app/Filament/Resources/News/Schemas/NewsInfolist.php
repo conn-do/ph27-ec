@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\News\Schemas;
 
+use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
 class NewsInfolist
@@ -10,7 +11,15 @@ class NewsInfolist
     {
         return $schema
             ->components([
-                //
+                TextEntry::make('title'),
+                TextEntry::make('body')
+                    ->columnSpanFull(),
+                TextEntry::make('created_at')
+                    ->dateTime()
+                    ->placeholder('-'),
+                TextEntry::make('updated_at')
+                    ->dateTime()
+                    ->placeholder('-'),
             ]);
     }
 }

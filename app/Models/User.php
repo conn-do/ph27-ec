@@ -30,7 +30,6 @@ class User extends Authenticatable implements FilamentUser
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
         ];
     }
@@ -47,6 +46,8 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->email === 'test@example.com';
+       return in_array($this->email, [
+        'test@example.com',
+    ]);
     }
 }
