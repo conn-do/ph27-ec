@@ -26,3 +26,47 @@
     color: red;
     border: 1px solid red;
 }
+
+header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.news-section {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.news-card {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.news-card h3,
+.news-detail h2 {
+    margin-bottom: 0.25rem;
+}
+
+.news-card time,
+.news-detail time {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.news-detail {
+    max-width: 760px;
+}
+
+.news-content {
+    margin-top: 1.5rem;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 1rem;
+}
