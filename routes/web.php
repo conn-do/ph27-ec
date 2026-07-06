@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\MyPageController;
+use App\Http\Controllers\NewsController;
 
 // Route::inertia('/', 'welcome', [
 //     'canRegister' => Features::enabled(Features::registration()),
@@ -32,6 +33,8 @@ Route::get(
     '/products/{product}',
     [ProductController::class, 'show']
 );
+    Route::get('/news/{news}', [NewsController::class, 'show']);
+
 Route::post(
     '/cart',
     [CartController::class, 'store']
@@ -62,4 +65,6 @@ Route::middleware(['auth'])->group(function () {
         '/mypage',
         [MyPageController::class, 'index']
     );
+
+
 });
