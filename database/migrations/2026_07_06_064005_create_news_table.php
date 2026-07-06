@@ -9,20 +9,21 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('orders', function (Blueprint $table) {
-            $table->id();
-            $table->integer('total_price');
-            $table->timestamps();
-        });
-    }
+   public function up(): void
+{
+    Schema::create('news', function (Blueprint $table) {
+        $table->id();
+        $table->string('title');
+        $table->text('content');
+        $table->timestamps();
+    });
+}
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('orders');
+        Schema::dropIfExists('news');
     }
 };
