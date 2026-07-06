@@ -10,8 +10,10 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::all();
+        $news = News::orderBy('id', 'desc')->limit(3)->get();
         return view('index', [
             'products' => $products,
+            'news' => $news,
         ]);
     }
 
@@ -26,8 +28,10 @@ class ProductController extends Controller
     {
         $keyword = $request->input('keyword');
         $products = Product::where('name', 'like', "%{$keyword}%")->get();
+        $news = News::orderBy('id', 'desc')->limit(3)->get();
         return view('index', [
             'products' => $products,
+            'news' => $news,
         ]);
     }
 }
