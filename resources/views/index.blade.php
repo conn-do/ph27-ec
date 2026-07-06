@@ -22,9 +22,9 @@
             </li>
         </ul>
     @endforeach
-    <div>
+    <div class="news-section">
         <h3>最新情報</h3>
-        <ul>
+        <ul class="news-list">
             @foreach ($news as $newsItem)
                 <li>
                     <a href="/news/{{ $newsItem->id }}">{{ $newsItem->title }}</a>
