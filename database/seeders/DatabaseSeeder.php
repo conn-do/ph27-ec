@@ -22,8 +22,9 @@ class DatabaseSeeder extends Seeder
         // ]);
         // $this->call(ChirpSeeder::class);
         $this->call(ProductSeeder::class);
+        $this->call(NewsSeeder::class);
 
-        $user = new User();
+        $user = new User;
         $user->name = 'Test';
         $user->email = 'test@example.com';
         $user->password = Hash::make('password');
