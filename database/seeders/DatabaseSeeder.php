@@ -16,16 +16,16 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-       // User::factory()->create([
+        // User::factory()->create([
         //   'name' => 'Test User',
         //    'email' => 'test@example.com',
         // ]);
 
         $this->call(ProductSeeder::class);
         $this->call(ChirpSeeder::class);
-       
+        $this->call(NewsSeeder::class);
 
-        $user = new User();
+        $user = new User;
         $user->name = 'Test';
         $user->email = 'test@example.com';
         $user->password = Hash::make('password');

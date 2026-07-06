@@ -29,3 +29,19 @@
     color: red;
     border: 1px solid red;
 }
+
+.news-list {
+    margin-bottom: 2rem;
+}
+
+.news-list ul {
+    padding-left: 1.25rem;
+}
+
+.news-detail {
+    max-width: 48rem;
+}
+
+.news-content {
+    margin-top: 1rem;
+}
