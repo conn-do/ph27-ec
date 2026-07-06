@@ -23,7 +23,7 @@
         </ul>
     @endforeach
     <div>
-        <h3>最新情報</h3>
+        <h3 class="news-tag">最新情報</h3>
         <ul>
             @foreach ($news as $new)
                 <li>
