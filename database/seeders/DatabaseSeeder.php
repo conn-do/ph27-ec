@@ -30,5 +30,7 @@ class DatabaseSeeder extends Seeder
         $user->email = 'test@example.com';
         $user->password = Hash::make('password');
         $user->save();
+
+        $this->call(OrderSeeder::class);
     }
 }
