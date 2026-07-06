@@ -13,9 +13,9 @@ use Laravel\Fortify\Features;
 //     'canRegister' => Features::enabled(Features::registration()),
 // ])->name('home');
 
-// Route::middleware(['auth', 'verified'])->group(function () {
-//     Route::inertia('dashboard', 'dashboard')->name('dashboard');
-// });
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::inertia('dashboard', 'dashboard')->name('dashboard');
+});
 
 require __DIR__.'/settings.php';
 
@@ -28,7 +28,7 @@ Route::post(
     [ChirpController::class, 'store']
 );
 
-Route::get('/', [ProductController::class, 'index']);
+Route::get('/', [ProductController::class, 'index'])->name('home');
 Route::get(
     '/products/{product}',
     [ProductController::class, 'show']
