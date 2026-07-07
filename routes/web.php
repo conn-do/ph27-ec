@@ -1,10 +1,13 @@
 <?php
 
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\ChirpController;
+use App\Http\Controllers\MyPageController;
+use App\Http\Controllers\NewsController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
-use App\Http\Controllers\ChirpController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\CartController;
 
 // Route::inertia('/', 'welcome', [
 //     'canRegister' => Features::enabled(Features::registration()),
@@ -14,7 +17,7 @@ use App\Http\Controllers\CartController;
 //     Route::inertia('dashboard', 'dashboard')->name('dashboard');
 // });
 
-require __DIR__ . '/settings.php';
+require __DIR__.'/settings.php';
 
 Route::get(
     '/chirps',
@@ -42,3 +45,29 @@ Route::get(
     '/cart/clear',
     [CartController::class, 'clear']
 );
+Route::get(
+    '/search',
+    [ProductController::class, 'search']
+);
+
+Route::get('/news/{news}', [NewsController::class, 'show']);
+
+// ログイン必須にする
+Route::middleware(['auth'])->group(function () {
+    Route::post(
+        '/orders',
+        [OrderController::class, 'store']
+    );
+    Route::get(
+        '/orders',
+        [OrderController::class, 'index']
+    );
+    Route::get(
+        '/orders/{order}',
+        [OrderController::class, 'show']
+    );
+    Route::get(
+        '/mypage',
+        [MyPageController::class, 'index']
+    );
+});

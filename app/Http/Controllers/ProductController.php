@@ -2,16 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\News;
 use App\Models\Product;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
     public function index()
     {
         $products = Product::all();
+
+        $news = News::orderBy('id', 'desc')
+            ->limit(3)
+            ->get();
+
         return view('index', [
             'products' => $products,
+            'news' => $news,
         ]);
     }
 
@@ -19,11 +26,27 @@ class ProductController extends Controller
     public function show($id)
     {
         // 1. 去資料庫把點擊的那筆商品資料撈出來
-        $product = \App\Models\Product::findOrFail($id);
+        $product = Product::findOrFail($id);
 
         // 2. 把商品資料傳給 products 資料夾底下的 show.blade.php 畫面
         return view('products.show', [
-            'product' => $product
+            'product' => $product,
         ]);
     }
-} // <-- 這一個才是整棟大房子結束的最外層大括號
+
+    public function search(Request $request)
+    {
+        $keyword = $request->input('keyword');
+
+        $products = Product::where('name', 'like', "%{$keyword}%")->get();
+
+        $news = News::orderBy('id', 'desc')
+            ->limit(3)
+            ->get();
+
+        return view('index', [
+            'products' => $products,
+            'news' => $news,
+        ]);
+    }
+}
