@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\MyPageController;
+use App\Http\Controllers\NewsController;
 
 // Route::inertia('/', 'welcome', [
 //     'canRegister' => Features::enabled(Features::registration()),
@@ -22,7 +23,6 @@ Route::get(
     '/chirps',
     [ChirpController::class, 'index']
 );
-
 Route::post(
     '/chirps',
     [ChirpController::class, 'store']
@@ -66,5 +66,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get(
         '/mypage',
         [MyPageController::class, 'index']
+    );
+    Route::get(
+        '/news/{news}',
+        [NewsController::class, 'show']
     );
 });
