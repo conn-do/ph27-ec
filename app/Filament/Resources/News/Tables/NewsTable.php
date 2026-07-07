@@ -14,16 +14,23 @@ class NewsTable
     public static function configure(Table $table): Table
     {
         return $table
-            ->columns([
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
+        ->columns([
+            TextColumn::make('title')
+                ->label('タイトル')
+                ->searchable(),
+
+            TextColumn::make('content')
+                ->label('内容')
+                ->limit(50),
+
+            TextColumn::make('created_at')
+                ->label('作成日')
+                ->dateTime(),
+
+            TextColumn::make('updated_at')
+                ->label('更新日')
+                ->dateTime(),
+        ])
             ->filters([
                 //
             ])
