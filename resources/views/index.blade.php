@@ -22,4 +22,16 @@
             </li>
         </ul>
     @endforeach
+    <div>
+        <h3>最新情報</h3>
+        <ul>
+            @foreach ($news as $new)
+                <li>
+                    <a href="/news/{{ $new->id }}">
+                        {{ $new['title'] }}
+                    </a>
+                </li>
+            @endforeach
+        </ul>
+    </div>
 @endsection

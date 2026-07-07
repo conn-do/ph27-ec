@@ -30,5 +30,6 @@ class DatabaseSeeder extends Seeder
         $user->save();
 
         $this->call(OrderSeeder::class);
+        $this->call(NewsSeeder::class);
     }
 }
