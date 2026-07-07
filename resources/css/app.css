@@ -22,7 +22,27 @@
     }
 }
 
-.error {
-    color: red;
-    border: 1px solid red;
+.news-list{
+    width:500px;
+}
+
+.news-item{
+    border-bottom:1px solid #ddd;
+    padding:20px 0;
+}
+
+.news-title{
+    color:#0077b6;
+    font-size:22px;
+    font-weight:bold;
+    text-decoration:none;
+}
+
+.news-title:hover{
+    text-decoration:underline;
+}
+
+.news-content{
+    color:#555;
+    margin-top:8px;
 }

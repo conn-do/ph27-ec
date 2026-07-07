@@ -4,14 +4,21 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\News;
 
 class ProductController extends Controller
 {
     public function index()
-    {
+    {    
         $products = Product::all();
-        return view('index', [
+        
+        $news = News::orderBy('id', 'desc')
+            ->limit(3)
+            ->get();
+
+            return view('index', [
             'products' => $products,
+            'news' => $news,
         ]);
     }
 

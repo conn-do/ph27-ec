@@ -22,4 +22,21 @@
             </li>
         </ul>
     @endforeach
+
+    <h2>NEWS</h2>
+
+    <div class="news-list">
+        @foreach ($news as $item)
+            <div class="news-item">
+                <a href="/news/{{ $item->id }}" class="news-title">
+                    {{ $item->title }}
+                </a>
+
+                <p class="news-content">
+                    {{ Str::limit(strip_tags($item->content), 40) }}
+                </p>
+            </div>
+        @endforeach
+    </div>
+
 @endsection
