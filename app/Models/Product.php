@@ -1,20 +1,33 @@
 <?php
 
-namespace App\Models;
+namespace App\Filament\Resources\Products\Schemas;
 
-use Illuminate\Database\Eloquent\Model;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Textarea;
+use Filament\Schemas\Schema;
 
-class Product extends Model
+class ProductForm
 {
-    protected $fillable = [
-        'name',
-        'price',
-        'description',
-        'image',
-    ];
-
-    public function imageUrl(): string
+    public static function configure(Schema $schema): Schema
     {
-        return asset('storage/' . $this->image);
+        return $schema
+            ->components([
+                TextInput::make('name')
+                    ->required(),
+                TextInput::make('price')
+                    ->required()
+                    ->numeric()
+                    ->prefix('$'),
+                Textarea::make('description')
+                    ->required()
+                    ->columnSpanFull(),
+                FileUpload::make('image')
+                    ->image()
+                    ->required()
+                    ->disk('public')
+                    ->directory('images/products')
+                    ->visibility('public'),
+            ]);
     }
 }
