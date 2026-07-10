@@ -154,4 +154,8 @@ return [
         ]),
     ],
 
+    'redirects' => [
+        'email-verification' => '/mypage',
+    ],
+
 ];
