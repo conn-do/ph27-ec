@@ -29,7 +29,7 @@
         <button type="submit">ログイン</button>
     </form>
 
-    {{-- <p><a href="{{ route('password.request') }}">パスワードをお忘れですか？</a></p> --}}
+    <p><a href="{{ route('password.request') }}">パスワードをお忘れですか？</a></p>
 
     <p>アカウントをお持ちでない方は <a href="{{ route('register') }}">会員登録</a></p>
 @endsection
