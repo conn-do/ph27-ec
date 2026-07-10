@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\OrderCompleted;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -38,6 +40,9 @@ class OrderController extends Controller
                 $product->save();
             }
             DB::commit();
+            Mail::to($request->user())->send(
+                new OrderCompleted($order, $request->user())
+            );
         } catch (\Exception $e) {
             DB::rollBack();
             $message = '申し訳ございません！エラーが発生しました。最初からやり直してください。<br>';
@@ -59,6 +64,7 @@ class OrderController extends Controller
     {
         // $orders = Order::where('user_id', $request->user()->id)->get();
         $orders = $request->user()->orders;
+
         return view('orders.index', [
             'orders' => $orders->sortByDesc('created_at'),
         ]);
