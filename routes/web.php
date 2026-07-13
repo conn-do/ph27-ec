@@ -49,6 +49,10 @@ Route::get(
     '/search',
     [ProductController::class, 'search']
 );
+Route::get(
+    '/categories/{category}',
+    [ProductController::class, 'category']
+);
 
 Route::get('/news/{news}', [NewsController::class, 'show']);
 

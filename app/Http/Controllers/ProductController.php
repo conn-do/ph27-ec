@@ -48,4 +48,11 @@ class ProductController extends Controller
             'news' => $news,
         ]);
     }
+
+    public function category(Category $category)
+    {
+        return view('category', [
+            'category' => $category,
+        ]);
+    }
 }
