@@ -6,13 +6,16 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans:
+        'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
+        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+        'Noto Color Emoji';
 
     --animate-fade-out: fade-out 4s ease-in-out forwards;
 
     @keyframes fade-out {
-        0%, 70% {
+        0%,
+        70% {
             opacity: 1;
         }
         100% {
@@ -25,4 +28,60 @@
 .error {
     color: red;
     border: 1px solid red;
+}
+
+.news-title {
+    font-size: 40px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.news-subtitle {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.news-list {
+    margin-left: 200px;
+}
+
+/* 1件ずつ */
+.news-item {
+    padding: 15px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+/* タイトル */
+.news-item-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* 本文 */
+.news-item-body {
+    font-size: 14px;
+    color: #333;
+}
+
+.news-detail {
+    max-width: 960px;
+    margin: 40px auto;
+}
+
+.news-detail-title {
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+.news-detail-body {
+    font-size: 16px;
+    line-height: 1.8;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 30px;
+    color: #666;
 }

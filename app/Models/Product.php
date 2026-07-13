@@ -6,5 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    //
+    protected $fillable = [
+        'name',
+        'price',
+        'description',
+        'image',
+    ];
+
+    public function imageUrl(): string
+    {
+        return asset('storage/' . $this->image);
+    }
 }

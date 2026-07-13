@@ -4,7 +4,7 @@
 
 @section('content')
     <h2>{{ $product->name }}</h2>
-    <img src="{{ asset($product->image) }}" width="400">
+    <img src="{{ $product->imageUrl() }}" width="400">
     <p>{{ $product->price }}円</p>
     <p>{{ $product->description }}</p>
     @if ($errors->any())

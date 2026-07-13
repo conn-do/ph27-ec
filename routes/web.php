@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\MyPageController;
+use App\Http\Controllers\NewsController;
 
 // Route::inertia('/', 'welcome', [
 //     'canRegister' => Features::enabled(Features::registration()),
@@ -45,6 +46,13 @@ Route::get(
     '/cart/clear',
     [CartController::class, 'clear']
 );
+Route::get(
+    '/search',
+    [ProductController::class, 'search']
+);
+
+Route::get('/news/{news}', [NewsController::class, 'show']);
+
 // ログイン必須にする
 Route::middleware(['auth'])->group(function () {
     Route::post(
