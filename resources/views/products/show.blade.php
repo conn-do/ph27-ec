@@ -4,6 +4,12 @@
 
 @section('content')
     <h2>{{ $product->name }}</h2>
+    <div>
+        カテゴリー:
+        <a href="/categories/{{ $product->category->slug }}">
+            {{ $product->category->name }}
+        </a>
+    </div>
     <img src="{{ $product->imageUrl() }}" width="400">
     <p>{{ $product->price }}円</p>
     <p>{{ $product->description }}</p>

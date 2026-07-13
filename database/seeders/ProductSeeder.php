@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Support\Facades\Storage;
 
 class ProductSeeder extends Seeder
@@ -27,11 +28,14 @@ class ProductSeeder extends Seeder
             file_get_contents('public/images/products/pencil.png')
         );
 
+        $category = Category::where('slug', 'pen')->first();
+
         $p1 = new Product();
         $p1->name = 'すごいペン';
         $p1->price = fake()->randomNumber(3);
         $p1->description = 'とてもすごいペンです。';
         $p1->image = 'images/products/pen.png';
+        $p1->category_id = $category->id;
         $p1->save();
 
         $p2 = new Product();
@@ -39,6 +43,7 @@ class ProductSeeder extends Seeder
         $p2->price = fake()->randomNumber(3);
         $p2->description = 'とてもきれいなノートです。';
         $p2->image = 'images/products/note.png';
+        $p2->category_id = $category->id;
         $p2->save();
 
         $p3 = new Product();
@@ -46,6 +51,7 @@ class ProductSeeder extends Seeder
         $p3->price = fake()->randomNumber(3);
         $p3->description = 'とてもよく消える鉛筆です。';
         $p3->image = 'images/products/pencil.png';
+        $p3->category_id = $category->id;
         $p3->save();
     }
 }
