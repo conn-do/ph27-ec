@@ -28,7 +28,7 @@ Route::post(
     [ChirpController::class, 'store']
 );
 
-Route::get('/', [ProductController::class, 'index']);
+Route::get('/', [ProductController::class, 'index'])->name('home');
 Route::get(
     '/products/{product}',
     [ProductController::class, 'show']
@@ -50,7 +50,7 @@ Route::get(
     [ProductController::class, 'search']
 );
 
-Route::get('/news/{news}', [NewsController::class, 'show']);
+Route::get('/news/{news}', [NewsController::class, 'show'])->name('news.show');
 
 // ログイン必須にする
 Route::middleware(['auth'])->group(function () {
@@ -69,5 +69,5 @@ Route::middleware(['auth'])->group(function () {
     Route::get(
         '/mypage',
         [MyPageController::class, 'index']
-    );
+    )->name('dashboard');
 });

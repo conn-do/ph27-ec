@@ -13,6 +13,7 @@ class NewsInfolist
             ->components([
                 TextEntry::make('title'),
                 TextEntry::make('content')
+                    ->html()
                     ->columnSpanFull(),
                 TextEntry::make('created_at')
                     ->dateTime()

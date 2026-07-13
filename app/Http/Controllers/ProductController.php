@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Product;
-use App\Models\News;
 use App\Models\Category;
+use App\Models\News;
+use App\Models\Product;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $products = Product::all();
 
@@ -26,14 +27,14 @@ class ProductController extends Controller
         ]);
     }
 
-    public function show(Product $product)
+    public function show(Product $product): View
     {
         return view('products.show', [
             'product' => $product,
         ]);
     }
 
-    public function search(Request $request)
+    public function search(Request $request): View
     {
         $keyword = $request->input('keyword');
 
@@ -43,9 +44,12 @@ class ProductController extends Controller
             ->limit(3)
             ->get();
 
+        $categories = Category::all();
+
         return view('index', [
             'products' => $products,
             'news' => $news,
+            'categories' => $categories,
         ]);
     }
 }

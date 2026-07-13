@@ -2,26 +2,26 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\News;
+use Illuminate\Database\Seeder;
 
 class NewsSeeder extends Seeder
 {
     public function run(): void
     {
-        $news1 = new News();
-        $news1->title = '新商品のお知らせ';
-        $news1->content = '新しい文房具が入荷しました！ぜひご覧ください。';
-        $news1->save();
+        News::create([
+            'title' => '新商品のご案内',
+            'content' => '<p>新しい文房具が入荷しました。ぜひ店頭でご覧ください。</p>',
+        ]);
 
-        $news2 = new News();
-        $news2->title = 'セール開催中';
-        $news2->content = '一部商品が20%オフで購入できます。';
-        $news2->save();
+        News::create([
+            'title' => 'セール開催中',
+            'content' => '<p>一部商品を<strong>20%OFF</strong>で販売しています。</p>',
+        ]);
 
-        $news3 = new News();
-        $news3->title = 'メンテナンスのお知らせ';
-        $news3->content = '明日2:00〜4:00の間サイトが一時停止します。';
-        $news3->save();
+        News::create([
+            'title' => 'メンテナンスのお知らせ',
+            'content' => '<p>明日 2:00 から 3:00 までサイトを一時停止します。</p>',
+        ]);
     }
 }

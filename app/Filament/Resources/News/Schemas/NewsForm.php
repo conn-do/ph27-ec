@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\News\Schemas;
 
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
 
 class NewsForm
@@ -13,8 +13,9 @@ class NewsForm
         return $schema
             ->components([
                 TextInput::make('title')
+                    ->maxLength(255)
                     ->required(),
-                Textarea::make('content')
+                RichEditor::make('content')
                     ->required()
                     ->columnSpanFull(),
             ]);
