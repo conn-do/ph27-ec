@@ -4,9 +4,22 @@
 
 @section('content')
     <h2>{{ $product->name }}</h2>
+    <div>
+        カテゴリー:
+        <a href="/categories/{{ $product->category->slug }}">
+            {{ $product->category->name }}
+        </a>
+    </div>
     <img src="{{ $product->imageUrl() }}" width="400">
     <p>{{ $product->price }}円</p>
     <p>{{ $product->description }}</p>
+    @if ($product->stock <= 0)
+        <p>売り切れ</p>
+    @elseif ($product->stock <= 5)
+        <p>残りわずか</p>
+    @else
+        <p>在庫あり</p>
+    @endif
     @if ($errors->any())
         @foreach ($errors->all() as $error)
             <article class="error">

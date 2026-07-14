@@ -30,6 +30,11 @@ class OrderController extends Controller
             $detail->product_id = $productId;
             $detail->quantity = $quantity;
             $detail->save();
+
+            /** @var Product $product */
+            $product = Product::find($productId);
+            $product->stock -= $quantity;
+            $product->save();
         }
 
         session()->forget('cart');

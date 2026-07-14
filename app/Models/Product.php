@@ -11,10 +11,16 @@ class Product extends Model
         'price',
         'description',
         'image',
+        'stock',
     ];
 
     public function imageUrl(): string
     {
         return asset('storage/' . $this->image);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }

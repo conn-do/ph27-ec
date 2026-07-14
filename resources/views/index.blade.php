@@ -9,7 +9,9 @@
     <ul>
         @foreach ($categories as $category)
             <li>
-                {{ $category->name }}
+                <a href="/categories/{{ $category->slug }}">
+                    {{ $category->name }}
+                </a>
             </li>
         @endforeach
     </ul>
