@@ -9,6 +9,7 @@
             <tr>
                 <td>{{ $order->id }}</td>
                 <td>{{ $order->total_price }}円</td>
+                <td>{{ $order->status->label() }}</td>
                 <td>
                     <a href="/orders/{{ $order->id }}">詳細</a>
                 </td>

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Orders\Tables;
 
+use App\Enums\OrderStatus;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -16,16 +17,24 @@ class OrdersTable
         return $table
             ->columns([
                 TextColumn::make('total_price')
-                    ->money()
+                    ->label('金額')
+                    ->money('jpy')
                     ->sortable(),
                 TextColumn::make('user_id')
+                    ->label('ユーザーID')
                     ->numeric()
                     ->sortable(),
+                TextColumn::make('status')
+                    ->label('ステータス')
+                    ->formatStateUsing(fn (OrderStatus $state) => $state->label())
+                    ->sortable(),
                 TextColumn::make('created_at')
+                    ->label('注文日時')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
+                    ->label('更新日時')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

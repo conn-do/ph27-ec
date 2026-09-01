@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\Products\Schemas;
 
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
 class ProductForm
@@ -19,6 +19,9 @@ class ProductForm
                     ->required()
                     ->numeric()
                     ->prefix('$'),
+                TextInput::make('stock')
+                    ->required()
+                    ->numeric(),
                 Textarea::make('description')
                     ->required()
                     ->columnSpanFull(),
