@@ -20,7 +20,7 @@
     @if (empty($items))
         <p>カートに商品がありません。</p>
     @else
-        <table class="cart-table">
+        <table class="data-table">
             <thead>
                 <tr>
                     <th>商品</th>

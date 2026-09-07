@@ -290,7 +290,7 @@ a {
     color: #164e45;
 }
 
-.cart-table {
+.data-table {
     margin-bottom: 24px;
     overflow: hidden;
     border: 1px solid var(--color-line);
@@ -298,20 +298,25 @@ a {
     background: #fff;
 }
 
-.cart-table th {
+.data-table th {
     background: var(--color-soft);
     color: var(--color-heading);
     font-weight: 700;
 }
 
-.cart-table td {
+.data-table td {
     background: #fff;
     color: var(--color-ink);
 }
 
-.cart-table th,
-.cart-table td {
+.data-table th,
+.data-table td {
     border-color: var(--color-line);
+}
+
+.table-link {
+    color: var(--color-accent-strong);
+    font-weight: 700;
 }
 
 .cart-total {
