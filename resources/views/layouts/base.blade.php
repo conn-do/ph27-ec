@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STATIONERY | Modern Essentials</title>
+    <title>@yield('title', 'STATIONERY') | 文房具セレクション</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,12 +22,32 @@
     <!-- Global Header -->
     <header class="border-b border-neutral-200 bg-white sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-8 h-20 flex items-center justify-between">
-            <a href="/" class="text-xl font-bold tracking-widest uppercase">STATIONERY</a>
+            <a href="/" class="text-xl font-bold tracking-widest uppercase">文房具セレクション</a>
 
-            <nav class="flex items-center space-x-8 text-xs font-semibold tracking-wider">
-                <a href="/" class="hover:text-neutral-500 transition">ALL PRODUCTS</a>
-                <a href="/cart" class="hover:text-neutral-500 transition">CART</a>
-                <a href="/orders" class="hover:text-neutral-500 transition">ORDERS</a>
+            <nav class="flex items-center space-x-6 text-xs font-semibold tracking-wider">
+                <a href="/" class="hover:text-neutral-500 transition">商品一覧</a>
+                <a href="{{ route('ranking') }}" class="hover:text-neutral-500 transition">ランキング</a>
+
+                @auth
+                    <a href="{{ route('favorites.list') }}" class="hover:text-neutral-500 transition">♥ お気に入り</a>
+                    <a href="/cart" class="hover:text-neutral-500 transition">カート</a>
+                    <a href="/orders" class="hover:text-neutral-500 transition">注文履歴</a>
+                    <a href="{{ route('mypage') }}" class="hover:text-neutral-500 transition">マイページ</a>
+
+                    <!-- Logout Form -->
+                    <form action="/logout" method="POST" class="inline">
+                        @csrf
+                        <button type="submit" class="text-neutral-400 hover:text-black transition cursor-pointer">
+                            ログアウト
+                        </button>
+                    </form>
+                @else
+                    <a href="/cart" class="hover:text-neutral-500 transition">カート</a>
+                    <a href="/login" class="hover:text-neutral-500 transition">ログイン</a>
+                    <a href="/register" class="bg-black text-white px-3 py-2 hover:bg-neutral-800 transition">
+                        新規会員登録
+                    </a>
+                @endauth
             </nav>
         </div>
     </header>

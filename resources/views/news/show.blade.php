@@ -19,8 +19,7 @@
             <!-- Header -->
             <header class="border-b border-neutral-200 pb-6 mb-8">
                 <div class="flex items-center justify-between text-xs text-neutral-400 font-mono mb-3">
-                    <span class="uppercase tracking-widest text-neutral-500 font-sans font-semibold">NEWS &
-                        ANNOUNCEMENT</span>
+                    <span class="uppercase tracking-widest text-neutral-500 font-sans font-semibold">NEWS</span>
                     @if (isset($news->created_at))
                         <span>{{ $news->created_at->format('Y.m.d') }}</span>
                     @endif

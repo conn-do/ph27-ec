@@ -104,6 +104,26 @@
                             @endif
                         </button>
                     </form>
+
+                    <!-- Dynamic Favorite Toggle Button -->
+                    @auth
+                        <form action="{{ route('favorites.toggle_item', $product->id) }}" method="POST" class="mt-3">
+                            @csrf
+                            <button type="submit"
+                                class="w-full border border-neutral-300 bg-white text-neutral-800 py-3 text-xs font-semibold uppercase tracking-widest hover:bg-neutral-50 transition cursor-pointer">
+                                @if (auth()->user()->favorites()->where('product_id', $product->id)->exists())
+                                    ♥ お気に入りから外す
+                                @else
+                                    ♡ お気に入りに追加
+                                @endif
+                            </button>
+                        </form>
+                    @else
+                        <a href="/login"
+                            class="mt-3 block w-full text-center border border-neutral-200 bg-neutral-50 text-neutral-400 py-3 text-xs font-semibold uppercase tracking-widest hover:bg-neutral-100 transition">
+                            ♡ ログインしてお気に入りに追加
+                        </a>
+                    @endauth
                 </div>
 
             </div>
