@@ -8,6 +8,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Order extends Model
 {
+    protected $fillable = [
+        'user_id',
+        'total_price',
+        'status',
+    ];
+
     protected $casts = [
         'status' => OrderStatus::class,
     ];
