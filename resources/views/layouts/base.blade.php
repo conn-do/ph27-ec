@@ -7,21 +7,40 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="container">
-    <header>
-        <a href="/">
-            <img src="{{ asset('images/ec-logo.png') }}" width="100">
-        </a>
-        <a href="/cart">カートを見る</a>
-        @auth
-            <a href="/mypage">マイページ</a>
-            <form method="POST" action="{{ route('logout') }}">
-                <button type="submit">ログアウト</button>
+<body>
+    <header class="header">
+        <div class="header-inner">
+
+            <a href="/" class="header-logo">
+                <img src="{{ asset('images/ec-logo.png') }}" width="120" alt="logo">
+            </a>
+
+            <form action="/search" method="GET" class="header-search">
+                <input type="text" name="keyword" placeholder="文房具を検索">
+                <button type="submit">
+                    検索
+                </button>
             </form>
-        @endauth
-        @guest
-            <a href="{{ route('login') }}">ログイン</a>
-        @endguest
+
+            <nav class="header-nav">
+                <a href="/cart" class="nav-btn">
+                    カート
+                </a>
+
+                @guest
+                    <a href="{{ route('login') }}" class="nav-btn login-btn">
+                        ログイン
+                    </a>
+                @endguest
+
+                @auth
+                    <a href="/mypage" class="nav-btn">
+                        マイページ
+                    </a>
+                @endauth
+            </nav>
+
+        </div>
     </header>
     <main>
         @yield('content')

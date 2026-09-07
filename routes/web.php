@@ -32,7 +32,7 @@ Route::get('/', [ProductController::class, 'index']);
 Route::get(
     '/products/{product}',
     [ProductController::class, 'show']
-);
+)->name('products.show');
 Route::post(
     '/cart',
     [CartController::class, 'store']
