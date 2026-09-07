@@ -24,11 +24,10 @@ class DatabaseSeeder extends Seeder
         $this->call(CategorySeeder::class);
         $this->call(ProductSeeder::class);
 
-        $user = new User();
-        $user->name = 'Test';
-        $user->email = 'test@example.com';
-        $user->password = Hash::make('password');
-        $user->save();
+        User::firstOrCreate(['email' => 'test@example.com'], [
+            'name' => 'Test',
+            'password' => Hash::make('password'),
+        ]);
 
         $this->call(OrderSeeder::class);
 
