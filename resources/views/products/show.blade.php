@@ -37,6 +37,25 @@
                     税込
                 </small>
             </p>
+            <div class="detail-favorite">
+                @auth
+                    <form action="{{ $product->is_favorited ? route('favorites.destroy', $product) : route('favorites.store', $product) }}" method="post" data-submit>
+                        @csrf
+                        @if ($product->is_favorited)
+                            @method('delete')
+                        @endif
+                        <button class="button button-outline" type="submit" aria-pressed="{{ $product->is_favorited ? 'true' : 'false' }}">
+                            <span aria-hidden="true">{{ $product->is_favorited ? '♥' : '♡' }}</span>
+                            {{ $product->is_favorited ? 'お気に入りから外す' : 'お気に入りに追加' }}
+                        </button>
+                    </form>
+                @else
+                    <a class="button button-outline" href="{{ route('login') }}">
+                        <span aria-hidden="true">♡</span>
+                        ログインしてお気に入りに追加
+                    </a>
+                @endauth
+            </div>
             <p class="description">
                 {{ $product->description }}
             </p>

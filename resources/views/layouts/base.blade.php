@@ -35,6 +35,14 @@
                 <a href="{{ route('home') }}#collection">
                     商品を探す
                 </a>
+                <a href="{{ route('products.ranking') }}">
+                    ランキング
+                </a>
+                @auth
+                    <a href="{{ route('favorites.index') }}">
+                        お気に入り
+                    </a>
+                @endauth
                 <a class="desktop-link" href="{{ route('home') }}#journal">
                     お知らせ
                 </a>
@@ -106,6 +114,14 @@
                     <a href="{{ route('orders.index') }}">
                         注文履歴
                     </a>
+                    <a href="{{ route('products.ranking') }}">
+                        ランキング
+                    </a>
+                    @auth
+                        <a href="{{ route('favorites.index') }}">
+                            お気に入り
+                        </a>
+                    @endauth
                     <a href="{{ route('home') }}#journal">
                         お知らせ
                     </a>

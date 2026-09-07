@@ -150,6 +150,22 @@
     </div>
     <x-shop-pagination :paginator="$products" />
 </section>
+@if (!$category && $keyword === '' && !request('page') && !request('sort') && $ranking->isNotEmpty())
+    <section class="home-ranking" aria-labelledby="home-ranking-title">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">BEST SELLERS</p>
+                <h2 id="home-ranking-title">いま、選ばれている道具</h2>
+            </div>
+            <a href="{{ route('products.ranking') }}">ランキングをすべて見る ↗</a>
+        </div>
+        <div class="product-grid">
+            @foreach ($ranking as $product)
+                <x-product-card :product="$product" :rank="$loop->iteration" />
+            @endforeach
+        </div>
+    </section>
+@endif
 <section class="journal" id="journal" aria-labelledby="journal-title">
     <div>
         <p class="eyebrow">

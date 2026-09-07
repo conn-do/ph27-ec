@@ -8,7 +8,6 @@ use App\Http\Requests\CheckoutRequest;
 use App\Models\Order;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
@@ -43,7 +42,7 @@ class OrderController extends Controller
         } catch (ValidationException $exception) {
             return to_route('cart.index')->withErrors($exception->errors());
         } catch (Throwable $exception) {
-            Log::error('Checkout could not be saved.', ['exception_type' => $exception::class]);
+            report($exception);
 
             return to_route('cart.index')->withErrors(['cart' => '注文を保存できませんでした。時間をおいてもう一度お試しください。']);
         }

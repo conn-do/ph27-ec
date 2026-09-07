@@ -393,6 +393,11 @@ input[type='checkbox'] {
     position: relative;
     overflow: hidden;
 }
+.product-image > a:first-child {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
 .product-image img {
     width: 100%;
     height: 100%;
@@ -418,8 +423,50 @@ input[type='checkbox'] {
     font-size: 10px;
     margin-left: 4px;
 }
-.price > span {
+.price > span,
+.price > a {
     float: right;
+}
+.favorite-form {
+    margin: 0;
+}
+.favorite-button {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border: 1px solid #d2d5cc;
+    border-radius: 50%;
+    background: #fffefae8;
+    color: var(--accent);
+    font-size: 21px;
+    line-height: 1;
+}
+.favorite-button:hover {
+    background: #fff;
+    border-color: var(--accent);
+}
+.rank-tag {
+    position: absolute;
+    top: 0;
+    left: 0;
+    min-width: 54px;
+    padding: 13px 12px;
+    background: var(--accent);
+    color: #fff;
+    text-align: center;
+    font: 18px/1 var(--serif);
+    letter-spacing: 0.08em;
+}
+.sales-count {
+    margin-top: 7px;
+    color: var(--muted);
+    font-size: 11px;
 }
 .stock-tag {
     position: absolute;
@@ -583,6 +630,13 @@ input[type='checkbox'] {
 }
 .detail-price small {
     color: var(--muted);
+}
+.detail-favorite {
+    margin-top: 18px;
+}
+.detail-favorite .button {
+    min-height: 44px;
+    padding-block: 10px;
 }
 .description {
     margin-block: 28px;
@@ -818,6 +872,69 @@ input[type='checkbox'] {
     grid-template-columns: 1fr 1fr;
     gap: 48px;
 }
+.account-summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    margin-bottom: 64px;
+}
+.account-summary a {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px 24px;
+    padding: 28px 30px;
+    border-top: 1px solid var(--line);
+    background: var(--soft);
+}
+.account-summary strong {
+    grid-row: 1 / 3;
+    grid-column: 2;
+    align-self: center;
+    font: 42px/1 var(--serif);
+}
+.account-summary small {
+    color: var(--muted);
+}
+.profile-section,
+.favorite-preview,
+.home-ranking {
+    padding-top: 54px;
+    border-top: 1px solid var(--line);
+}
+.profile-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    max-width: 920px;
+}
+.profile-form .form-field {
+    margin: 0;
+}
+.profile-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+.favorite-preview,
+.home-ranking {
+    margin-top: 64px;
+}
+.account-product-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 24px;
+}
+.compact-empty-state {
+    padding-block: 48px;
+}
+.account-logout {
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+}
+.ranking-collection,
+.favorites-collection {
+    padding-top: 12px;
+}
 .account-order-link {
     background: var(--soft);
     padding: 32px;
@@ -954,6 +1071,8 @@ input[type='checkbox'] {
         margin-top: 10px;
         border-top: 1px solid var(--line);
         font-size: 11px;
+        overflow-x: auto;
+        justify-content: flex-start;
     }
     .header-actions {
         gap: 16px;
@@ -1102,6 +1221,23 @@ input[type='checkbox'] {
     .account-layout {
         grid-template-columns: 1fr;
         gap: 32px;
+    }
+    .account-summary,
+    .profile-form {
+        grid-template-columns: 1fr;
+    }
+    .profile-actions {
+        grid-column: auto;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .account-product-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .favorite-preview,
+    .home-ranking {
+        margin-top: 44px;
     }
     .detail-image {
         aspect-ratio: 4/3;

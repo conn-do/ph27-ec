@@ -64,7 +64,7 @@ test('seeders are repeatable and do not reset stock or create privileged account
     $product = Product::first();
     $product->update(['stock' => 2]);
     $this->seed(DatabaseSeeder::class);
-    $this->assertDatabaseCount('products', 3);
+    $this->assertDatabaseCount('products', 12);
     $this->assertDatabaseCount('categories', 3);
     $this->assertDatabaseCount('news', 3);
     $this->assertDatabaseCount('users', 0);
@@ -93,5 +93,6 @@ test('seeding assigns legacy products a category without overwriting their data'
     $this->seed(DatabaseSeeder::class);
     expect($product->fresh()->category->slug)->toBe('pen');
     expect($product->fresh()->name)->toBe('すごいペン')->and($product->fresh()->price)->toBe(777)->and($product->fresh()->stock)->toBe(4);
-    $this->assertDatabaseCount('products', 3);
+    expect($product->fresh()->image)->toBe('images/products/catalog/01-great-pen.png');
+    $this->assertDatabaseCount('products', 12);
 });
