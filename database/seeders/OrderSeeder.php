@@ -15,15 +15,17 @@ class OrderSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::first();
-        $product1 = Product::find(1);
-        $product2 = Product::find(2);
+        if (Order::where('user_id', User::value('id'))->exists()) {
+            return;
+        }
 
-        $totalPrice = $product1->price + $product2->price * 2;
+        $user = User::firstOrFail();
+        $product1 = Product::where('name', 'すごいペン')->firstOrFail();
+        $product2 = Product::where('name', 'きれいなノート')->firstOrFail();
 
         $order = new Order;
         $order->user_id = $user->id;
-        $order->total_price = $totalPrice;
+        $order->total_price = $product1->price + ($product2->price * 2);
         $order->save();
 
         $detail1 = new OrderDetail;

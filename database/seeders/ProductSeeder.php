@@ -14,43 +14,46 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
-        Storage::disk('public')->put(
-            'images/products/pen.png',
-            file_get_contents('public/images/products/pen.png')
+        foreach (['pen.png', 'note.png', 'pencil.png'] as $fileName) {
+            Storage::disk('public')->put(
+                'images/products/'.$fileName,
+                file_get_contents(public_path('images/products/'.$fileName)),
+            );
+        }
+
+        $category = Category::where('slug', 'pen')->firstOrFail();
+
+        Product::updateOrCreate(
+            ['name' => 'すごいペン'],
+            [
+                'price' => 300,
+                'description' => 'とてもすごいペンです。',
+                'image' => 'images/products/pen.png',
+                'category_id' => $category->id,
+                'stock' => 10,
+            ],
         );
-        Storage::disk('public')->put(
-            'images/products/note.png',
-            file_get_contents('public/images/products/note.png')
+
+        Product::updateOrCreate(
+            ['name' => 'きれいなノート'],
+            [
+                'price' => 450,
+                'description' => 'とてもきれいなノートです。',
+                'image' => 'images/products/note.png',
+                'category_id' => $category->id,
+                'stock' => 8,
+            ],
         );
-        Storage::disk('public')->put(
-            'images/products/pencil.png',
-            file_get_contents('public/images/products/pencil.png')
+
+        Product::updateOrCreate(
+            ['name' => 'よく消える鉛筆'],
+            [
+                'price' => 120,
+                'description' => 'とてもよく消える鉛筆です。',
+                'image' => 'images/products/pencil.png',
+                'category_id' => $category->id,
+                'stock' => 15,
+            ],
         );
-
-        $category = Category::where('slug', 'pen')->first();
-
-        $p1 = new Product();
-        $p1->name = 'すごいペン';
-        $p1->price = fake()->randomNumber(3);
-        $p1->description = 'とてもすごいペンです。';
-        $p1->image = 'images/products/pen.png';
-        $p1->category_id = $category->id;
-        $p1->save();
-
-        $p2 = new Product;
-        $p2->name = 'きれいなノート';
-        $p2->price = fake()->randomNumber(3);
-        $p2->description = 'とてもきれいなノートです。';
-        $p2->image = 'images/products/note.png';
-        $p2->category_id = $category->id;
-        $p2->save();
-
-        $p3 = new Product;
-        $p3->name = 'よく消える鉛筆';
-        $p3->price = fake()->randomNumber(3);
-        $p3->description = 'とてもよく消える鉛筆です。';
-        $p3->image = 'images/products/pencil.png';
-        $p3->category_id = $category->id;
-        $p3->save();
     }
 }

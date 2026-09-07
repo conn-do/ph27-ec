@@ -9,19 +9,25 @@ class CartController extends Controller
 {
     public function store(Request $request)
     {
-        // 入力チェックをして、OKならフォームの入力値を取得
         $validated = $request->validate([
-            'productId' => 'required|integer',
+            'productId' => 'required|integer|exists:products,id',
             'quantity' => 'required|integer|min:1|max:10',
         ], [
+            'productId.exists' => '商品が見つかりません。',
             'quantity.min' => '1個以上選択してください。',
             'quantity.max' => '10個以下を選択してください。',
         ]);
 
-        // セッションにカートの内容を保存
+        $product = Product::findOrFail($validated['productId']);
+
+        if ($validated['quantity'] > $product->stock) {
+            return back()
+                ->withErrors(['quantity' => '在庫数以内で選択してください。'])
+                ->withInput();
+        }
+
         $cart = session()->get('cart', []);
-        // [1 => 2, 2 => 3] （商品ID => 個数）
-        $cart[$validated['productId']] = $validated['quantity'];
+        $cart[$product->id] = $validated['quantity'];
         session()->put('cart', $cart);
 
         $request->session()->flash('message', 'カートに追加しました。');
@@ -29,15 +35,21 @@ class CartController extends Controller
         return redirect('/cart');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        // [1 => 2, 2 => 3] （商品ID => 個数）
         $cart = session()->get('cart', []);
         $items = [];
         $totalPrice = 0;
 
         foreach ($cart as $productId => $quantity) {
             $product = Product::find($productId);
+
+            if (! $product) {
+                unset($cart[$productId]);
+
+                continue;
+            }
+
             $items[] = [
                 'product' => $product,
                 'quantity' => $quantity,
@@ -45,9 +57,11 @@ class CartController extends Controller
             $totalPrice += $product->price * $quantity;
         }
 
+        $request->session()->put('cart', $cart);
+
         return view('cart', [
             'items' => $items,
-            'totalPrice' => $totalPrice, // 合計金額
+            'totalPrice' => $totalPrice,
         ]);
     }
 

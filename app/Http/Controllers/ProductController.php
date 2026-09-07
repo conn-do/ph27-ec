@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\News;
 use App\Models\Category;
+use App\Models\News;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -11,28 +11,23 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::all();
-
+        $products = Product::with('category')->get();
+        $categories = Category::all();
         $news = News::orderBy('id', 'desc')
             ->limit(3)
             ->get();
 
-        $categories = Category::all();
-
         return view('index', [
             'products' => $products,
-            'news' => $news,
             'categories' => $categories,
+            'news' => $news,
         ]);
     }
 
-    // 💡 關鍵修正：把 show 放進 class 的大括號裡面！
-    public function show($id)
+    public function show(Product $product)
     {
-        // 1. 去資料庫把點擊的那筆商品資料撈出來
-        $product = Product::findOrFail($id);
+        $product->load('category');
 
-        // 2. 把商品資料傳給 products 資料夾底下的 show.blade.php 畫面
         return view('products.show', [
             'product' => $product,
         ]);
@@ -41,21 +36,25 @@ class ProductController extends Controller
     public function search(Request $request)
     {
         $keyword = $request->input('keyword');
-
-        $products = Product::where('name', 'like', "%{$keyword}%")->get();
-
+        $products = Product::with('category')
+            ->where('name', 'like', "%{$keyword}%")
+            ->get();
+        $categories = Category::all();
         $news = News::orderBy('id', 'desc')
             ->limit(3)
             ->get();
 
         return view('index', [
             'products' => $products,
+            'categories' => $categories,
             'news' => $news,
         ]);
     }
 
     public function category(Category $category)
     {
+        $category->load('products');
+
         return view('category', [
             'category' => $category,
         ]);

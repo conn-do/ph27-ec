@@ -2,80 +2,86 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Order;
-use App\Models\Product;
 use App\Models\OrderDetail;
-use Exception;
+use App\Models\Product;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class OrderController extends Controller
 {
     public function store(Request $request)
     {
-        // 例外処理
-        // try の中でエラーが起きたら
-        // catch の中の処理が実行される
+        $cart = session()->get('cart', []);
+
+        if (empty($cart)) {
+            return redirect('/cart')->withErrors([
+                'cart' => 'カートに商品がありません。',
+            ]);
+        }
+
         try {
-            DB::beginTransaction();
-            // 注文処理
-            // [1 => 3, 2 => 5] (商品ID => 数量)
-            $cart = session()->get('cart', []);
-            $totalPrice = 0;
-            foreach ($cart as $productId => $quantity) {
-                $product = Product::find($productId);
-                $totalPrice += $product->price * $quantity;
-            }
+            $order = DB::transaction(function () use ($cart, $request) {
+                $products = Product::whereIn('id', array_keys($cart))
+                    ->lockForUpdate()
+                    ->get()
+                    ->keyBy('id');
 
-            $order = new Order();
-            $order->total_price = $totalPrice;
-            $order->user_id = $request->user()->id;
-            $order->save();
+                $totalPrice = 0;
 
-            foreach ($cart as $productId => $quantity) {
-                $detail = new OrderDetail();
-                $detail->order_id = $order->id;
-                $detail->product_id = $productId;
-                $detail->quantity = $quantity;
-                $detail->save();
+                foreach ($cart as $productId => $quantity) {
+                    $product = $products->get((int) $productId);
 
+                    if (! $product) {
+                        throw new \Exception('商品が見つかりません。');
+                    }
 
-                /** @var Product $product */
-                $product = Product::find($productId);
+                    if ($quantity > $product->stock) {
+                        throw new \Exception($product->name.'の在庫が不足しています。');
+                    }
 
-                if ($quantity > $product->stock) {
-                    // 例外を投げる
-                    throw new Exception('在庫がありません');
+                    $totalPrice += $product->price * $quantity;
                 }
 
-                $product->stock -= $quantity;
-                $product->save();
-            }
+                $order = new Order;
+                $order->total_price = $totalPrice;
+                $order->user_id = $request->user()->id;
+                $order->save();
 
-            // トランザクションが正常に終了したら
-            // DBの変更を確定する
-            DB::commit();
+                foreach ($cart as $productId => $quantity) {
+                    $product = $products->get((int) $productId);
+
+                    $detail = new OrderDetail;
+                    $detail->order_id = $order->id;
+                    $detail->product_id = $product->id;
+                    $detail->quantity = $quantity;
+                    $detail->save();
+
+                    $product->stock -= $quantity;
+                    $product->save();
+                }
+
+                return $order;
+            });
 
             session()->forget('cart');
-
             session()->flash('message', '注文が完了しました！');
 
             return view('orders.complete', [
                 'order' => $order,
             ]);
-        } catch (Exception $e) {
-            // エラー処理
-            // DBの変更を元に戻す
-            DB::rollBack();
-            $message = '申し訳ございません！エラーが発生しました。最初からやり直してください。<br>';
-            $message .= $e->getMessage();
-            return redirect('/cart')->with('message', $message);
+        } catch (Throwable $e) {
+            return redirect('/cart')->withErrors([
+                'cart' => '申し訳ございません。'.$e->getMessage(),
+            ]);
         }
     }
 
     public function index(Request $request)
     {
         $orders = $request->user()->orders;
+
         return view('orders.index', [
             'orders' => $orders->sortByDesc('created_at'),
         ]);
@@ -83,6 +89,8 @@ class OrderController extends Controller
 
     public function show(Order $order)
     {
+        $order->load('details.product');
+
         return view('orders.show', [
             'order' => $order,
         ]);

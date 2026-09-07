@@ -3,8 +3,14 @@
 @section('title', 'カート')
 
 @section('content')
+    <h1>カート</h1>
     @if (session('message'))
         <article>{{ session('message') }}</article>
+    @endif
+    @if ($errors->any())
+        @foreach ($errors->all() as $error)
+            <article class="error">{{ $error }}</article>
+        @endforeach
     @endif
     <table>
         @foreach ($items as $item)
@@ -19,6 +25,7 @@
         <p>カートに商品がありません。</p>
     @else
         <form action="/orders" method="post">
+            @csrf
             <button type="submit">購入する</button>
         </form>
     @endempty
