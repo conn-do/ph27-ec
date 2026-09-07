@@ -3,33 +3,60 @@
 @section('title', '会員登録')
 
 @section('content')
-    <h1>会員登録</h1>
-    @if ($errors->any())
-        @foreach ($errors->all() as $error)
-            <article>{{ $error }}</article>
-        @endforeach
-    @endif
-    <form action="{{ route('register.store') }}" method="post">
-        <div>
-            名前:
-            <input type="text" name="name">
-        </div>
-        <div>
-            メールアドレス:
-            <input type="email" name="email" class="@error('email') error @enderror" value="{{ old('email') }}">
-        </div>
-        @error('email')
-            <div class="error">{{ $message }}</div>
-        @enderror
-        <div>
-            パスワード:
-            <input type="password" name="password">
-        </div>
-        <div>
-            パスワード（確認）:
-            <input type="password" name="password_confirmation">
-        </div>
-        <button type="submit">登録</button>
-    </form>
-    <a href="/login">ログインはこちら</a>
+    <div style="max-width: 520px; margin: 2rem auto;">
+        <article style="padding: 2rem; border-radius: 8px;">
+            <h2 style="text-align: center; margin-bottom: 1.5rem; font-size: 1.5rem;">会員登録</h2>
+
+            {{-- エラーメッセージ表示 --}}
+            @if ($errors->any())
+                <div style="background-color: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; padding: 0.8rem 1rem; border-radius: 6px; margin-bottom: 1.5rem; font-size: 0.9rem;">
+                    <ul style="margin: 0; padding-left: 1.2rem;">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('register') }}" style="margin: 0;">
+                @csrf
+
+                <div style="margin-bottom: 1.2rem;">
+                    <label for="name" style="font-weight: bold; margin-bottom: 0.4rem; display: block; font-size: 0.95rem;">
+                        お名前
+                    </label>
+                    <input type="text" id="name" name="name" value="{{ old('name') }}" required autofocus placeholder="山田 太郎" style="margin: 0;">
+                </div>
+
+                <div style="margin-bottom: 1.2rem;">
+                    <label for="email" style="font-weight: bold; margin-bottom: 0.4rem; display: block; font-size: 0.95rem;">
+                        メールアドレス
+                    </label>
+                    <input type="email" id="email" name="email" value="{{ old('email') }}" required placeholder="example@email.com" style="margin: 0;">
+                </div>
+
+                <div style="margin-bottom: 1.2rem;">
+                    <label for="password" style="font-weight: bold; margin-bottom: 0.4rem; display: block; font-size: 0.95rem;">
+                        パスワード
+                    </label>
+                    <input type="password" id="password" name="password" required placeholder="8文字以上" style="margin: 0;">
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label for="password_confirmation" style="font-weight: bold; margin-bottom: 0.4rem; display: block; font-size: 0.95rem;">
+                        パスワード（確認）
+                    </label>
+                    <input type="password" id="password_confirmation" name="password_confirmation" required placeholder="もう一度入力してください" style="margin: 0;">
+                </div>
+
+                <button type="submit" style="width: 100%; padding: 0.6rem 0; font-weight: bold; font-size: 1rem; margin-bottom: 1.2rem;">
+                    会員登録する
+                </button>
+            </form>
+
+            <div style="text-align: center; border-top: 1px solid var(--pico-muted-border-color); padding-top: 1rem; margin-top: 0.5rem; font-size: 0.9rem;">
+                すでにアカウントをお持ちの方は <a href="{{ route('login') }}" style="font-weight: bold;">ログインはこちら</a>
+            </div>
+        </article>
+    </div>
 @endsection

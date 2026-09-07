@@ -49,4 +49,19 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->email === 'test@example.com';
     }
+    
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
+
+    public function favoriteProducts()
+    {
+        return $this->belongsToMany(Product::class, 'favorites');
+    }
 }
