@@ -8,7 +8,12 @@ import { defineConfig } from 'vite';
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.tsx'],
+            input: [
+                'resources/css/app.css',
+                'resources/js/app.tsx',
+                'resources/css/shop.css',
+                'resources/js/shop.js',
+            ],
             refresh: true,
         }),
         inertia(),

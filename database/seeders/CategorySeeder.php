@@ -2,25 +2,15 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Category;
+use Illuminate\Database\Seeder;
 
 class CategorySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        $category1 = new Category();
-        $category1->name = '筆記用具';
-        $category1->slug = 'pen';
-        $category1->save();
-
-        $category2 = new Category();
-        $category2->name = '収納';
-        $category2->slug = 'storage';
-        $category2->save();
+        foreach (['pen' => '筆記用具', 'notebook' => 'ノート・紙もの', 'storage' => '収納・小物'] as $slug => $name) {
+            Category::firstOrCreate(['slug' => $slug], ['name' => $name]);
+        }
     }
 }

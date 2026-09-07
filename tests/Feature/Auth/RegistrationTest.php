@@ -1,21 +1,22 @@
 <?php
 
 use Laravel\Fortify\Features;
+use Tests\TestCase;
 
 beforeEach(function () {
-    /** @var \Tests\TestCase $this */
+    /** @var TestCase $this */
     $this->skipUnlessFortifyHas(Features::registration());
 });
 
 test('registration screen can be rendered', function () {
-    /** @var \Tests\TestCase $this */
+    /** @var TestCase $this */
     $response = $this->get(route('register'));
 
     $response->assertOk();
 });
 
 test('new users can register', function () {
-    /** @var \Tests\TestCase $this */
+    /** @var TestCase $this */
     $response = $this->post(route('register.store'), [
         'name' => 'Test User',
         'email' => 'test@example.com',
@@ -24,5 +25,5 @@ test('new users can register', function () {
     ]);
 
     $this->assertAuthenticated();
-    $response->assertRedirect(route('dashboard', absolute: false));
+    $response->assertRedirect(route('home', absolute: false));
 });

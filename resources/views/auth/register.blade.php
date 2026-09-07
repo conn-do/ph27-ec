@@ -1,35 +1,40 @@
 @extends('layouts.base')
-
 @section('title', '会員登録')
-
 @section('content')
-    <h1>会員登録</h1>
-    @if ($errors->any())
-        @foreach ($errors->all() as $error)
-            <article>{{ $error }}</article>
-        @endforeach
-    @endif
-    <form action="{{ route('register.store') }}" method="post">
-        <div>
-            名前:
-            <input type="text" name="name">
+    <section class="auth-panel">
+        <p class="eyebrow">
+            HELLO, NEW FRIEND.
+        </p>
+        <h1>
+            余白へ、ようこそ。
+        </h1>
+        <p class="muted">
+            アカウントをつくって、お気に入りを日常に。
+        </p>
+        <form action="{{ route('register.store') }}" method="post" data-submit>
+            @csrf
+            @foreach(['name' => ['お名前', 'text', 'name'], 'email' => ['メールアドレス', 'email', 'username'], 'password' => ['パスワード（8文字以上）', 'password', 'new-password'], 'password_confirmation' => ['パスワード（確認）', 'password', 'new-password']] as $field => [$label, $type, $autocomplete])
+                <div class="form-field">
+                    <label for="{{ $field }}">
+                        {{ $label }}
+                    </label>
+                    <input id="{{ $field }}" type="{{ $type }}" name="{{ $field }}" @if($type !== 'password') value="{{ old($field) }}" @else minlength="8" @endif autocomplete="{{ $autocomplete }}" required @error($field) aria-invalid="true" aria-describedby="{{ $field }}-error" @enderror>
+                    @error($field)
+                        <p class="field-error" id="{{ $field }}-error">
+                            {{ $message }}
+                        </p>
+                    @enderror
+                </div>
+            @endforeach
+            <button class="button full-width" type="submit">
+                アカウントを作成 →
+            </button>
+        </form>
+        <div class="auth-switch">
+            すでにアカウントをお持ちの方
+            <a href="{{ route('login') }}">
+                ログイン ↗
+            </a>
         </div>
-        <div>
-            メールアドレス:
-            <input type="email" name="email" class="@error('email') error @enderror" value="{{ old('email') }}">
-        </div>
-        @error('email')
-            <div class="error">{{ $message }}</div>
-        @enderror
-        <div>
-            パスワード:
-            <input type="password" name="password">
-        </div>
-        <div>
-            パスワード（確認）:
-            <input type="password" name="password_confirmation">
-        </div>
-        <button type="submit">登録</button>
-    </form>
-    <a href="/login">ログインはこちら</a>
+    </section>
 @endsection

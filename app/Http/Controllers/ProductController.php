@@ -2,57 +2,54 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Product;
-use App\Models\News;
+use App\Http\Requests\ProductSearchRequest;
 use App\Models\Category;
+use App\Models\News;
+use App\Models\Product;
+use Illuminate\View\View;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(ProductSearchRequest $request, ?Category $category = null): View
     {
-        $products = Product::all();
-
-        $news = News::orderBy('id', 'desc')
-            ->limit(3)
-            ->get();
-
-        $categories = Category::all();
+        $keyword = $request->string('keyword')->trim()->toString();
+        $sort = $request->input('sort') ?: 'newest';
+        $query = Product::with('category')
+            ->when($category, fn ($query) => $query->where('category_id', $category->id))
+            ->when($keyword !== '', fn ($query) => $query->where('name', 'like', '%'.$keyword.'%'));
+        match ($sort) {
+            'price_asc' => $query->orderBy('price')->orderBy('id'),
+            'price_desc' => $query->orderByDesc('price')->orderBy('id'),
+            default => $query->orderByDesc('id'),
+        };
 
         return view('index', [
-            'products' => $products,
-            'news' => $news,
-            'categories' => $categories,
+            'products' => $query->paginate(9)->withQueryString(),
+            'categories' => Category::withCount('products')->get(),
+            'category' => $category,
+            'keyword' => $keyword,
+            'sort' => $sort,
+            'news' => News::latest('id')->limit(3)->get(),
         ]);
     }
 
-    public function show(Product $product)
+    public function show(Product $product): View
     {
+        $product->load('category');
+
         return view('products.show', [
             'product' => $product,
+            'related' => Product::with('category')->where('category_id', $product->category_id)->whereKeyNot($product->id)->limit(3)->get(),
         ]);
     }
 
-    public function search(Request $request)
+    public function search(ProductSearchRequest $request): View
     {
-        $keyword = $request->input('keyword');
-
-        $products = Product::where('name', 'like', "%{$keyword}%")->get();
-
-        $news = News::orderBy('id', 'desc')
-            ->limit(3)
-            ->get();
-
-        return view('index', [
-            'products' => $products,
-            'news' => $news,
-        ]);
+        return $this->index($request);
     }
 
-    public function category(Category $category)
+    public function category(ProductSearchRequest $request, Category $category): View
     {
-        return view('category', [
-            'category' => $category,
-        ]);
+        return $this->index($request, $category);
     }
 }

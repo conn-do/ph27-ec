@@ -2,26 +2,19 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\News;
+use Illuminate\Database\Seeder;
 
 class NewsSeeder extends Seeder
 {
     public function run(): void
     {
-        $news1 = new News();
-        $news1->title = '新商品のお知らせ';
-        $news1->content = '新しい文房具が入荷しました！ぜひご覧ください。';
-        $news1->save();
-
-        $news2 = new News();
-        $news2->title = 'セール開催中';
-        $news2->content = '一部商品が20%オフで購入できます。';
-        $news2->save();
-
-        $news3 = new News();
-        $news3->title = 'メンテナンスのお知らせ';
-        $news3->content = '明日2:00〜4:00の間サイトが一時停止します。';
-        $news3->save();
+        foreach ([
+            '余白のオンラインショップがオープンしました。' => '書くことから、日々を豊かに。毎日に寄り添う文房具を集めた「余白」がオープンしました。お気に入りの一本、一冊をゆっくりとお選びください。',
+            'はじめてのお買い物ガイド' => '商品をカートに入れたら、ログインしてお届け先を入力してください。送料は全国一律500円、商品合計5,000円以上で無料です。表示価格はすべて税込です。',
+            'デモショップのご利用について' => 'このサイトはPH27の学習用ECサイトです。注文内容の保存と在庫の更新を体験できますが、実際の決済や配送は行われません。お届け先には架空の情報を入力してください。',
+        ] as $title => $content) {
+            News::firstOrCreate(['title' => $title], ['content' => $content]);
+        }
     }
 }

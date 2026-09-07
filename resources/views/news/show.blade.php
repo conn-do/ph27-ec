@@ -1,21 +1,18 @@
 @extends('layouts.base')
-
 @section('title', $news->title)
-
 @section('content')
-
-    <div class="news-detail">
-
-        <h1 class="news-detail-title">
+    <article class="news-detail">
+        <p class="eyebrow">
+            FROM YOHAKU / {{ $news->created_at->format('Y.m.d') }}
+        </p>
+        <h1>
             {{ $news->title }}
         </h1>
-
-        <div class="news-detail-body">
-            {!! $news->content !!}
+        <div class="description">
+            {{ strip_tags($news->content) }}
         </div>
-
-        <a href="/" class="back-link">← 戻る</a>
-
-    </div>
-
+        <a href="{{ route('home') }}#journal">
+            ← お知らせ一覧へ
+        </a>
+    </article>
 @endsection

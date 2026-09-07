@@ -2,12 +2,22 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Product extends Model
 {
+    use HasFactory;
+
+    protected function casts(): array
+    {
+        return ['price' => 'integer', 'stock' => 'integer'];
+    }
+
     protected $fillable = [
         'name',
+        'category_id',
         'price',
         'description',
         'image',
@@ -16,10 +26,14 @@ class Product extends Model
 
     public function imageUrl(): string
     {
-        return asset('storage/' . $this->image);
+        if ($this->image && is_file(public_path($this->image))) {
+            return asset($this->image);
+        }
+
+        return $this->image ? asset('storage/'.$this->image) : asset('images/products/note.png');
     }
 
-    public function category()
+    public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }

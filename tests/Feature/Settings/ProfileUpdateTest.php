@@ -1,9 +1,11 @@
 <?php
 
+use App\Models\Product;
 use App\Models\User;
+use Tests\TestCase;
 
 test('profile page is displayed', function () {
-    /** @var \Tests\TestCase $this */
+    /** @var TestCase $this */
     /** @var User $user */
     $user = User::factory()->create();
 
@@ -15,7 +17,7 @@ test('profile page is displayed', function () {
 });
 
 test('profile information can be updated', function () {
-    /** @var \Tests\TestCase $this */
+    /** @var TestCase $this */
     /** @var User $user */
     $user = User::factory()->create();
 
@@ -38,7 +40,7 @@ test('profile information can be updated', function () {
 });
 
 test('email verification status is unchanged when the email address is unchanged', function () {
-    /** @var \Tests\TestCase $this */
+    /** @var TestCase $this */
     /** @var User $user */
     $user = User::factory()->create();
 
@@ -57,7 +59,7 @@ test('email verification status is unchanged when the email address is unchanged
 });
 
 test('user can delete their account', function () {
-    /** @var \Tests\TestCase $this */
+    /** @var TestCase $this */
     /** @var User $user */
     $user = User::factory()->create();
 
@@ -76,7 +78,7 @@ test('user can delete their account', function () {
 });
 
 test('correct password must be provided to delete account', function () {
-    /** @var \Tests\TestCase $this */
+    /** @var TestCase $this */
     /** @var User $user */
     $user = User::factory()->create();
 
@@ -92,4 +94,21 @@ test('correct password must be provided to delete account', function () {
         ->assertRedirect(route('profile.edit'));
 
     expect($user->fresh())->not->toBeNull();
+});
+
+test('deleting an account also deletes its demo orders without affecting other customers', function () {
+    $user = User::factory()->create();
+    $other = User::factory()->create();
+    $product = Product::factory()->create();
+    $order = $user->orders()->create(['total_price' => 500]);
+    $order->details()->create(['product_id' => $product->id, 'quantity' => 1, 'unit_price' => 500, 'product_name' => $product->name]);
+    $otherOrder = $other->orders()->create(['total_price' => 800]);
+
+    $this->actingAs($user)->delete(route('profile.destroy'), ['password' => 'password'])
+        ->assertSessionHasNoErrors()->assertRedirect(route('home'));
+    $this->assertGuest();
+    $this->assertDatabaseMissing('orders', ['id' => $order->id]);
+    $this->assertDatabaseMissing('order_details', ['order_id' => $order->id]);
+    $this->assertDatabaseHas('orders', ['id' => $otherOrder->id]);
+    expect($user->fresh())->toBeNull()->and($product->fresh())->not->toBeNull();
 });
