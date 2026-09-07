@@ -28,12 +28,15 @@
 
 :root {
     --color-ink: #17202a;
+    --color-heading: #0f172a;
     --color-muted: #64748b;
     --color-paper: #fbfaf7;
     --color-line: #d8dee6;
     --color-accent: #0f766e;
+    --color-accent-strong: #0b5f59;
     --color-highlight: #b45309;
     --color-soft: #eef6f4;
+    color-scheme: light;
 }
 
 body {
@@ -83,10 +86,38 @@ main {
     padding: 40px 0 56px;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+td,
+th,
+li {
+    color: var(--color-ink);
+}
+
+h1,
+h2,
+h3 {
+    color: var(--color-heading);
+}
+
+a {
+    color: var(--color-accent-strong);
+}
+
 .hero-section,
 .page-heading {
     padding: 48px 0 40px;
     border-bottom: 1px solid var(--color-line);
+}
+
+.compact-heading {
+    margin-bottom: 28px;
+    padding: 24px 0 28px;
 }
 
 .hero-section h1,
@@ -127,6 +158,14 @@ main {
     background: #fff;
     color: var(--color-ink);
     text-decoration: none;
+}
+
+.category-list a:hover,
+.clear-link:hover,
+.site-nav a:hover {
+    color: var(--color-accent-strong);
+    text-decoration: underline;
+    text-underline-offset: 4px;
 }
 
 .section-heading {
@@ -242,6 +281,58 @@ main {
     color: #b42318;
     border: 1px solid #f1a7a0;
     background: #fff5f3;
+}
+
+.notice {
+    margin-bottom: 24px;
+    border: 1px solid #a7d8cf;
+    background: #f1fbf8;
+    color: #164e45;
+}
+
+.cart-table {
+    margin-bottom: 24px;
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    border-radius: 8px;
+    background: #fff;
+}
+
+.cart-table th {
+    background: var(--color-soft);
+    color: var(--color-heading);
+    font-weight: 700;
+}
+
+.cart-table td {
+    background: #fff;
+    color: var(--color-ink);
+}
+
+.cart-table th,
+.cart-table td {
+    border-color: var(--color-line);
+}
+
+.cart-total {
+    margin: 0 0 20px;
+    color: var(--color-heading);
+    font-size: 22px;
+    font-weight: 700;
+}
+
+button,
+input[type='submit'] {
+    border-color: var(--color-accent-strong);
+    background: var(--color-accent-strong);
+    color: #fff;
+    font-weight: 700;
+}
+
+button:hover,
+input[type='submit']:hover {
+    border-color: #094b46;
+    background: #094b46;
 }
 
 @media (max-width: 720px) {
