@@ -4,6 +4,18 @@
 
 @section('content')
 
+    {{-- カテゴリ一覧 --}}
+    <h3>カテゴリ</h3>
+    <ul>
+        @foreach ($categories as $category)
+            <li>
+                <a href="/categories/{{ $category->slug }}">
+                    {{ $category->name }}
+                </a>
+            </li>
+        @endforeach
+    </ul>
+
     <h2>商品一覧</h2>
 
     <form action="/search" method="GET">
@@ -28,25 +40,25 @@
     @endforeach
 
     {{-- お知らせ --}}
-<h2 class="news-title">NEWS</h2>
-<h3 class="news-subtitle">お知らせ</h3>
+    <h2 class="news-title">NEWS</h2>
+    <h3 class="news-subtitle">お知らせ</h3>
 
-<div class="news-list">
-    @foreach ($news as $item)
-        <div class="news-item">
+    <div class="news-list">
+        @foreach ($news as $item)
+            <div class="news-item">
 
-            <h4 class="news-item-title">
-                <a href="/news/{{ $item->id }}">
-                    {{ $item->title }}
-                </a>
-            </h4>
+                <h4 class="news-item-title">
+                    <a href="/news/{{ $item->id }}">
+                        {{ $item->title }}
+                    </a>
+                </h4>
 
-            <p class="news-item-body">
-                {!! $item->content !!}
-            </p>
+                <p class="news-item-body">
+                    {!! $item->content !!}
+                </p>
 
-        </div>
-    @endforeach
-</div>
+            </div>
+        @endforeach
+    </div>
 
 @endsection

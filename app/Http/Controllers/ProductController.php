@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\News;
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -16,9 +17,12 @@ class ProductController extends Controller
             ->limit(3)
             ->get();
 
+        $categories = Category::all();
+
         return view('index', [
             'products' => $products,
             'news' => $news,
+            'categories' => $categories,
         ]);
     }
 
@@ -47,6 +51,13 @@ class ProductController extends Controller
         return view('index', [
             'products' => $products,
             'news' => $news,
+        ]);
+    }
+
+    public function category(Category $category)
+    {
+        return view('category', [
+            'category' => $category,
         ]);
     }
 }
