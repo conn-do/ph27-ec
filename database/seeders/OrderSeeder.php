@@ -2,12 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Order;
-use App\Models\OrderDetail;
 use App\Models\Product;
 use App\Models\User;
+use Illuminate\Database\Seeder;
 
 class OrderSeeder extends Seeder
 {
@@ -16,27 +14,22 @@ class OrderSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::first();
-        $product1 = Product::find(1);
-        $product2 = Product::find(2);
+        $user = User::query()->where('email', 'test@example.com')->firstOrFail();
+        $pen = Product::query()->where('name', 'すらすらゲルインクペン')->firstOrFail();
+        $notebook = Product::query()->where('name', '方眼リングノート')->firstOrFail();
 
-        $totalPrice = $product1->price + $product2->price * 2;
+        $order = Order::query()->firstOrCreate(
+            ['user_id' => $user->id],
+            ['total_price' => $pen->price + ($notebook->price * 2)],
+        );
 
-        $order = new Order();
-        $order->user_id = $user->id;
-        $order->total_price = $totalPrice;
-        $order->save();
+        if ($order->details()->exists()) {
+            return;
+        }
 
-        $detail1 = new OrderDetail();
-        $detail1->order_id = $order->id;
-        $detail1->product_id = $product1->id;
-        $detail1->quantity = 1;
-        $detail1->save();
-
-        $detail2 = new OrderDetail();
-        $detail2->order_id = $order->id;
-        $detail2->product_id = $product2->id;
-        $detail2->quantity = 2;
-        $detail2->save();
+        $order->details()->createMany([
+            ['product_id' => $pen->id, 'quantity' => 1],
+            ['product_id' => $notebook->id, 'quantity' => 2],
+        ]);
     }
 }

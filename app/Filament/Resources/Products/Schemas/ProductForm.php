@@ -3,8 +3,9 @@
 namespace App\Filament\Resources\Products\Schemas;
 
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
 class ProductForm
@@ -13,15 +14,22 @@ class ProductForm
     {
         return $schema
             ->components([
+                Select::make('category_id')
+                    ->relationship('category', 'name')
+                    ->required(),
                 TextInput::make('name')
                     ->required(),
                 TextInput::make('price')
                     ->required()
                     ->numeric()
+<<<<<<< Updated upstream
                     ->prefix('$'),
                 TextInput::make('stock')
                     ->required()
                     ->numeric(),
+=======
+                    ->prefix('JPY'),
+>>>>>>> Stashed changes
                 Textarea::make('description')
                     ->required()
                     ->columnSpanFull(),

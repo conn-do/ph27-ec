@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
     protected $fillable = [
+        'category_id',
         'name',
         'price',
         'description',
@@ -14,9 +17,22 @@ class Product extends Model
         'stock',
     ];
 
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
+
     public function imageUrl(): string
     {
-        return asset('storage/' . $this->image);
+        if (in_array($this->image, [
+            'images/products/pen.png',
+            'images/products/note.png',
+            'images/products/pencil.png',
+        ], true)) {
+            return asset($this->image);
+        }
+
+        return Storage::disk('public')->url($this->image);
     }
 
     public function category()

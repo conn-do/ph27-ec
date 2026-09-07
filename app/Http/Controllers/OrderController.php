@@ -2,17 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\Product;
+<<<<<<< Updated upstream
 use App\Models\OrderDetail;
 use Exception;
 use Illuminate\Support\Facades\DB;
+=======
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
+>>>>>>> Stashed changes
 
 class OrderController extends Controller
 {
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
+<<<<<<< Updated upstream
         // 例外処理
         // try の中でエラーが起きたら
         // catch の中の処理が実行される
@@ -71,20 +78,62 @@ class OrderController extends Controller
             $message .= $e->getMessage();
             return redirect('/cart')->with('message', $message);
         }
+=======
+        $cart = session()->get('cart', []);
+
+        if ($cart === []) {
+            return to_route('cart.index')->with('message', 'カートに商品を追加してから購入してください。');
+        }
+
+        $products = Product::query()->whereKey(array_keys($cart))->get()->keyBy('id');
+
+        if ($products->count() !== count($cart)) {
+            session()->forget('cart');
+
+            return to_route('cart.index')->with('message', '販売終了の商品が含まれていたため、カートを更新しました。');
+        }
+
+        $order = DB::transaction(function () use ($cart, $products, $request): Order {
+            $totalPrice = collect($cart)->sum(
+                fn (int $quantity, int|string $productId): int => $products->get($productId)->price * $quantity,
+            );
+
+            $order = Order::query()->create([
+                'user_id' => $request->user()->id,
+                'total_price' => $totalPrice,
+            ]);
+
+            $order->details()->createMany(
+                collect($cart)
+                    ->map(fn (int $quantity, int|string $productId): array => [
+                        'product_id' => $productId,
+                        'quantity' => $quantity,
+                    ])
+                    ->all(),
+            );
+
+            return $order;
+        });
+
+        session()->forget('cart');
+
+        return to_route('orders.show', $order)->with('message', 'ご注文を受け付けました。');
+>>>>>>> Stashed changes
     }
 
-    public function index(Request $request)
+    public function index(Request $request): View
     {
-        $orders = $request->user()->orders;
         return view('orders.index', [
-            'orders' => $orders->sortByDesc('created_at'),
+            'orders' => $request->user()->orders()->latest()->get(),
         ]);
     }
 
-    public function show(Order $order)
+    public function show(Request $request, Order $order): View
     {
+        abort_unless($order->user_id === $request->user()->id, 403);
+
         return view('orders.show', [
-            'order' => $order,
+            'order' => $order->load('details.product'),
         ]);
     }
 }

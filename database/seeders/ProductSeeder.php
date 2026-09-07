@@ -2,10 +2,13 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
-use App\Models\Product;
 use App\Models\Category;
+use App\Models\Product;
+<<<<<<< Updated upstream
+use App\Models\Category;
+=======
+use Illuminate\Database\Seeder;
+>>>>>>> Stashed changes
 use Illuminate\Support\Facades\Storage;
 
 class ProductSeeder extends Seeder
@@ -15,19 +18,14 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
-        Storage::disk('public')->put(
-            'images/products/pen.png',
-            file_get_contents('public/images/products/pen.png')
-        );
-        Storage::disk('public')->put(
-            'images/products/note.png',
-            file_get_contents('public/images/products/note.png')
-        );
-        Storage::disk('public')->put(
-            'images/products/pencil.png',
-            file_get_contents('public/images/products/pencil.png')
-        );
+        foreach (['pen', 'note', 'pencil'] as $image) {
+            Storage::disk('public')->put(
+                "images/products/{$image}.png",
+                file_get_contents(public_path("images/products/{$image}.png")),
+            );
+        }
 
+<<<<<<< Updated upstream
         $category = Category::where('slug', 'pen')->first();
 
         $p1 = new Product();
@@ -53,5 +51,35 @@ class ProductSeeder extends Seeder
         $p3->image = 'images/products/pencil.png';
         $p3->category_id = $category->id;
         $p3->save();
+=======
+        $writing = Category::query()->where('slug', 'writing')->firstOrFail();
+        $paper = Category::query()->where('slug', 'paper')->firstOrFail();
+
+        collect([
+            [
+                'name' => 'すらすらゲルインクペン',
+                'price' => 320,
+                'description' => '軽い書き心地で、毎日のメモやノート時間を気持ちよくする黒インクのペンです。',
+                'image' => 'images/products/pen.png',
+                'category_id' => $writing->id,
+            ],
+            [
+                'name' => '方眼リングノート',
+                'price' => 480,
+                'description' => 'アイデア整理にも勉強にも使いやすい、開きやすい方眼リングノートです。',
+                'image' => 'images/products/note.png',
+                'category_id' => $paper->id,
+            ],
+            [
+                'name' => 'やわらか芯の鉛筆',
+                'price' => 180,
+                'description' => 'なめらかな書き味と持ちやすさにこだわった、毎日使いたくなる鉛筆です。',
+                'image' => 'images/products/pencil.png',
+                'category_id' => $writing->id,
+            ],
+        ])->each(function (array $product): void {
+            Product::query()->updateOrCreate(['name' => $product['name']], $product);
+        });
+>>>>>>> Stashed changes
     }
 }
