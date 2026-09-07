@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     protected $fillable = [
+        'category_id',
         'name',
         'price',
         'description',
@@ -16,7 +17,7 @@ class Product extends Model
 
     public function imageUrl(): string
     {
-        return asset('storage/' . $this->image);
+        return asset('storage/'.$this->image);
     }
 
     public function category()

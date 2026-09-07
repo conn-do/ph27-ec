@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Product;
-use App\Models\News;
 use App\Models\Category;
+use App\Models\News;
+use App\Models\Product;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::all();
+        $products = Product::query()
+            ->with('category')
+            ->get();
 
         $news = News::orderBy('id', 'desc')
             ->limit(3)
@@ -37,15 +39,21 @@ class ProductController extends Controller
     {
         $keyword = $request->input('keyword');
 
-        $products = Product::where('name', 'like', "%{$keyword}%")->get();
+        $products = Product::query()
+            ->with('category')
+            ->where('name', 'like', "%{$keyword}%")
+            ->get();
 
         $news = News::orderBy('id', 'desc')
             ->limit(3)
             ->get();
 
+        $categories = Category::all();
+
         return view('index', [
             'products' => $products,
             'news' => $news,
+            'categories' => $categories,
         ]);
     }
 

@@ -1,13 +1,13 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Laravel\Fortify\Features;
-use App\Http\Controllers\ChirpController;
-use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
-use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ChirpController;
 use App\Http\Controllers\MyPageController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProductController;
+use Illuminate\Support\Facades\Route;
+use Laravel\Fortify\Features;
 
 // Route::inertia('/', 'welcome', [
 //     'canRegister' => Features::enabled(Features::registration()),
@@ -17,7 +17,7 @@ use App\Http\Controllers\NewsController;
 //     Route::inertia('dashboard', 'dashboard')->name('dashboard');
 // });
 
-require __DIR__ . '/settings.php';
+require __DIR__.'/settings.php';
 
 Route::get(
     '/chirps',
@@ -28,7 +28,7 @@ Route::post(
     [ChirpController::class, 'store']
 );
 
-Route::get('/', [ProductController::class, 'index']);
+Route::get('/', [ProductController::class, 'index'])->name('home');
 Route::get(
     '/products/{product}',
     [ProductController::class, 'show']
