@@ -16,6 +16,55 @@
         <del style="color: #dc2626; display: block; margin-bottom: 1rem;">{{ session('error') }}</del>
     @endif
 
+    <!-- 購入履歴セクション -->
+    <section style="margin-bottom: 3rem;">
+        <h3 style="font-size: 1.3rem; margin-bottom: 1rem; border-bottom: 2px solid var(--pico-muted-border-color); padding-bottom: 0.4rem;">
+            📦 購入履歴
+        </h3>
+
+        @if (isset($orders) && $orders->count() > 0)
+            <div style="display: flex; flex-direction: column; gap: 1.2rem;">
+                @foreach ($orders as $order)
+                    <article style="padding: 1rem; margin: 0; border-radius: 8px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem; margin-bottom: 0.8rem; flex-wrap: wrap; gap: 0.5rem;">
+                            <div>
+                                <small style="color: #6b7280; display: block;">注文日</small>
+                                <strong>{{ $order->created_at->format('Y/m/d H:i') }}</strong>
+                            </div>
+                            <div>
+                                <small style="color: #6b7280; display: block;">合計金額</small>
+                                <strong style="color: #2563eb; font-size: 1.05rem;">
+                                    ¥{{ number_format($order->total_price ?? $order->total) }}
+                                </strong>
+                            </div>
+                        </div>
+
+                        {{-- $order->orderItems から $order->details に変更 --}}
+                        <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+                            @foreach ($order->details as $item)
+                                <div style="display: flex; align-items: center; gap: 0.8rem;">
+                                    @if (optional($item->product)->image)
+                                        <img src="{{ $item->product->imageUrl() }}" alt="{{ $item->product->name }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px;">
+                                    @endif
+                                    <div style="flex-grow: 1;">
+                                        <h4 style="font-size: 0.95rem; margin: 0 0 0.2rem 0;">
+                                            {{ optional($item->product)->name ?? '削除された商品' }}
+                                        </h4>
+                                        <span style="font-size: 0.85rem; color: #6b7280;">
+                                            ¥{{ number_format($item->price) }} × {{ $item->quantity }}個
+                                        </span>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </article>
+                @endforeach
+            </div>
+        @else
+            <p style="color: #6b7280; font-size: 0.95rem;">まだ購入履歴はありません。</p>
+        @endif
+    </section>
+
     <!-- お気に入り商品一覧エリア -->
     <section style="margin-bottom: 3rem;">
         <h3>♡ お気に入り商品</h3>

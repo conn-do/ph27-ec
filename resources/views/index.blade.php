@@ -21,6 +21,60 @@
         </section>
     @endif
 
+    <!-- ランキングセクション -->
+    @if (isset($rankingProducts) && $rankingProducts->count() > 0)
+        <section style="margin-bottom: 3.5rem;">
+            {{-- 見出しエリア --}}
+            <div style="display: flex; align-items: flex-end; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 2px solid var(--pico-muted-border-color); padding-bottom: 0.5rem;">
+                <h2 style="margin: 0; font-size: 1.8rem; line-height: 1.2;">
+                    👑 人気商品ランキング
+                </h2>
+                <span style="font-size: 0.95rem; color: #6b7280; font-weight: normal; margin-bottom: 2px;">
+                    POPULAR RANKING
+                </span>
+            </div>
+
+            {{-- ランキングカードリスト --}}
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem;">
+                @foreach ($rankingProducts as $index => $product)
+                    @php
+                        // 順位ごとのバッジカラー設定
+                        $badgeBg = match($index) {
+                            0 => 'linear-gradient(135deg, #f59e0b, #d97706)', // 1位: 金
+                            1 => 'linear-gradient(135deg, #94a3b8, #64748b)', // 2位: 銀
+                            2 => 'linear-gradient(135deg, #d97706, #92400e)', // 3位: 銅
+                            default => '#4b5563',                             // 4位以降: グレー
+                        };
+                    @endphp
+
+                    <article style="padding: 1rem; margin: 0; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);">
+                        
+                        {{-- 順位バッジ --}}
+                        <div style="position: absolute; top: 12px; left: 12px; background: {{ $badgeBg }}; color: white; font-weight: bold; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; box-shadow: 0 2px 6px rgba(0,0,0,0.15); z-index: 2;">
+                            {{ $index + 1 }}
+                        </div>
+
+                        <div>
+                            <a href="/products/{{ $product->id }}" style="text-decoration: none;">
+                                <img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}" style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 0.8rem;">
+                                <h4 style="font-size: 1.05rem; margin-bottom: 0.4rem; color: var(--pico-color); line-height: 1.4;">
+                                    {{ $product->name }}
+                                </h4>
+                            </a>
+                            <p style="font-weight: bold; color: #2563eb; font-size: 1.15rem; margin-bottom: 0.5rem;">
+                                ¥{{ number_format($product->price) }}
+                            </p>
+                        </div>
+
+                        <a href="/products/{{ $product->id }}" role="button" class="outline" style="width: 100%; text-align: center; padding: 0.4rem 0; margin-top: 0.5rem; font-size: 0.85rem; border-radius: 6px;">
+                            詳細を見る
+                        </a>
+                    </article>
+                @endforeach
+            </div>
+        </section>
+    @endif
+
     <!-- 商品一覧セクション -->
     <section style="margin-bottom: 3rem;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; flex-wrap: wrap; gap: 10px;">

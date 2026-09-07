@@ -16,6 +16,9 @@ class MyPageController extends Controller
         // お気に入り商品の取得
         $favoriteProducts = $user->favoriteProducts()->get();
 
-        return view('mypage', compact('user', 'reviews', 'favoriteProducts'));
+        // 購入履歴の取得（details.product に変更）
+        $orders = $user->orders()->with('details.product')->latest()->get();
+
+        return view('mypage', compact('user', 'reviews', 'favoriteProducts', 'orders'));
     }
 }

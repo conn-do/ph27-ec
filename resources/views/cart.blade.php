@@ -11,26 +11,30 @@
             <ins style="color: #16a34a; display: block; margin-bottom: 1.5rem; font-weight: bold;">{{ session('message') }}</ins>
         @endif
 
-        @if (isset($cart) && count($cart) > 0)
+        @if (isset($items) && count($items) > 0)
             <table style="margin-bottom: 2rem;">
                 <thead>
                     <tr>
-                        <th>商品名</th>
+                        <th>商品</th>
                         <th style="text-align: right;">単価</th>
                         <th style="text-align: center; width: 100px;">数量</th>
                         <th style="text-align: right;">小計</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @php $total = 0; @endphp
-                    @foreach ($cart as $id => $details)
-                        @php $subtotal = $details['price'] * $details['quantity']; $total += $subtotal; @endphp
+                    @foreach ($items as $item)
+                        @php $subtotal = $item['product']->price * $item['quantity']; @endphp
                         <tr>
                             <td>
-                                <strong>{{ $details['name'] }}</strong>
+                                <div style="display: flex; align-items: center; gap: 0.8rem;">
+                                    @if ($item['product']->image)
+                                        <img src="{{ $item['product']->imageUrl() }}" alt="{{ $item['product']->name }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+                                    @endif
+                                    <strong>{{ $item['product']->name }}</strong>
+                                </div>
                             </td>
-                            <td style="text-align: right;">¥{{ number_format($details['price']) }}</td>
-                            <td style="text-align: center;">{{ $details['quantity'] }}個</td>
+                            <td style="text-align: right;">¥{{ number_format($item['product']->price) }}</td>
+                            <td style="text-align: center;">{{ $item['quantity'] }}個</td>
                             <td style="text-align: right; font-weight: bold;">¥{{ number_format($subtotal) }}</td>
                         </tr>
                     @endforeach
@@ -48,7 +52,7 @@
 
                 <div style="text-align: right; display: flex; align-items: center; gap: 1.5rem;">
                     <div style="font-size: 1.2rem;">
-                        合計: <strong style="font-size: 1.5rem; color: #2563eb;">¥{{ number_format($total) }}</strong>
+                        合計: <strong style="font-size: 1.5rem; color: #2563eb;">¥{{ number_format($totalPrice) }}</strong>
                     </div>
                     <form action="/orders" method="POST" style="margin: 0;">
                         @csrf

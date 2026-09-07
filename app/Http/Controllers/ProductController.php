@@ -19,10 +19,13 @@ class ProductController extends Controller
 
         $categories = Category::all();
 
+        $rankingProducts = Product::inRandomOrder()->take(4)->get();
+
         return view('index', [
-            'products' => $products,
-            'news' => $news,
-            'categories' => $categories,
+            'products'        => $products,
+            'news'            => $news,
+            'categories'      => $categories,
+            'rankingProducts' => $rankingProducts, // 追加
         ]);
     }
 
