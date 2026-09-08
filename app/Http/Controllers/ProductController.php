@@ -19,10 +19,13 @@ class ProductController extends Controller
 
         $categories = Category::all();
 
+        $rankingProducts = Product::inRandomOrder()->take(4)->get();
+
         return view('index', [
-            'products' => $products,
-            'news' => $news,
-            'categories' => $categories,
+            'products'        => $products,
+            'news'            => $news,
+            'categories'      => $categories,
+            'rankingProducts' => $rankingProducts, // 追加
         ]);
     }
 
@@ -37,15 +40,21 @@ class ProductController extends Controller
     {
         $keyword = $request->input('keyword');
 
+        // 商品名であいまい検索（キーワードが空の場合は全件取得）
         $products = Product::where('name', 'like', "%{$keyword}%")->get();
 
         $news = News::orderBy('id', 'desc')
             ->limit(3)
             ->get();
 
+        // indexビューで必要なカテゴリ一覧も一緒に渡す
+        $categories = Category::all();
+
         return view('index', [
-            'products' => $products,
-            'news' => $news,
+            'products'   => $products,
+            'news'       => $news,
+            'categories' => $categories,
+            'keyword'    => $keyword,
         ]);
     }
 

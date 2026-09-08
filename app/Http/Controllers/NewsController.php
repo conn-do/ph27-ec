@@ -12,4 +12,10 @@ class NewsController extends Controller
             'news' => $news,
         ]);
     }
+
+    public function index()
+{
+    $newsList = News::latest()->get(); // または paginate(10)
+    return view('news.index', compact('newsList'));
+}
 }

@@ -8,6 +8,17 @@ class MyPageController extends Controller
 {
     public function index()
     {
-        return view('mypage');
+        $user = auth()->user();
+
+        // 投稿レビュー（商品情報付き）の取得
+        $reviews = $user->reviews()->with('product')->latest()->get();
+
+        // お気に入り商品の取得
+        $favoriteProducts = $user->favoriteProducts()->get();
+
+        // 購入履歴の取得（details.product に変更）
+        $orders = $user->orders()->with('details.product')->latest()->get();
+
+        return view('mypage', compact('user', 'reviews', 'favoriteProducts', 'orders'));
     }
 }

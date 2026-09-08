@@ -1,64 +1,152 @@
 @extends('layouts.base')
 
-@section('title', '商品一覧')
+@section('title', isset($keyword) && $keyword ? "「{$keyword}」の検索結果" : '商品一覧')
 
 @section('content')
 
-    {{-- カテゴリ一覧 --}}
-    <h3>カテゴリ</h3>
-    <ul>
-        @foreach ($categories as $category)
-            <li>
-                <a href="/categories/{{ $category->slug }}">
-                    {{ $category->name }}
+    <!-- カテゴリ一覧 -->
+    @if (isset($categories) && $categories->count() > 0)
+        <section style="margin-bottom: 2.5rem;">
+            <h3 style="font-size: 1.2rem; margin-bottom: 0.8rem;">カテゴリ</h3>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <a href="/" role="button" class="{{ !request()->route('category') && !request('keyword') ? '' : 'outline' }}" style="padding: 0.3rem 0.8rem; font-size: 0.85rem;">
+                    すべて
                 </a>
-            </li>
-        @endforeach
-    </ul>
-
-    <h2>商品一覧</h2>
-
-    <form action="/search" method="GET">
-        <input type="text" name="keyword" value="{{ request('keyword') }}">
-        <input type="submit" value="検索">
-    </form>
-
-    @if (request('keyword'))
-        <a href="/">検索結果をクリア</a>
+                @foreach ($categories as $category)
+                    <a href="/categories/{{ $category->slug }}" role="button" class="outline" style="padding: 0.3rem 0.8rem; font-size: 0.85rem;">
+                        {{ $category->name }}
+                    </a>
+                @endforeach
+            </div>
+        </section>
     @endif
 
-    {{-- 商品一覧 --}}
-    @foreach ($products as $product)
-        <ul>
-            <li>
-                <a href="/products/{{ $product->id }}">
-                    {{ $product['name'] }}
-                    <img src="{{ $product->imageUrl() }}" width="200">
-                </a>
-            </li>
-        </ul>
-    @endforeach
-
-    {{-- お知らせ --}}
-    <h2 class="news-title">NEWS</h2>
-    <h3 class="news-subtitle">お知らせ</h3>
-
-    <div class="news-list">
-        @foreach ($news as $item)
-            <div class="news-item">
-
-                <h4 class="news-item-title">
-                    <a href="/news/{{ $item->id }}">
-                        {{ $item->title }}
-                    </a>
-                </h4>
-
-                <p class="news-item-body">
-                    {!! $item->content !!}
-                </p>
-
+    <!-- ランキングセクション -->
+    @if (isset($rankingProducts) && $rankingProducts->count() > 0)
+        <section style="margin-bottom: 3.5rem;">
+            {{-- 見出しエリア --}}
+            <div style="display: flex; align-items: flex-end; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 2px solid var(--pico-muted-border-color); padding-bottom: 0.5rem;">
+                <h2 style="margin: 0; font-size: 1.8rem; line-height: 1.2;">
+                    👑 人気商品ランキング
+                </h2>
+                <span style="font-size: 0.95rem; color: #6b7280; font-weight: normal; margin-bottom: 2px;">
+                    POPULAR RANKING
+                </span>
             </div>
-        @endforeach
-    </div>
+
+            {{-- ランキングカードリスト --}}
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem;">
+                @foreach ($rankingProducts as $index => $product)
+                    @php
+                        // 順位ごとのバッジカラー設定
+                        $badgeBg = match($index) {
+                            0 => 'linear-gradient(135deg, #f59e0b, #d97706)', // 1位: 金
+                            1 => 'linear-gradient(135deg, #94a3b8, #64748b)', // 2位: 銀
+                            2 => 'linear-gradient(135deg, #d97706, #92400e)', // 3位: 銅
+                            default => '#4b5563',                             // 4位以降: グレー
+                        };
+                    @endphp
+
+                    <article style="padding: 1rem; margin: 0; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);">
+                        
+                        {{-- 順位バッジ --}}
+                        <div style="position: absolute; top: 12px; left: 12px; background: {{ $badgeBg }}; color: white; font-weight: bold; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; box-shadow: 0 2px 6px rgba(0,0,0,0.15); z-index: 2;">
+                            {{ $index + 1 }}
+                        </div>
+
+                        <div>
+                            <a href="/products/{{ $product->id }}" style="text-decoration: none;">
+                                <img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}" style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 0.8rem;">
+                                <h4 style="font-size: 1.05rem; margin-bottom: 0.4rem; color: var(--pico-color); line-height: 1.4;">
+                                    {{ $product->name }}
+                                </h4>
+                            </a>
+                            <p style="font-weight: bold; color: #2563eb; font-size: 1.15rem; margin-bottom: 0.5rem;">
+                                ¥{{ number_format($product->price) }}
+                            </p>
+                        </div>
+
+                        <a href="/products/{{ $product->id }}" role="button" class="outline" style="width: 100%; text-align: center; padding: 0.4rem 0; margin-top: 0.5rem; font-size: 0.85rem; border-radius: 6px;">
+                            詳細を見る
+                        </a>
+                    </article>
+                @endforeach
+            </div>
+        </section>
+    @endif
+
+    <!-- 商品一覧セクション -->
+    <section style="margin-bottom: 3rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; flex-wrap: wrap; gap: 10px;">
+            <h2 style="margin: 0;">
+                {{ request('keyword') ? "「".request('keyword')."」の検索結果" : '商品一覧' }}
+            </h2>
+            
+            @if (request('keyword'))
+                <a href="/" role="button" class="secondary outline" style="padding: 0.3rem 0.8rem; font-size: 0.85rem;">
+                    検索結果をクリア
+                </a>
+            @endif
+        </div>
+
+        @if (isset($products) && $products->count() > 0)
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem;">
+                @foreach ($products as $product)
+                    <article style="padding: 1rem; margin: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <a href="/products/{{ $product->id }}" style="text-decoration: none;">
+                                <img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}" style="width: 100%; height: 160px; object-fit: cover; border-radius: 6px; margin-bottom: 0.8rem;">
+                                <h4 style="font-size: 1.05rem; margin-bottom: 0.4rem; color: var(--pico-color);">{{ $product->name }}</h4>
+                            </a>
+                            <p style="font-weight: bold; color: #2563eb; font-size: 1.1rem; margin-bottom: 0.5rem;">
+                                ¥{{ number_format($product->price) }}
+                            </p>
+                        </div>
+                        <a href="/products/{{ $product->id }}" role="button" class="outline" style="width: 100%; text-align: center; padding: 0.4rem 0; margin-top: 0.5rem; font-size: 0.9rem;">
+                            詳細を見る
+                        </a>
+                    </article>
+                @endforeach
+            </div>
+        @else
+            <p>該当する商品が見つかりませんでした。</p>
+        @endif
+    </section>
+
+    <!-- NEWS（お知らせ） -->
+    @if (isset($news) && $news->count() > 0)
+        <section style="margin-top: 3rem; margin-bottom: 3rem;">
+            {{-- 見出しと一覧リンクのエリア --}}
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem; border-bottom: 2px solid var(--pico-muted-border-color); padding-bottom: 0.5rem;">
+                <h2 style="margin: 0; font-size: 1.8rem; line-height: 1.2;">
+                    NEWS <span style="font-size: 1rem; color: #666; font-weight: normal; margin-left: 0.5rem;">お知らせ</span>
+                </h2>
+                <a href="/news" role="button" class="secondary outline" style="padding: 0.35rem 0.8rem; font-size: 0.85rem; margin: 0; width: auto;">
+                    お知らせ一覧を見る →
+                </a>
+            </div>
+
+            {{-- ニュースリスト --}}
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                @foreach ($news as $item)
+                    <article style="padding: 1.2rem; margin: 0; border-radius: 8px;">
+                        @if (isset($item->created_at))
+                            <small style="color: #6b7280; display: block; margin-bottom: 0.3rem;">
+                                {{ $item->created_at->format('Y.m.d') }}
+                            </small>
+                        @endif
+                        <h4 style="font-size: 1.1rem; margin-bottom: 0.4rem;">
+                            <a href="/news/{{ $item->id }}" style="text-decoration: none; font-weight: bold;">
+                                {{ $item->title }}
+                            </a>
+                        </h4>
+                        <p style="margin: 0; color: #4b5563; font-size: 0.95rem;">
+                            {{ Str::limit(strip_tags($item->content ?? $item->body ?? ''), 80) }}
+                        </p>
+                    </article>
+                @endforeach
+            </div>
+        </section>
+    @endif
 
 @endsection

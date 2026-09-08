@@ -18,10 +18,21 @@ class CartController extends Controller
             'quantity.max' => '10個以下を選択してください。',
         ]);
 
-        // セッションにカートの内容を保存
+        // セッションから現在のカートデータを取得（無ければ空配列）
         $cart = session()->get('cart', []);
-        // [1 => 2, 2 => 3] （商品ID => 個数）
-        $cart[$validated['productId']] = $validated['quantity'];
+        
+        // 商品IDと数量を取得
+        $productId = $validated['productId'];
+        $quantity = (int)$validated['quantity'];
+
+        // 既存の数量があれば加算、無ければ新規設定
+        if (isset($cart[$productId])) {
+            $cart[$productId] += $quantity;
+        } else {
+            $cart[$productId] = $quantity;
+        }
+
+        // セッションに保存
         session()->put('cart', $cart);
 
         $request->session()->flash('message', 'カートに追加しました。');
@@ -31,22 +42,26 @@ class CartController extends Controller
 
     public function index()
     {
-        // [1 => 2, 2 => 3] （商品ID => 個数）
+        // セッションから [商品ID => 数量] の連想配列を取得
         $cart = session()->get('cart', []);
         $items = [];
         $totalPrice = 0;
+
         foreach ($cart as $productId => $quantity) {
             $product = Product::find($productId);
-            $items[] = [
-                'product' => $product,
-                'quantity' => $quantity,
-            ];
-            $totalPrice += $product->price * $quantity;
+            // 商品が存在する場合のみカート一覧に追加
+            if ($product) {
+                $items[] = [
+                    'product' => $product,
+                    'quantity' => $quantity,
+                ];
+                $totalPrice += $product->price * $quantity;
+            }
         }
 
         return view('cart', [
             'items' => $items,
-            'totalPrice' => $totalPrice, // 合計金額
+            'totalPrice' => $totalPrice,
         ]);
     }
 
