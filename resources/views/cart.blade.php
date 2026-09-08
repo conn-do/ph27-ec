@@ -16,6 +16,12 @@
             <div class="notice" role="status">{{ session('message') }}</div>
         @endif
 
+        @if ($errors->any())
+            <div class="form-errors" role="alert">
+                @foreach ($errors->all() as $error)<p>{{ $error }}</p>@endforeach
+            </div>
+        @endif
+
         @forelse ($items as $item)
             <article class="cart-item">
                 <img src="{{ $item['product']->imageUrl() }}" alt="{{ $item['product']->name }}">
@@ -23,6 +29,7 @@
                     <p class="product-category">{{ $item['product']->category?->name ?? '文房具' }}</p>
                     <h2><a href="{{ route('products.show', $item['product']) }}">{{ $item['product']->name }}</a></h2>
                     <p class="price">&yen;{{ number_format($item['product']->price) }}</p>
+                    @include('products.stock', ['product' => $item['product']])
                 </div>
                 <div class="cart-item__actions">
                     <form action="{{ route('cart.update', $item['product']) }}" method="POST" class="quantity-form">

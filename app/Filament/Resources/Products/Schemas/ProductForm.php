@@ -22,14 +22,12 @@ class ProductForm
                 TextInput::make('price')
                     ->required()
                     ->numeric()
-<<<<<<< Updated upstream
-                    ->prefix('$'),
+                    ->prefix('JPY'),
                 TextInput::make('stock')
                     ->required()
-                    ->numeric(),
-=======
-                    ->prefix('JPY'),
->>>>>>> Stashed changes
+                    ->integer()
+                    ->minValue(0)
+                    ->default(0),
                 Textarea::make('description')
                     ->required()
                     ->columnSpanFull(),

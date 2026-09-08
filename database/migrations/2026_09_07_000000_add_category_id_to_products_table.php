@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -11,13 +9,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->foreignId('category_id')
-                ->nullable()
-                ->after('id')
-                ->constrained()
-                ->nullOnDelete();
-        });
+        // The merged July migration now owns category_id; retain this historical migration entry.
     }
 
     /**
@@ -25,8 +17,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->dropConstrainedForeignId('category_id');
-        });
+        // The July migration removes the column when that migration is rolled back.
     }
 };

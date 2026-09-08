@@ -12,16 +12,12 @@ class Category extends Model
         'slug',
     ];
 
-<<<<<<< Updated upstream
-    public function getRouteKeyName()
+    public function getRouteKeyName(): string
     {
         return 'slug';
     }
 
-    public function products()
-=======
     public function products(): HasMany
->>>>>>> Stashed changes
     {
         return $this->hasMany(Product::class);
     }

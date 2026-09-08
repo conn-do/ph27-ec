@@ -35,8 +35,11 @@ class Product extends Model
         return Storage::disk('public')->url($this->image);
     }
 
-    public function category()
+    protected function casts(): array
     {
-        return $this->belongsTo(Category::class);
+        return [
+            'price' => 'integer',
+            'stock' => 'integer',
+        ];
     }
 }

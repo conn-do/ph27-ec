@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class CartController extends Controller
@@ -19,8 +20,14 @@ class CartController extends Controller
             'quantity.max' => '10個以下を選択してください。',
         ]);
 
+        $product = Product::query()->findOrFail($validated['product_id']);
+
+        if ((int) $validated['quantity'] > $product->stock) {
+            throw ValidationException::withMessages(['quantity' => '在庫が不足しています。']);
+        }
+
         $cart = session()->get('cart', []);
-        $cart[$validated['product_id']] = $validated['quantity'];
+        $cart[$validated['product_id']] = (int) $validated['quantity'];
         session()->put('cart', $cart);
 
         return to_route('cart.index')->with('message', 'カートに追加しました。');
@@ -59,10 +66,14 @@ class CartController extends Controller
             'quantity' => ['required', 'integer', 'min:1', 'max:10'],
         ]);
 
+        if ((int) $validated['quantity'] > $product->stock) {
+            throw ValidationException::withMessages(['quantity' => '在庫が不足しています。']);
+        }
+
         $cart = session()->get('cart', []);
 
         if (array_key_exists($product->id, $cart)) {
-            $cart[$product->id] = $validated['quantity'];
+            $cart[$product->id] = (int) $validated['quantity'];
             session()->put('cart', $cart);
         }
 

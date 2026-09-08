@@ -6,28 +6,26 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\News;
 use App\Models\Category;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\View\View;
 
 class ProductController extends Controller
 {
-<<<<<<< Updated upstream
-    public function index()
-=======
     public function index(Request $request): View
->>>>>>> Stashed changes
     {
         $keyword = trim((string) $request->query('keyword', ''));
         $categorySlug = (string) $request->query('category', '');
 
         $products = Product::query()
             ->with('category')
-            ->when($keyword !== '', function ($query) use ($keyword): void {
-                $query->where(function ($query) use ($keyword): void {
+            ->when($keyword !== '', function (Builder $query) use ($keyword): void {
+                $query->where(function (Builder $query) use ($keyword): void {
                     $query->where('name', 'like', "%{$keyword}%")
                         ->orWhere('description', 'like', "%{$keyword}%");
                 });
             })
-            ->when($categorySlug !== '', function ($query) use ($categorySlug): void {
-                $query->whereHas('category', function ($query) use ($categorySlug): void {
+            ->when($categorySlug !== '', function (Builder $query) use ($categorySlug): void {
+                $query->whereHas('category', function (Builder $query) use ($categorySlug): void {
                     $query->where('slug', $categorySlug);
                 });
             })
@@ -43,37 +41,22 @@ class ProductController extends Controller
         ]);
     }
 
-    public function show(Product $product)
+    public function show(Product $product): View
     {
         return view('products.show', [
             'product' => $product->load('category'),
         ]);
     }
 
-    public function search(Request $request)
+    public function search(Request $request): View
     {
-<<<<<<< Updated upstream
-        $keyword = $request->input('keyword');
-
-        $products = Product::where('name', 'like', "%{$keyword}%")->get();
-
-        $news = News::orderBy('id', 'desc')
-            ->limit(3)
-            ->get();
-
-        return view('index', [
-            'products' => $products,
-            'news' => $news,
-        ]);
+        return $this->index($request);
     }
 
-    public function category(Category $category)
+    public function category(Category $category): View
     {
         return view('category', [
-            'category' => $category,
+            'category' => $category->load('products'),
         ]);
-=======
-        return $this->index($request);
->>>>>>> Stashed changes
     }
 }
