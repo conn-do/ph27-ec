@@ -78,6 +78,10 @@ Route::middleware(['auth'])->group(function () {
         '/orders/{order}',
         [OrderController::class, 'show']
     );
+    Route::post(
+        '/orders/{order}/cancel',
+        [OrderController::class, 'cancel']
+);
     Route::get(
         '/mypage',
         [MyPageController::class, 'index']

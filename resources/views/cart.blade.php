@@ -4,7 +4,7 @@
 
 @section('content')
     @if (session('message'))
-        <article>{{ session('message') }}</article>
+        <article>{!! session('message') !!}</article>
     @endif
     <table>
         @foreach ($items as $item)
