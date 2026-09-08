@@ -23,6 +23,7 @@
             <a href="{{ route('login') }}">ログイン</a>
         @endguest
     </header>
+    <div></div>
     <main>
         @yield('content')
     </main>
