@@ -57,6 +57,48 @@ class CartController extends Controller
         ]);
     }
 
+    public function update(Request $request, int $productId)
+    {
+        $validated = $request->validate([
+            'quantity' => 'required|integer|min:1|max:10',
+        ], [
+            'quantity.min' => '1個以上選択してください。',
+            'quantity.max' => '10個以下を選択してください。',
+        ]);
+
+        $product = Product::findOrFail($productId);
+
+        if ($validated['quantity'] > $product->stock) {
+            return back()->withErrors([
+                'quantity' => '在庫が不足しています。',
+            ])->withInput();
+        }
+
+        $cart = session()->get('cart', []);
+
+        if (! array_key_exists($productId, $cart)) {
+            abort(404);
+        }
+
+        $cart[$productId] = $validated['quantity'];
+        session()->put('cart', $cart);
+
+        $request->session()->flash('message', 'カートを更新しました。');
+
+        return redirect('/cart');
+    }
+
+    public function destroy(Request $request, int $productId)
+    {
+        $cart = session()->get('cart', []);
+        unset($cart[$productId]);
+        session()->put('cart', $cart);
+
+        $request->session()->flash('message', '商品をカートから削除しました。');
+
+        return redirect('/cart');
+    }
+
     public function clear(Request $request)
     {
         session()->forget('cart');

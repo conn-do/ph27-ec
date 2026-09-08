@@ -13,6 +13,12 @@
     <p>金額: {{ number_format($order->total_price) }}円</p>
     <p>ステータス: {{ $order->status->label() }}</p>
 
+    <h2>お届け先</h2>
+    <p>{{ $order->shipping_name }} 様</p>
+    <p>〒{{ $order->shipping_postal_code }}</p>
+    <p>{{ $order->shipping_address }}</p>
+    <p>{{ $order->shipping_phone }}</p>
+
     @if ($order->status === \App\Enums\OrderStatus::Pending)
         <form action="/orders/{{ $order->id }}/cancel" method="POST">
             @csrf

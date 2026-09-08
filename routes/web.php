@@ -41,6 +41,14 @@ Route::get(
     '/cart',
     [CartController::class, 'index']
 );
+Route::post(
+    '/cart/{productId}',
+    [CartController::class, 'update']
+);
+Route::get(
+    '/cart/{productId}/remove',
+    [CartController::class, 'destroy']
+);
 Route::get(
     '/cart/clear',
     [CartController::class, 'clear']
@@ -58,6 +66,11 @@ Route::get('/news/{news}', [NewsController::class, 'show']);
 
 // ログイン必須にする
 Route::middleware(['auth'])->group(function () {
+    Route::get(
+        '/orders/create',
+        [OrderController::class, 'create']
+    );
+
     Route::post(
         '/orders',
         [OrderController::class, 'store']

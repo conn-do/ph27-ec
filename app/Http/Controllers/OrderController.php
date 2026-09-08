@@ -12,8 +12,33 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
+    public function create()
+    {
+        $cart = session()->get('cart', []);
+
+        // カートが空なら配送先入力に進ませず、カート画面に戻す
+        if (empty($cart)) {
+            return redirect('/cart')->with('message', 'カートに商品がありません。');
+        }
+
+        return view('orders.create');
+    }
+
     public function store(Request $request)
     {
+        // 配送先のバリデーション
+        $validated = $request->validate([
+            'shipping_name' => 'required|string|max:255',
+            'shipping_postal_code' => 'required|string|max:20',
+            'shipping_address' => 'required|string|max:255',
+            'shipping_phone' => 'required|string|max:20',
+        ]);
+
+        // カートが空のままPOSTされた場合はここで弾く（直接URLアクセス対策）
+        if (empty(session()->get('cart', []))) {
+            return redirect('/cart')->with('message', 'カートに商品がありません。');
+        }
+
         // 例外処理
         // try の中でエラーが起きたら
         // catch の中の処理が実行される
@@ -31,6 +56,11 @@ class OrderController extends Controller
             $order = new Order;
             $order->total_price = $totalPrice;
             $order->user_id = $request->user()->id;
+            // バリデーション済みの配送先情報を設定
+            $order->shipping_name = $validated['shipping_name'];
+            $order->shipping_postal_code = $validated['shipping_postal_code'];
+            $order->shipping_address = $validated['shipping_address'];
+            $order->shipping_phone = $validated['shipping_phone'];
             $order->save();
 
             foreach ($cart as $productId => $quantity) {

@@ -23,6 +23,10 @@ class OrderFactory extends Factory
             'total_price' => fake()->numberBetween(1000, 10000),
             'user_id' => User::factory(),
             'status' => OrderStatus::Pending,
+            'shipping_name' => fake()->name(),
+            'shipping_postal_code' => fake()->postcode(),
+            'shipping_address' => fake()->address(),
+            'shipping_phone' => fake()->phoneNumber(),
         ];
     }
 }
