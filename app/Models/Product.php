@@ -23,4 +23,10 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    // ▼ 追加：商品に対するレビュー
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
 }

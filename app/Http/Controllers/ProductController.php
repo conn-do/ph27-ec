@@ -43,9 +43,12 @@ class ProductController extends Controller
             ->limit(3)
             ->get();
 
+        $categories = Category::all();
+
         return view('index', [
             'products' => $products,
             'news' => $news,
+            'categories' => $categories,
         ]);
     }
 

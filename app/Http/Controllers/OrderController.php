@@ -13,14 +13,23 @@ class OrderController extends Controller
 {
     public function store(Request $request)
     {
-        // 例外処理
-        // try の中でエラーが起きたら
-        // catch の中の処理が実行される
         try {
-            DB::beginTransaction();
-            // 注文処理
-            // [1 => 3, 2 => 5] (商品ID => 数量)
             $cart = session()->get('cart', []);
+
+            if (empty($cart)) {
+                throw new Exception('カートに商品が入っていません。');
+            }
+
+            foreach ($cart as $productId => $quantity) {
+                /** @var Product $product */
+                $product = Product::find($productId);
+                if (!$product || $quantity > $product->stock) {
+                    throw new Exception(($product->name ?? '商品') . 'の在庫が足りません。');
+                }
+            }
+
+            DB::beginTransaction();
+
             $totalPrice = 0;
             foreach ($cart as $productId => $quantity) {
                 $product = Product::find($productId);
@@ -39,33 +48,22 @@ class OrderController extends Controller
                 $detail->quantity = $quantity;
                 $detail->save();
 
-
                 /** @var Product $product */
                 $product = Product::find($productId);
-
-                if ($quantity > $product->stock) {
-                    // 例外を投げる
-                    throw new Exception('在庫がありません');
-                }
-
                 $product->stock -= $quantity;
                 $product->save();
             }
 
-            // トランザクションが正常に終了したら
-            // DBの変更を確定する
             DB::commit();
 
             session()->forget('cart');
-
             session()->flash('message', '注文が完了しました！');
 
             return view('orders.complete', [
                 'order' => $order,
             ]);
+
         } catch (Exception $e) {
-            // エラー処理
-            // DBの変更を元に戻す
             DB::rollBack();
             $message = '申し訳ございません！エラーが発生しました。最初からやり直してください。<br>';
             $message .= $e->getMessage();
