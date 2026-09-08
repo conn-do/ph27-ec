@@ -16,7 +16,7 @@ require __DIR__ . '/settings.php';
 Route::get('/chirps', [ChirpController::class, 'index']);
 Route::post('/chirps', [ChirpController::class, 'store']);
 
-Route::get('/', [ProductController::class, 'index']);
+Route::get('/', [ProductController::class, 'index'])->name('home');
 Route::get('/products/{product}', [ProductController::class, 'show']);
 Route::get('/search', [ProductController::class, 'search']);
 Route::get('/categories/{category}', [ProductController::class, 'category']);
@@ -37,11 +37,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/orders/{order}', [OrderController::class, 'show']);
 
     // MyPage & Profile
-    Route::get('/mypage', [MyPageController::class, 'index'])->name('mypage');
+    Route::get('/mypage', [MyPageController::class, 'index'])->name('mypage')->name('dashboard');
     Route::get('/mypage/profile/edit', [MyPageController::class, 'editProfile'])->name('profile.edit_form');
     Route::put('/mypage/profile', [MyPageController::class, 'updateProfile'])->name('profile.update_data');
 
     // Favorites
     Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.list');
     Route::post('/products/{product}/favorite', [FavoriteController::class, 'toggle'])->name('favorites.toggle_item');
+    
 });
