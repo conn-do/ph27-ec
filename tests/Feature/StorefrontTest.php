@@ -5,6 +5,27 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
 
+test('restyled catalogue pages retain cart forms stock and authentication links', function () {
+    $category = Category::query()->create(['name' => '筆記用具', 'slug' => 'pen']);
+    $product = createStoreProduct($category);
+
+    foreach ([route('home'), route('categories.show', $category), route('products.show', $product)] as $url) {
+        $this->get($url)->assertOk()
+            ->assertSee($product->name)
+            ->assertSee('カートに入れる')
+            ->assertSee('在庫あり')
+            ->assertSee('action="'.route('cart.store').'"', false)
+            ->assertSee('name="product_id"', false)
+            ->assertSee('name="quantity"', false)
+            ->assertSee('name="_token"', false)
+            ->assertSee(route('login'))
+            ->assertSee(route('register'));
+    }
+});
+use Database\Seeders\CategorySeeder;
+use Database\Seeders\ProductSeeder;
+use Illuminate\Support\Facades\Storage;
+
 function createStoreProduct(Category $category, string $name = 'テストペン', int $price = 300, int $stock = 10): Product
 {
     return Product::query()->create([
@@ -199,19 +220,21 @@ test('checkout rejects missing products without losing the cart', function () {
 });
 
 test('product seeding preserves existing records and inventory on repeated runs', function () {
-    \Illuminate\Support\Facades\Storage::fake('public');
-    $this->seed(\Database\Seeders\CategorySeeder::class);
+    Storage::fake('public');
+    $this->seed(CategorySeeder::class);
     $category = Category::query()->where('slug', 'writing')->firstOrFail();
     $existing = createStoreProduct($category, 'Existing product', stock: 4);
-    $this->seed(\Database\Seeders\ProductSeeder::class);
+    $this->seed(ProductSeeder::class);
     $seeded = Product::query()->where('name', '!=', $existing->name)->firstOrFail();
     $seeded->update(['stock' => 0, 'price' => 123]);
     $count = Product::query()->count();
 
-    $this->seed(\Database\Seeders\ProductSeeder::class);
+    $this->seed(ProductSeeder::class);
 
     expect(Product::query()->count())->toBe($count);
     expect($existing->fresh()->stock)->toBe(4);
     expect($seeded->fresh()->stock)->toBe(0);
     expect($seeded->fresh()->price)->toBe(123);
+    expect(Product::query()->where('category_id', '!=', $category->id)->count())->toBe(0);
+    expect($category->fresh()->name)->toBe('筆記用具');
 });

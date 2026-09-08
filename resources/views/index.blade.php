@@ -3,8 +3,11 @@
 @section('title', '商品一覧')
 
 @section('content')
-    <h1>商品一覧</h1>
-    <section aria-label="カテゴリー">
+    <div class="catalog-heading">
+        <div><p class="eyebrow">OUR STATIONERY</p><h1>商品一覧</h1><p class="catalog-intro">書く、残す、ひらめく。毎日に寄り添う文房具。</p></div>
+        <span class="item-count">{{ $products->count() }}点の商品</span>
+    </div>
+    <section class="category-navigation" aria-label="カテゴリー">
         <h2>カテゴリー</h2>
         <ul class="category-links">
             @foreach ($categories as $category)
@@ -13,15 +16,15 @@
         </ul>
     </section>
     <form action="{{ route('home') }}" method="GET" class="search-form">
-        <label for="keyword">キーワード</label>
-        <input id="keyword" type="search" name="keyword" value="{{ $keyword }}">
-        <label for="category">カテゴリー</label>
+        <div class="search-field"><label for="keyword">キーワード</label>
+        <input id="keyword" type="search" name="keyword" value="{{ $keyword }}" placeholder="商品名から探す"></div>
+        <div class="search-field"><label for="category">カテゴリー</label>
         <select id="category" name="category">
             <option value="">すべて</option>
             @foreach ($categories as $category)
                 <option value="{{ $category->slug }}" @selected($categorySlug === $category->slug)>{{ $category->name }}</option>
             @endforeach
-        </select>
+        </select></div>
         <button type="submit">検索</button>
     </form>
     @if ($keyword !== '' || $categorySlug !== '')

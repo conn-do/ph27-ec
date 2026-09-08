@@ -15,12 +15,11 @@ test('storefront auth screens keep the original forms and csrf fields', function
 
 test('failed login displays Japanese feedback and keeps only the email', function () {
     app()->setLocale('ja');
-    $this->from(route('login'))->post(route('login.store'), [
+    $this->get(route('login'))->assertOk();
+    $this->followingRedirects()->from(route('login'))->post(route('login.store'), [
         'email' => 'missing@example.com',
         'password' => 'private-password',
-    ])->assertRedirect(route('login'))->assertSessionHasErrors('email');
-
-    $this->get(route('login'))->assertOk()
+    ])->assertOk()
         ->assertSee('メールアドレスまたはパスワードが正しくありません。')
         ->assertSee('role="alert"', false)
         ->assertSee('missing@example.com')
@@ -31,14 +30,12 @@ test('registration shows Japanese duplicate email short password and confirmatio
     app()->setLocale('ja');
     User::factory()->create(['email' => 'existing@example.com']);
 
-    $this->from(route('register'))->post(route('register.store'), [
+    $this->followingRedirects()->from(route('register'))->post(route('register.store'), [
         'name' => 'テスト会員',
         'email' => 'existing@example.com',
         'password' => 'short',
         'password_confirmation' => 'different',
-    ])->assertRedirect(route('register'))->assertSessionHasErrors(['email', 'password']);
-
-    $this->get(route('register'))->assertOk()
+    ])->assertOk()
         ->assertSee('この メールアドレス は既に使用されています。')
         ->assertSee('パスワードは8文字以上で入力してください。')
         ->assertSee('パスワード が一致しません。')
@@ -51,10 +48,8 @@ test('registration shows Japanese duplicate email short password and confirmatio
 
 test('empty registration uses Japanese required field errors', function () {
     app()->setLocale('ja');
-    $this->from(route('register'))->post(route('register.store'), [])
-        ->assertSessionHasErrors(['name', 'email', 'password']);
-
-    $this->get(route('register'))->assertOk()
+    $this->followingRedirects()->from(route('register'))->post(route('register.store'), [])
+        ->assertOk()
         ->assertSee('名前を入力してください。')
         ->assertSee('メールアドレスを入力してください。')
         ->assertSee('パスワードを入力してください。');

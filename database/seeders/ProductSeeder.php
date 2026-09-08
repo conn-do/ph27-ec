@@ -21,9 +21,7 @@ class ProductSeeder extends Seeder
             );
         }
 
-        $writing = Category::query()->where('slug', 'writing')->firstOrFail();
-        $paper = Category::query()->where('slug', 'paper')->firstOrFail();
-
+        $writing = Category::query()->where('name', '筆記用具')->firstOrFail();
         collect([
             [
                 'name' => 'すらすらゲルインクペン',
@@ -37,7 +35,7 @@ class ProductSeeder extends Seeder
                 'price' => 480,
                 'description' => 'アイデア整理にも勉強にも使いやすい、開きやすい方眼リングノートです。',
                 'image' => 'images/products/note.png',
-                'category_id' => $paper->id,
+                'category_id' => $writing->id,
             ],
             [
                 'name' => 'やわらか芯の鉛筆',
@@ -49,5 +47,7 @@ class ProductSeeder extends Seeder
         ])->each(function (array $product): void {
             Product::query()->firstOrCreate(['name' => $product['name']], [...$product, 'stock' => 10]);
         });
+
+        $this->call(AssignProductsToWritingCategorySeeder::class);
     }
 }
