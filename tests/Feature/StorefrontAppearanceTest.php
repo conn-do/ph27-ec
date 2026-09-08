@@ -14,3 +14,11 @@ test('the login page renders the storefront form', function () {
         ->assertSee('ログイン')
         ->assertSee('auth-panel', false);
 });
+
+test('the storefront stylesheet hides category markers and uses white footer text', function () {
+    $css = file_get_contents(resource_path('css/app.css'));
+
+    expect($css)
+        ->toMatch('/\.category-list li\s*\{[^}]*list-style:\s*none/')
+        ->toMatch('/\.site-footer p\s*\{[^}]*color:\s*#ffffff/');
+});
