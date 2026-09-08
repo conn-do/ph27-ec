@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Product;
+use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
@@ -11,13 +11,20 @@ class CartController extends Controller
     {
         // 入力チェックをして、OKならフォームの入力値を取得
         $validated = $request->validate([
-            'productId' => 'required|integer',
+            'productId' => 'required|integer|exists:products,id',
             'quantity' => 'required|integer|min:1|max:10',
         ], [
             'quantity.min' => '1個以上選択してください。',
             'quantity.max' => '10個以下を選択してください。',
         ]);
 
+        $product = Product::findOrFail($validated['productId']);
+
+        if ($validated['quantity'] > $product->stock) {
+            return back()->withErrors([
+                'quantity' => '在庫が不足しています。',
+            ])->withInput();
+        }
         // セッションにカートの内容を保存
         $cart = session()->get('cart', []);
         // [1 => 2, 2 => 3] （商品ID => 個数）
@@ -54,6 +61,7 @@ class CartController extends Controller
     {
         session()->forget('cart');
         $request->session()->flash('message', 'カートを空にしました。');
+
         return redirect('/cart');
     }
 }
