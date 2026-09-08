@@ -46,6 +46,14 @@ Route::get(
     [CartController::class, 'clear']
 );
 Route::get(
+    '/cart/remove/{productId}',
+    [CartController::class, 'remove']
+);
+Route::post(
+    '/cart/update',
+    [CartController::class, 'update']
+);
+Route::get(
     '/search',
     [ProductController::class, 'search']
 );
