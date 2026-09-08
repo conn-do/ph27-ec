@@ -37,12 +37,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/orders/{order}', [OrderController::class, 'show']);
 
     // MyPage & Profile
-    Route::get('/mypage', [MyPageController::class, 'index'])->name('mypage')->name('dashboard');
+    Route::get('/mypage', [MyPageController::class, 'index'])->name('mypage');
+    Route::get('/dashboard', [MyPageController::class, 'index'])->name('dashboard');
     Route::get('/mypage/profile/edit', [MyPageController::class, 'editProfile'])->name('profile.edit_form');
     Route::put('/mypage/profile', [MyPageController::class, 'updateProfile'])->name('profile.update_data');
 
     // Favorites
     Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.list');
     Route::post('/products/{product}/favorite', [FavoriteController::class, 'toggle'])->name('favorites.toggle_item');
-    
 });
