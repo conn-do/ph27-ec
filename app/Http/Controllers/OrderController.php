@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\OrderStatus;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Product;
@@ -87,5 +88,22 @@ class OrderController extends Controller
         return view('orders.show', [
             'order' => $order,
         ]);
+    }
+
+    public function cancel(Request $request, Order $order)
+    {
+        if ($order->user_id !== $request->user()->id) {
+            abort(403);
+        }
+
+        if ($order->status !== OrderStatus::Pending) {
+            return redirect('/orders/'.$order->id)
+                ->with('message', 'この注文はキャンセルできません。');
+        }
+
+        $order->update(['status' => OrderStatus::Cancelled]);
+
+        return redirect('/orders/'.$order->id)
+            ->with('message', '注文をキャンセルしました。');
     }
 }

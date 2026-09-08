@@ -2,11 +2,24 @@
 
 @section('title', '注文詳細')
 
+
 @section('content')
+    @if (session('message'))
+        <p>{{ session('message') }}</p>
+    @endif
+
     <h1>注文ID: {{ $order->id }}</h1>
     <p>注文日時: {{ $order->created_at->format('Y/m/d H:i') }}</p>
     <p>金額: {{ number_format($order->total_price) }}円</p>
     <p>ステータス: {{ $order->status->label() }}</p>
+
+    @if ($order->status === \App\Enums\OrderStatus::Pending)
+        <form action="/orders/{{ $order->id }}/cancel" method="POST">
+            @csrf
+            <button type="submit">注文をキャンセルする</button>
+        </form>
+    @endif
+
     <table>
         @foreach ($order->details as $detail)
             <tr>
