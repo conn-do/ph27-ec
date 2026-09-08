@@ -45,6 +45,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(Order::class);
     }
 
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
+
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->email === 'test@example.com';

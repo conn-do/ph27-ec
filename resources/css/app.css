@@ -10,78 +10,58 @@
         'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
         'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
         'Noto Color Emoji';
-
-    --animate-fade-out: fade-out 4s ease-in-out forwards;
-
-    @keyframes fade-out {
-        0%,
-        70% {
-            opacity: 1;
-        }
-        100% {
-            opacity: 0;
-            pointer-events: none;
-        }
-    }
 }
 
-.error {
-    color: red;
-    border: 1px solid red;
+/* 全体の背景色と文字色を統一 */
+body {
+    background-color: #13161E;
+    color: #ffffff;
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    margin: 0;
 }
 
-.news-title {
-    font-size: 40px;
-    font-weight: bold;
-    margin-bottom: 5px;
+/* 共通レイアウト系（ヘッダー等で利用） */
+.site-header {
+    padding: 24px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #13161E;
 }
 
-.news-subtitle {
+.site-logo {
+    color: #ffffff;
+    font-weight: 700;
+    text-decoration: none;
     font-size: 18px;
-    color: #666;
-    margin-bottom: 30px;
 }
 
-.news-list {
-    margin-left: 200px;
-}
-
-/* 1件ずつ */
-.news-item {
-    padding: 15px 0;
-    border-bottom: 1px solid #ddd;
-}
-
-/* タイトル */
-.news-item-title {
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-/* 本文 */
-.news-item-body {
+.site-nav {
+    display: flex;
+    gap: 24px;
+    align-items: center;
     font-size: 14px;
-    color: #333;
 }
 
-.news-detail {
-    max-width: 960px;
-    margin: 40px auto;
+.site-nav a {
+    color: #ffffff;
+    text-decoration: none;
 }
 
-.news-detail-title {
-    font-size: 28px;
-    margin-bottom: 20px;
+.nav-logout {
+    background: none;
+    border: none;
+    color: #888888;
+    cursor: pointer;
+    padding: 0;
+    font-size: 14px;
 }
 
-.news-detail-body {
-    font-size: 16px;
-    line-height: 1.8;
-}
-
-.back-link {
-    display: inline-block;
-    margin-top: 30px;
-    color: #666;
+.nav-register {
+    color: #13161E;
+    background-color: #ffffff;
+    padding: 8px 16px;
+    text-decoration: none;
+    font-weight: 700;
 }
