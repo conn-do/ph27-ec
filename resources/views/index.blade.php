@@ -62,22 +62,21 @@
             </div>
         </section>
 
-        {{-- お知らせ (NEWS) --}}
-        <section style="margin-top: 50px;">
-            <h2 class="news-title"
-                style="font-size: 22px; border-bottom: 2px solid #333; padding-bottom: 5px; margin-bottom: 20px;">NEWS</h2>
-            <div class="news-list" style="margin-left: 0;">
+        {{-- お知らせ --}}
+        <section class="news-section">
+            <h2 class="news-title">
+                ニュース
+            </h2>
+            <div class="news-list">
                 @foreach ($news as $item)
-                    <div class="news-item">
-                        <h4 class="news-item-title">
-                            <a href="/news/{{ $item->id }}" style="color: #333; text-decoration: none;">
-                                {{ $item->title }}
-                            </a>
-                        </h4>
-                        <p class="news-item-body">
-                            {!! $item->content !!}
-                        </p>
-                    </div>
+                    <a href="/news/{{ $item->id }}" class="news-link">
+                        <div class="news-date">
+                            {{ $item->created_at->format('Y.m.d') }}
+                        </div>
+                        <div class="news-text">
+                            {{ $item->title }}
+                        </div>
+                    </a>
                 @endforeach
             </div>
         </section>

@@ -1,52 +1,26 @@
 @extends('layouts.base')
 
-@section('title', 'マイページ')
+@section('title', '検索結果')
 
 @section('content')
 
-    <div class="mypage-card">
+    <div class="container">
 
-        <h1 class="mypage-title">
-            マイページ
+        <h1 class="section-title">
+            検索結果
         </h1>
 
-        <a href="/orders" class="mypage-link">
-            注文履歴を見る
-        </a>
-
-        <br>
-
-        <a href="/profile/edit" class="mypage-link">
-            プロフィール変更
-        </a>
-
-        <br>
-
-        <form action="/logout" method="POST" class="logout-form">
-            @csrf
-            <button type="submit" class="mypage-link logout-btn">
-                ログアウト
-            </button>
-        </form>
-
-    </div>
-
-    <div class="mypage-card">
-
-        <h2 class="favorite-title">
-            お気に入り一覧
-        </h2>
-
-        @if ($favorites->isEmpty())
+        @if ($products->isEmpty())
 
             <div class="empty-box">
-                お気に入り商品はありません。
+                該当する商品がありません。
             </div>
         @else
             <div class="product-grid">
 
-                @foreach ($favorites as $product)
+                @foreach ($products as $product)
                     <div class="product-card">
+
                         <a href="{{ route('products.show', $product->id) }}">
 
                             @if ($product->image)
@@ -62,6 +36,7 @@
                             </p>
 
                         </a>
+
                     </div>
                 @endforeach
 

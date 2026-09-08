@@ -8,6 +8,8 @@ class MyPageController extends Controller
 {
     public function index()
     {
-        return view('mypage');
+        $favorites = auth()->user()->favorites;
+
+        return view('mypage', compact('favorites'));
     }
 }

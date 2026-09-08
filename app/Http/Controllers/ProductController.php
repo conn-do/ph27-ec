@@ -61,7 +61,8 @@ class ProductController extends Controller
     {
         $keyword = $request->input('keyword');
 
-        $products = Product::where('name', 'like', "%{$keyword}%")->get();
+        $products = Product::where('name', 'like', "%{$keyword}%")
+            ->get();
 
         $news = News::orderBy('id', 'desc')
             ->limit(3)
@@ -69,10 +70,9 @@ class ProductController extends Controller
 
         $categories = Category::all();
 
-        return view('index', [
+        return view('products.search', [
             'products' => $products,
-            'news' => $news,
-            'categories' => $categories,
+            'keyword' => $keyword,
         ]);
     }
 
