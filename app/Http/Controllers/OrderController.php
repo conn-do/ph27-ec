@@ -2,89 +2,96 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\Product;
-use App\Models\OrderDetail;
-use Exception;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
 class OrderController extends Controller
 {
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        // 例外処理
-        // try の中でエラーが起きたら
-        // catch の中の処理が実行される
+        $cart = $request->session()->get('cart', []);
+
+        if ($cart === []) {
+            return to_route('cart.index')->with('message', 'カートに商品を追加してから購入してください。');
+        }
+
         try {
-            DB::beginTransaction();
-            // 注文処理
-            // [1 => 3, 2 => 5] (商品ID => 数量)
-            $cart = session()->get('cart', []);
-            $totalPrice = 0;
-            foreach ($cart as $productId => $quantity) {
-                $product = Product::find($productId);
-                $totalPrice += $product->price * $quantity;
-            }
+            Validator::make(['cart' => $cart], [
+                'cart' => ['required', 'array', 'min:1'],
+                'cart.*' => ['required', 'integer', 'min:1', 'max:10'],
+            ])->validate();
 
-            $order = new Order();
-            $order->total_price = $totalPrice;
-            $order->user_id = $request->user()->id;
-            $order->save();
+            $order = DB::transaction(function () use ($cart, $request): Order {
+                $products = Product::query()
+                    ->whereKey(array_keys($cart))
+                    ->orderBy('id')
+                    ->lockForUpdate()
+                    ->get()
+                    ->keyBy('id');
 
-            foreach ($cart as $productId => $quantity) {
-                $detail = new OrderDetail();
-                $detail->order_id = $order->id;
-                $detail->product_id = $productId;
-                $detail->quantity = $quantity;
-                $detail->save();
-
-
-                /** @var Product $product */
-                $product = Product::find($productId);
-
-                if ($quantity > $product->stock) {
-                    // 例外を投げる
-                    throw new Exception('在庫がありません');
+                if ($products->count() !== count($cart)) {
+                    throw ValidationException::withMessages([
+                        'cart' => '販売終了の商品が含まれています。カートを確認してください。',
+                    ]);
                 }
 
-                $product->stock -= $quantity;
-                $product->save();
-            }
+                $totalPrice = collect($cart)->sum(
+                    fn (int|string $quantity, int|string $productId): int => $products->get($productId)->price * (int) $quantity,
+                );
 
-            // トランザクションが正常に終了したら
-            // DBの変更を確定する
-            DB::commit();
+                $order = Order::query()->create([
+                    'user_id' => $request->user()->id,
+                    'total_price' => $totalPrice,
+                ]);
 
-            session()->forget('cart');
+                foreach ($cart as $productId => $quantity) {
+                    $product = $products->get($productId);
 
-            session()->flash('message', '注文が完了しました！');
+                    if ((int) $quantity > $product->stock) {
+                        throw ValidationException::withMessages([
+                            'cart' => '在庫が不足しています。カートの数量を確認してください。',
+                        ]);
+                    }
 
-            return view('orders.complete', [
-                'order' => $order,
-            ]);
-        } catch (Exception $e) {
-            // エラー処理
-            // DBの変更を元に戻す
-            DB::rollBack();
-            $message = '申し訳ございません！エラーが発生しました。最初からやり直してください。<br>';
-            $message .= $e->getMessage();
-            return redirect('/cart')->with('message', $message);
+                    $order->details()->create([
+                        'product_id' => $productId,
+                        'quantity' => (int) $quantity,
+                    ]);
+                    $product->decrement('stock', (int) $quantity);
+                }
+
+                return $order;
+            });
+        } catch (ValidationException $exception) {
+            return to_route('cart.index')
+                ->withErrors($exception->errors())
+                ->with('message', 'カートの商品と数量を確認してください。');
         }
+
+        $request->session()->forget('cart');
+
+        return to_route('orders.show', $order)->with('message', 'ご注文を受け付けました。');
     }
 
-    public function index(Request $request)
+    public function index(Request $request): View
     {
-        $orders = $request->user()->orders;
         return view('orders.index', [
-            'orders' => $orders->sortByDesc('created_at'),
+            'orders' => $request->user()->orders()->latest()->get(),
         ]);
     }
 
-    public function show(Order $order)
+    public function show(Request $request, Order $order): View
     {
+        abort_unless($order->user_id === $request->user()->id, 403);
+
         return view('orders.show', [
-            'order' => $order,
+            'order' => $order->load('details.product'),
         ]);
     }
 }

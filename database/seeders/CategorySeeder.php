@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Category;
+use Illuminate\Database\Seeder;
 
 class CategorySeeder extends Seeder
 {
@@ -13,14 +12,19 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
-        $category1 = new Category();
-        $category1->name = '筆記用具';
-        $category1->slug = 'pen';
-        $category1->save();
+        collect([
+            ['name' => '筆記用具', 'slug' => 'writing'],
+            ['name' => 'ノート・紙', 'slug' => 'paper'],
+            ['name' => '整理・収納', 'slug' => 'storage'],
+            ['name' => 'デスクまわり', 'slug' => 'desk'],
+        ])->each(function (array $category): void {
+            if ($category['name'] === '筆記用具') {
+                Category::query()->firstOrCreate(['name' => $category['name']], $category);
 
-        $category2 = new Category();
-        $category2->name = '収納';
-        $category2->slug = 'storage';
-        $category2->save();
+                return;
+            }
+
+            Category::query()->updateOrCreate(['slug' => $category['slug']], $category);
+        });
     }
 }

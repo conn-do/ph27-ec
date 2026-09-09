@@ -18,8 +18,11 @@ class ProductsTable
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
+                TextColumn::make('category.name')
+                    ->label('Category')
+                    ->sortable(),
                 TextColumn::make('price')
-                    ->money()
+                    ->money('JPY')
                     ->sortable(),
                 TextColumn::make('stock'),
                 ImageColumn::make('image')
@@ -33,9 +36,7 @@ class ProductsTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->filters([
-                //
-            ])
+            ->filters([])
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),

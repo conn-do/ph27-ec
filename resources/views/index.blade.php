@@ -3,62 +3,61 @@
 @section('title', '商品一覧')
 
 @section('content')
-
-    {{-- カテゴリ一覧 --}}
-    <h3>カテゴリ</h3>
-    <ul>
-        @foreach ($categories as $category)
-            <li>
-                <a href="/categories/{{ $category->slug }}">
-                    {{ $category->name }}
-                </a>
-            </li>
-        @endforeach
-    </ul>
-
-    <h2>商品一覧</h2>
-
-    <form action="/search" method="GET">
-        <input type="text" name="keyword" value="{{ request('keyword') }}">
-        <input type="submit" value="検索">
-    </form>
-
-    @if (request('keyword'))
-        <a href="/">検索結果をクリア</a>
-    @endif
-
-    {{-- 商品一覧 --}}
-    @foreach ($products as $product)
-        <ul>
-            <li>
-                <a href="/products/{{ $product->id }}">
-                    {{ $product['name'] }}
-                    <img src="{{ $product->imageUrl() }}" width="200">
-                </a>
-            </li>
-        </ul>
-    @endforeach
-
-    {{-- お知らせ --}}
-    <h2 class="news-title">NEWS</h2>
-    <h3 class="news-subtitle">お知らせ</h3>
-
-    <div class="news-list">
-        @foreach ($news as $item)
-            <div class="news-item">
-
-                <h4 class="news-item-title">
-                    <a href="/news/{{ $item->id }}">
-                        {{ $item->title }}
-                    </a>
-                </h4>
-
-                <p class="news-item-body">
-                    {!! $item->content !!}
-                </p>
-
-            </div>
-        @endforeach
+    <div class="catalog-heading">
+        <div><p class="eyebrow">OUR STATIONERY</p><h1>商品一覧</h1><p class="catalog-intro">書く、残す、ひらめく。毎日に寄り添う文房具。</p></div>
+        <span class="item-count">{{ $products->count() }}点の商品</span>
     </div>
-
+    <section class="category-navigation" aria-label="カテゴリー">
+        <h2>カテゴリー</h2>
+        <ul class="category-links">
+            @foreach ($categories as $category)
+                <li><a href="{{ route('categories.show', $category) }}">{{ $category->name }}</a></li>
+            @endforeach
+        </ul>
+    </section>
+    <form action="{{ route('home') }}" method="GET" class="search-form">
+        <div class="search-field"><label for="keyword">キーワード</label>
+        <input id="keyword" type="search" name="keyword" value="{{ $keyword }}" placeholder="商品名から探す"></div>
+        <div class="search-field"><label for="category">カテゴリー</label>
+        <select id="category" name="category">
+            <option value="">すべて</option>
+            @foreach ($categories as $category)
+                <option value="{{ $category->slug }}" @selected($categorySlug === $category->slug)>{{ $category->name }}</option>
+            @endforeach
+        </select></div>
+        <button type="submit">検索</button>
+    </form>
+    @if ($keyword !== '' || $categorySlug !== '')
+        <a href="{{ route('home') }}">検索結果をクリア</a>
+    @endif
+    <section class="catalog-list" aria-label="商品">
+        @forelse ($products as $product)
+            <article class="catalog-item">
+                <a href="{{ route('products.show', $product) }}"><img src="{{ $product->imageUrl() }}" width="200" height="200" alt="{{ $product->name }}"></a>
+                <div>
+                    <h2><a href="{{ route('products.show', $product) }}">{{ $product->name }}</a></h2>
+                    <p>{{ number_format($product->price) }}円</p>
+                    @include('products.stock', ['product' => $product])
+                    <a href="{{ route('products.show', $product) }}">商品詳細・在庫を見る</a>
+                    <form action="{{ route('cart.store') }}" method="POST" class="catalog-cart-form">
+                        @csrf
+                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" @disabled($product->stock <= 0)>カートに入れる</button>
+                    </form>
+                </div>
+            </article>
+        @empty
+            <p>条件に合う商品が見つかりませんでした。</p>
+        @endforelse
+    </section>
+    <section class="news-section">
+        <h2>お知らせ</h2>
+        @foreach ($news as $item)
+            <article class="news-item">
+                <h3><a href="{{ route('news.show', $item) }}">{{ $item->title }}</a></h3>
+                <p>{{ Str::limit(strip_tags($item->content), 80) }}</p>
+            </article>
+        @endforeach
+    </section>
 @endsection

@@ -2,58 +2,97 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Product;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
 class CartController extends Controller
 {
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        // 入力チェックをして、OKならフォームの入力値を取得
         $validated = $request->validate([
-            'productId' => 'required|integer',
-            'quantity' => 'required|integer|min:1|max:10',
+            'product_id' => ['required', 'integer', 'exists:products,id'],
+            'quantity' => ['required', 'integer', 'min:1', 'max:10'],
         ], [
             'quantity.min' => '1個以上選択してください。',
             'quantity.max' => '10個以下を選択してください。',
         ]);
 
-        // セッションにカートの内容を保存
+        $product = Product::query()->findOrFail($validated['product_id']);
+
+        if ((int) $validated['quantity'] > $product->stock) {
+            throw ValidationException::withMessages(['quantity' => '在庫が不足しています。']);
+        }
+
         $cart = session()->get('cart', []);
-        // [1 => 2, 2 => 3] （商品ID => 個数）
-        $cart[$validated['productId']] = $validated['quantity'];
+        $cart[$validated['product_id']] = (int) $validated['quantity'];
         session()->put('cart', $cart);
 
-        $request->session()->flash('message', 'カートに追加しました。');
-
-        return redirect('/cart');
+        return to_route('cart.index')->with('message', 'カートに追加しました。');
     }
 
-    public function index()
+    public function index(): View
     {
-        // [1 => 2, 2 => 3] （商品ID => 個数）
         $cart = session()->get('cart', []);
-        $items = [];
-        $totalPrice = 0;
-        foreach ($cart as $productId => $quantity) {
-            $product = Product::find($productId);
-            $items[] = [
-                'product' => $product,
-                'quantity' => $quantity,
-            ];
-            $totalPrice += $product->price * $quantity;
-        }
+        $products = Product::query()->whereKey(array_keys($cart))->get()->keyBy('id');
+
+        $items = collect($cart)
+            ->map(function ($quantity, $productId) use ($products): ?array {
+                $product = $products->get($productId);
+
+                if (! $product instanceof Product) {
+                    return null;
+                }
+
+                return [
+                    'product' => $product,
+                    'quantity' => (int) $quantity,
+                ];
+            })
+            ->filter()
+            ->values();
 
         return view('cart', [
             'items' => $items,
-            'totalPrice' => $totalPrice, // 合計金額
+            'totalPrice' => $items->sum(fn (array $item): int => $item['product']->price * $item['quantity']),
         ]);
     }
 
-    public function clear(Request $request)
+    public function update(Request $request, Product $product): RedirectResponse
+    {
+        $validated = $request->validate([
+            'quantity' => ['required', 'integer', 'min:1', 'max:10'],
+        ]);
+
+        if ((int) $validated['quantity'] > $product->stock) {
+            throw ValidationException::withMessages(['quantity' => '在庫が不足しています。']);
+        }
+
+        $cart = session()->get('cart', []);
+
+        if (array_key_exists($product->id, $cart)) {
+            $cart[$product->id] = (int) $validated['quantity'];
+            session()->put('cart', $cart);
+        }
+
+        return to_route('cart.index')->with('message', 'カートの数量を更新しました。');
+    }
+
+    public function destroy(Product $product): RedirectResponse
+    {
+        $cart = session()->get('cart', []);
+        unset($cart[$product->id]);
+        session()->put('cart', $cart);
+
+        return to_route('cart.index')->with('message', '商品をカートから削除しました。');
+    }
+
+    public function clear(): RedirectResponse
     {
         session()->forget('cart');
-        $request->session()->flash('message', 'カートを空にしました。');
-        return redirect('/cart');
+
+        return to_route('cart.index')->with('message', 'カートを空にしました。');
     }
 }

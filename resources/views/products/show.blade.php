@@ -3,33 +3,29 @@
 @section('title', $product->name)
 
 @section('content')
-    <h2>{{ $product->name }}</h2>
-    <div>
-        カテゴリー:
-        <a href="/categories/{{ $product->category->slug }}">
-            {{ $product->category->name }}
-        </a>
-    </div>
-    <img src="{{ $product->imageUrl() }}" width="400">
-    <p>{{ $product->price }}円</p>
-    <p>{{ $product->description }}</p>
-    @if ($product->stock <= 0)
-        <p>売り切れ</p>
-    @elseif ($product->stock <= 5)
-        <p>残りわずか</p>
-    @else
-        <p>在庫あり</p>
+    <a class="back-link" href="{{ route('home') }}">商品一覧に戻る</a>
+    <div class="product-detail-grid">
+    <div class="product-media"><img class="product-photo" src="{{ $product->imageUrl() }}" width="400" height="320" alt="{{ $product->name }}"></div>
+    <div class="product-information">
+    <h1>{{ $product->name }}</h1>
+    @if ($product->category)
+        <p>カテゴリー: <a href="{{ route('categories.show', $product->category) }}">{{ $product->category->name }}</a></p>
     @endif
+    <p class="detail-price">{{ number_format($product->price) }}円</p>
+    <p class="product-description">{{ $product->description }}</p>
+    @include('products.stock', ['product' => $product])
     @if ($errors->any())
-        @foreach ($errors->all() as $error)
-            <article class="error">
-                {{ $error }}
-            </article>
-        @endforeach
+        <div class="form-errors" role="alert">
+            @foreach ($errors->all() as $error)<p>{{ $error }}</p>@endforeach
+        </div>
     @endif
-    <form action="/cart" method="POST">
-        個数:<input type="number" name="quantity" class="@error('quantity') error @enderror" value="{{ old('quantity', 1) }}">
-        <input type="hidden" name="productId" value="{{ $product->id }}">
-        <input type="submit" value="カートに入れる">
+    <form action="{{ route('cart.store') }}" method="POST" class="add-to-cart-form">
+        @csrf
+        <input type="hidden" name="product_id" value="{{ $product->id }}">
+        <label for="quantity">個数:</label>
+        <input id="quantity" type="number" name="quantity" min="1" max="{{ max(1, min(10, $product->stock)) }}" value="{{ old('quantity', 1) }}" required @disabled($product->stock <= 0)>
+        <button type="submit" @disabled($product->stock <= 0)>カートに入れる</button>
     </form>
+    </div>
+    </div>
 @endsection
