@@ -12,15 +12,26 @@ class Product extends Model
         'description',
         'image',
         'stock',
+        'category_id',
     ];
 
     public function imageUrl(): string
     {
-        return asset('storage/' . $this->image);
+        return asset('storage/'.$this->image);
     }
 
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
     }
 }
