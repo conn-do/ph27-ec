@@ -3,6 +3,10 @@
 @section('title', '商品一覧')
 
 @section('content')
+    <section class="store-hero" aria-label="2026 秋コレクション">
+        <img src="{{ asset('images/hero/autumn-2026.jpg') }}" alt="2026 秋コレクション、新作アイテム入荷のお知らせ">
+    </section>
+
     <section class="storefront-section" aria-labelledby="catalog-heading">
         <h1 id="catalog-heading" class="storefront-section-title">商品一覧</h1>
 
@@ -11,12 +15,12 @@
                 <h2>カテゴリ</h2>
                 <ul class="catalog-categories">
                     <li>
-                        <a class="is-active" href="/">すべて</a>
+                        <a class="is-active" href="{{ route('home') }}#catalog-heading">すべて</a>
                     </li>
                     @foreach ($categories as $category)
                         <li>
-                            <a href="/categories/{{ $category->slug }}">
-                                {{ $category->name }}
+                            <a href="{{ route('categories.show', $category) }}">
+                                {{ $category->name }} ({{ $category->products_count }})
                             </a>
                         </li>
                     @endforeach
@@ -42,7 +46,7 @@
                 <div class="product-grid">
                     @foreach ($products as $product)
                         <article class="product-card">
-                            <a href="/products/{{ $product->id }}">
+                            <a href="{{ route('products.show', $product) }}">
                                 <img class="product-card-image" src="{{ $product->imageUrl() }}" alt="{{ $product->name }}">
                                 <div class="product-card-body">
                                     <h2 class="product-card-name">{{ $product->name }}</h2>

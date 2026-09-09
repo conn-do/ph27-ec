@@ -19,7 +19,7 @@ class ProductController extends Controller
             ->limit(3)
             ->get();
 
-        $categories = Category::all();
+        $categories = Category::query()->withCount('products')->get();
 
         return view('index', [
             'products' => $products,
@@ -30,8 +30,17 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
+        $product->load('category');
+
+        $relatedProducts = Product::query()
+            ->where('category_id', $product->category_id)
+            ->whereKeyNot($product->id)
+            ->limit(3)
+            ->get();
+
         return view('products.show', [
             'product' => $product,
+            'relatedProducts' => $relatedProducts,
         ]);
     }
 
@@ -48,7 +57,7 @@ class ProductController extends Controller
             ->limit(3)
             ->get();
 
-        $categories = Category::all();
+        $categories = Category::query()->withCount('products')->get();
 
         return view('index', [
             'products' => $products,
@@ -59,8 +68,11 @@ class ProductController extends Controller
 
     public function category(Category $category)
     {
+        $category->load('products');
+
         return view('category', [
             'category' => $category,
+            'categories' => Category::query()->withCount('products')->get(),
         ]);
     }
 }

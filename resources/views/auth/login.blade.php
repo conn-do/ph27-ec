@@ -3,23 +3,34 @@
 @section('title', 'ログイン')
 
 @section('content')
-    <h1>ログイン</h1>
-    @if ($errors->any())
-        @foreach ($errors->all() as $error)
-            <article>{{ $error }}</article>
-        @endforeach
-    @endif
+    <section class="auth-page" aria-labelledby="login-heading">
+        <div class="auth-card">
+            <h1 id="login-heading">ログイン</h1>
+            <p class="auth-intro">登録済みのお客様はこちらからログインしてください。</p>
 
-    <form action="{{ route('login') }}" method="post">
-        <div>
-            メールアドレス:
-            <input type="email" name="email" value="{{ old('email') }}">
+            @if ($errors->any())
+                <div class="auth-errors" role="alert">
+                    @foreach ($errors->all() as $error)
+                        <p>{{ $error }}</p>
+                    @endforeach
+                </div>
+            @endif
+
+            <form class="auth-form" action="{{ route('login') }}" method="post">
+                @csrf
+                <div class="auth-field">
+                    <label for="email">メールアドレス</label>
+                    <input id="email" type="email" name="email" value="{{ old('email') }}" autocomplete="email"
+                        required>
+                </div>
+                <div class="auth-field">
+                    <label for="password">パスワード</label>
+                    <input id="password" type="password" name="password" autocomplete="current-password" required>
+                </div>
+                <button class="auth-submit" type="submit">ログイン</button>
+            </form>
+
+            <p class="auth-switch">はじめてのお客様ですか？ <a href="{{ route('register', absolute: false) }}">会員登録はこちら</a></p>
         </div>
-        <div>
-            パスワード:
-            <input type="password" name="password">
-        </div>
-        <button type="submit">ログイン</button>
-    </form>
-    <a href="/register">会員登録はこちら</a>
+    </section>
 @endsection

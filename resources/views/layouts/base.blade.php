@@ -6,26 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title') - すごい文房具サイト</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/storefront.js'])
 </head>
 
 <body class="store-body">
     <header class="store-header">
-        <a class="store-brand" href="/" aria-label="すごい文房具サイト">
-            <img src="{{ asset('images/ec-logo-1.png') }}" alt="すごい文房具サイト">
+        <a class="store-brand" href="{{ route('home', absolute: false) }}" aria-label="すごい文房具サイト">
+            <img src="{{ asset('images/ec-logo-transparent.png') }}" alt="すごい文房具サイト">
         </a>
         <nav class="store-nav" aria-label="メインメニュー">
             <div class="store-nav-text">
-                <a href="/">商品一覧</a>
-                <a href="/#news">お知らせ</a>
-                <a href="#">ご利用ガイド</a>
-                <a href="#">お問い合わせ</a>
-                @auth
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit">ログアウト</button>
-                    </form>
-                @endauth
+                <a href="{{ route('home', absolute: false) }}#catalog-heading">商品一覧</a>
+                <a href="{{ route('home', absolute: false) }}#news">お知らせ</a>
+                <a href="{{ route('guide', absolute: false) }}">ご利用ガイド</a>
+                <a href="{{ route('contact', absolute: false) }}">お問い合わせ</a>
             </div>
             <div class="store-nav-icons">
                 <a class="store-icon-link" href="/cart" aria-label="カート">
@@ -60,32 +54,38 @@
     <footer class="store-footer">
         <div class="store-footer-content">
             <div class="store-footer-brand">
-                <a href="/">すごい文房具サイト</a>
-                <small>© HAL東京</small>
+                <a class="store-footer-logo" href="{{ route('home', absolute: false) }}" aria-label="すごい文房具サイト">
+                    <img src="{{ asset('images/ec-logo-transparent.png') }}" alt="すごい文房具サイト">
+                </a>
+                <small>&copy; 2026 Sugoi Stationery. All rights reserved.</small>
             </div>
 
             <nav class="store-footer-sitemap" aria-label="フッターメニュー">
                 <section>
                     <h2>ショッピング</h2>
-                    <a href="/">商品一覧</a>
-                    <a href="/#catalog-heading">カテゴリ</a>
-                    <a href="/cart">カート</a>
+                    <a href="{{ route('home', absolute: false) }}#catalog-heading">商品一覧</a>
+                    <a href="{{ route('home', absolute: false) }}#catalog-heading">カテゴリ</a>
+                    <div class="store-footer-category-links">
+                        <a href="{{ route('categories.show', ['category' => 'pen'], absolute: false) }}">筆記用具</a>
+                        <a href="{{ route('categories.show', ['category' => 'storage'], absolute: false) }}">収納</a>
+                    </div>
+                    <a href="{{ route('cart.index', absolute: false) }}">カート</a>
                 </section>
                 <section>
                     <h2>ご利用案内</h2>
-                    <a href="#">ご利用ガイド</a>
-                    <a href="#">お支払いについて</a>
-                    <a href="#">配送・送料について</a>
+                    <a href="{{ route('guide', absolute: false) }}">ご利用ガイド</a>
+                    <a href="{{ route('guide', absolute: false) }}#payment">お支払いについて</a>
+                    <a href="{{ route('guide', absolute: false) }}#delivery">配送・送料について</a>
                 </section>
                 <section>
                     <h2>サポート</h2>
-                    <a href="#">お問い合わせ</a>
-                    <a href="#">よくあるご質問</a>
+                    <a href="{{ route('contact', absolute: false) }}">お問い合わせ</a>
+                    <a href="{{ route('guide', absolute: false) }}#faq">よくあるご質問</a>
                 </section>
                 <section>
                     <h2>会社情報</h2>
-                    <a href="#">プライバシーポリシー</a>
-                    <a href="#">特定商取引法に基づく表記</a>
+                    <a href="{{ route('guide', absolute: false) }}#privacy-policy">プライバシーポリシー</a>
+                    <a href="{{ route('guide', absolute: false) }}#legal-notice">特定商取引法に基づく表記</a>
                 </section>
             </nav>
         </div>
