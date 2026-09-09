@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'zipcloud' => [
+        'url' => 'https://zipcloud.ibsnet.co.jp/api/search',
+    ],
+
 ];

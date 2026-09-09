@@ -2,87 +2,133 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreOrderRequest;
 use App\Models\Order;
-use App\Models\Product;
 use App\Models\OrderDetail;
-use Exception;
+use App\Models\Product;
+use App\PaymentMethod;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
 class OrderController extends Controller
 {
-    public function store(Request $request)
+    public function create(Request $request): View|RedirectResponse
     {
-        // 例外処理
-        // try の中でエラーが起きたら
-        // catch の中の処理が実行される
-        try {
-            DB::beginTransaction();
-            // 注文処理
-            // [1 => 3, 2 => 5] (商品ID => 数量)
-            $cart = session()->get('cart', []);
-            $totalPrice = 0;
-            foreach ($cart as $productId => $quantity) {
-                $product = Product::find($productId);
-                $totalPrice += $product->price * $quantity;
-            }
+        $cart = $request->session()->get('cart', []);
 
-            $order = new Order();
-            $order->total_price = $totalPrice;
-            $order->user_id = $request->user()->id;
-            $order->save();
-
-            foreach ($cart as $productId => $quantity) {
-                $detail = new OrderDetail();
-                $detail->order_id = $order->id;
-                $detail->product_id = $productId;
-                $detail->quantity = $quantity;
-                $detail->save();
-
-
-                /** @var Product $product */
-                $product = Product::find($productId);
-
-                if ($quantity > $product->stock) {
-                    // 例外を投げる
-                    throw new Exception('在庫がありません');
-                }
-
-                $product->stock -= $quantity;
-                $product->save();
-            }
-
-            // トランザクションが正常に終了したら
-            // DBの変更を確定する
-            DB::commit();
-
-            session()->forget('cart');
-
-            session()->flash('message', '注文が完了しました！');
-
-            return view('orders.complete', [
-                'order' => $order,
+        if ($cart === []) {
+            return to_route('cart.index')->withErrors([
+                'cart' => 'カートに商品がありません。',
             ]);
-        } catch (Exception $e) {
-            // エラー処理
-            // DBの変更を元に戻す
-            DB::rollBack();
-            $message = '申し訳ございません！エラーが発生しました。最初からやり直してください。<br>';
-            $message .= $e->getMessage();
-            return redirect('/cart')->with('message', $message);
         }
-    }
 
-    public function index(Request $request)
-    {
-        $orders = $request->user()->orders;
-        return view('orders.index', [
-            'orders' => $orders->sortByDesc('created_at'),
+        $products = Product::query()->whereKey(array_keys($cart))->get()->keyBy('id');
+
+        if ($products->count() !== count($cart)) {
+            return to_route('cart.index')->withErrors([
+                'cart' => 'カート内の商品を確認できません。',
+            ]);
+        }
+
+        $items = collect($cart)
+            ->map(fn (int $quantity, int|string $productId): array => [
+                'subtotal' => $products->get($productId)->price * $quantity,
+                'product' => $products->get($productId),
+                'quantity' => $quantity,
+            ])
+            ->values();
+
+        return view('checkout', [
+            'items' => $items,
+            'paymentMethods' => PaymentMethod::availableForCheckout(),
+            'totalPrice' => $items->sum('subtotal'),
         ]);
     }
 
-    public function show(Order $order)
+    public function store(StoreOrderRequest $request): RedirectResponse
     {
+        $validated = $request->validated();
+        $cart = $request->session()->get('cart', []);
+
+        if ($cart === []) {
+            throw ValidationException::withMessages([
+                'cart' => 'カートに商品がありません。',
+            ]);
+        }
+
+        $order = DB::transaction(function () use ($cart, $request, $validated): Order {
+            $products = Product::query()
+                ->whereKey(array_keys($cart))
+                ->lockForUpdate()
+                ->get()
+                ->keyBy('id');
+
+            if ($products->count() !== count($cart)) {
+                throw ValidationException::withMessages([
+                    'cart' => 'カート内の商品を確認できません。',
+                ]);
+            }
+
+            foreach ($cart as $productId => $quantity) {
+                if ($quantity > $products->get($productId)->stock) {
+                    throw ValidationException::withMessages([
+                        'cart' => '在庫数が不足している商品があります。',
+                    ]);
+                }
+            }
+
+            $order = Order::create([
+                'total_price' => collect($cart)->sum(
+                    fn (int $quantity, int|string $productId): int => $products->get($productId)->price * $quantity,
+                ),
+                'user_id' => $request->user()->id,
+                'shipping_name' => $validated['shipping_name'],
+                'shipping_phone' => $validated['shipping_phone'],
+                'shipping_postal_code' => $validated['shipping_postal_code'],
+                'shipping_address' => $validated['shipping_address'],
+                'payment_method' => $validated['payment_method'],
+            ]);
+
+            foreach ($cart as $productId => $quantity) {
+                $product = $products->get($productId);
+
+                OrderDetail::create([
+                    'order_id' => $order->id,
+                    'product_id' => $product->id,
+                    'quantity' => $quantity,
+                ]);
+
+                $product->decrement('stock', $quantity);
+            }
+
+            return $order;
+        });
+
+        $request->session()->forget('cart');
+        $request->session()->flash('message', '注文が完了しました。');
+
+        return to_route('orders.show', $order);
+    }
+
+    public function index(Request $request): View
+    {
+        return view('orders.index', [
+            'orders' => $request->user()->orders()
+                ->with('details.product')
+                ->latest()
+                ->get(),
+        ]);
+    }
+
+    public function show(Request $request, Order $order): View
+    {
+        $order = $request->user()->orders()
+            ->with('details.product')
+            ->findOrFail($order->id);
+
         return view('orders.show', [
             'order' => $order,
         ]);
