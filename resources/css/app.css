@@ -281,6 +281,46 @@ section {
     color:#333;
 }
 
+/* ニュース詳細ページ */
+
+.news-detail{
+    background:#fff;
+    padding:60px;
+    border-radius:10px;
+    box-shadow:0 4px 20px rgba(0,0,0,.05);
+}
+
+.news-detail-title{
+    font-size:40px;
+    color:#1e3a8a;
+    margin-bottom:30px;
+    padding-bottom:20px;
+    border-bottom:2px solid #e5e7eb;
+    line-height:1.4;
+}
+
+.news-detail-body{
+    font-size:18px;
+    line-height:2;
+    color:#334155;
+}
+
+.news-detail-body p{
+    margin-bottom:24px;
+}
+
+.back-link{
+    display:inline-block;
+    margin-top:40px;
+    color:#1e4ed8;
+    text-decoration:none;
+    font-weight:700;
+}
+
+.back-link:hover{
+    text-decoration:underline;
+}
+
 /* 商品詳細ページ */
 
 .product-detail-container {
