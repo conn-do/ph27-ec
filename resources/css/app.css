@@ -16,7 +16,11 @@
     --shop-green: #245b49;
     --shop-line: #dfe4dd;
     margin: 0;
-    background: #fff;
+    background-color: #f7f3e9;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.28)),
+        repeating-linear-gradient(0deg, rgba(119, 96, 62, 0.025) 0, rgba(119, 96, 62, 0.025) 1px, transparent 1px, transparent 4px),
+        repeating-linear-gradient(92deg, rgba(119, 96, 62, 0.018) 0, rgba(119, 96, 62, 0.018) 1px, transparent 1px, transparent 7px);
     color: var(--shop-ink);
     font: 15px/1.75 'Yu Gothic', Meiryo, Arial, sans-serif;
     letter-spacing: 0;
@@ -24,6 +28,7 @@
 }
 .storefront * { box-sizing: border-box; }
 .storefront .store-container { width: min(1160px, calc(100% - 64px)); margin-inline: auto; }
+.storefront .site-header, .storefront #main-content, .storefront .site-footer { background-color: rgba(255, 255, 255, 0.62); }
 .storefront .site-header { display: flex; align-items: center; justify-content: space-between; gap: 28px; min-height: 124px; border-bottom: 1px solid var(--shop-line); }
 .storefront .brand { display: flex; align-items: center; gap: 18px; color: var(--shop-muted); text-decoration: none; flex-shrink: 0; }
 .storefront .brand img { width: 150px; height: 82px; object-fit: contain; }
