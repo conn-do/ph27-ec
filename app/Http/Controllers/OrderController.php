@@ -18,10 +18,34 @@ class OrderController extends Controller
         // catch の中の処理が実行される
         try {
             DB::beginTransaction();
+
             // 注文処理
             // [1 => 3, 2 => 5] (商品ID => 数量)
             $cart = session()->get('cart', []);
+
+            if (empty($cart)) {
+                throw new Exception('カートに商品がありません。');
+            }
+
+            // 注文データを作る「前」に、すべての商品の在庫をチェックする
+            foreach ($cart as $productId => $quantity) {
+                /** @var Product $product */
+                $product = Product::find($productId);
+
+                if (!$product) {
+                    throw new Exception('商品が見つかりませんでした。');
+                }
+
+                if ($quantity > $product->stock) {
+                    throw new Exception(
+                        "「{$product->name}」の在庫がありません。（在庫数: {$product->stock}）"
+                    );
+                }
+            }
+
+            // 在庫チェックOKなら合計金額を計算
             $totalPrice = 0;
+
             foreach ($cart as $productId => $quantity) {
                 $product = Product::find($productId);
                 $totalPrice += $product->price * $quantity;
@@ -32,6 +56,7 @@ class OrderController extends Controller
             $order->user_id = $request->user()->id;
             $order->save();
 
+            // 注文詳細の保存と、在庫の減算処理
             foreach ($cart as $productId => $quantity) {
                 $detail = new OrderDetail();
                 $detail->order_id = $order->id;
@@ -39,14 +64,8 @@ class OrderController extends Controller
                 $detail->quantity = $quantity;
                 $detail->save();
 
-
                 /** @var Product $product */
                 $product = Product::find($productId);
-
-                if ($quantity > $product->stock) {
-                    // 例外を投げる
-                    throw new Exception('在庫がありません');
-                }
 
                 $product->stock -= $quantity;
                 $product->save();
@@ -67,8 +86,10 @@ class OrderController extends Controller
             // エラー処理
             // DBの変更を元に戻す
             DB::rollBack();
+
             $message = '申し訳ございません！エラーが発生しました。最初からやり直してください。<br>';
             $message .= $e->getMessage();
+
             return redirect('/cart')->with('message', $message);
         }
     }
@@ -76,6 +97,7 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         $orders = $request->user()->orders;
+
         return view('orders.index', [
             'orders' => $orders->sortByDesc('created_at'),
         ]);
