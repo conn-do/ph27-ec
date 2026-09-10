@@ -1,35 +1,5 @@
 @extends('layouts.base')
-
 @section('title', $product->name)
-
 @section('content')
-    <h2>{{ $product->name }}</h2>
-    <div>
-        カテゴリー:
-        <a href="/categories/{{ $product->category->slug }}">
-            {{ $product->category->name }}
-        </a>
-    </div>
-    <img src="{{ $product->imageUrl() }}" width="400">
-    <p>{{ $product->price }}円</p>
-    <p>{{ $product->description }}</p>
-    @if ($product->stock <= 0)
-        <p>売り切れ</p>
-    @elseif ($product->stock <= 5)
-        <p>残りわずか</p>
-    @else
-        <p>在庫あり</p>
-    @endif
-    @if ($errors->any())
-        @foreach ($errors->all() as $error)
-            <article class="error">
-                {{ $error }}
-            </article>
-        @endforeach
-    @endif
-    <form action="/cart" method="POST">
-        個数:<input type="number" name="quantity" class="@error('quantity') error @enderror" value="{{ old('quantity', 1) }}">
-        <input type="hidden" name="productId" value="{{ $product->id }}">
-        <input type="submit" value="カートに入れる">
-    </form>
+    <section class="mx-auto max-w-6xl px-5 py-14 lg:px-8"><a href="{{ route('products.index') }}" class="font-bold text-slate-500 hover:text-amber-700">← 商品一覧に戻る</a><div class="mt-8 grid gap-10 lg:grid-cols-2 lg:items-center"><div class="overflow-hidden rounded-[2.5rem] bg-white shadow-xl"><img src="{{ asset($product->image) }}" alt="{{ $product->name }}" class="aspect-square w-full object-cover"></div><div><p class="font-black tracking-widest text-amber-600">STATIONERY</p><h1 class="mt-2 text-5xl font-black tracking-tight">{{ $product->name }}</h1><p class="mt-5 text-4xl font-black">¥{{ number_format($product->price) }} <span class="text-sm font-medium text-slate-500">税込</span></p><p class="mt-6 text-lg leading-8 text-slate-600">{{ $product->description }}</p><form action="{{ route('cart.store') }}" method="POST" class="mt-8 rounded-3xl border border-stone-200 bg-white p-5">@csrf<input type="hidden" name="productId" value="{{ $product->id }}"><div class="flex flex-col gap-4 sm:flex-row sm:items-end"><label class="font-bold">数量<input type="number" name="quantity" min="1" max="10" value="{{ old('quantity', 1) }}" class="mt-2 block w-24 rounded-xl border border-stone-300 px-4 py-3"></label><button class="flex-1 rounded-full bg-slate-950 px-7 py-4 font-black text-white hover:bg-amber-600">カートに入れる</button></div>@error('quantity')<p class="mt-3 font-bold text-rose-600">{{ $message }}</p>@enderror</form><x-wishlist-button :product="$product" /></div></div></section>
 @endsection

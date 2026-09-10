@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Foundation\Http\FormRequest;
+
+class StoreCartItemRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array
+    {
+        return [
+            'productId' => ['required', 'integer', 'exists:products,id'],
+            'quantity' => ['required', 'integer', 'min:1', 'max:10'],
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'quantity.min' => '数量は1個以上にしてください。',
+            'quantity.max' => '一度に購入できる数量は10個までです。',
+        ];
+    }
+}

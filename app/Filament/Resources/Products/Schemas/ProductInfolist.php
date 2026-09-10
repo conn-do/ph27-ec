@@ -15,7 +15,6 @@ class ProductInfolist
                 TextEntry::make('name'),
                 TextEntry::make('price')
                     ->money(),
-                TextEntry::make('stock'),
                 TextEntry::make('description')
                     ->columnSpanFull(),
                 ImageEntry::make('image')
