@@ -2,57 +2,43 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Product;
 use App\Models\News;
-use App\Models\Category;
+use App\Models\Product;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(): View
     {
-        $products = Product::all();
-
-        $news = News::orderBy('id', 'desc')
-            ->limit(3)
-            ->get();
-
-        $categories = Category::all();
-
         return view('index', [
-            'products' => $products,
-            'news' => $news,
-            'categories' => $categories,
+            'news' => News::query()
+                ->latest('id')
+                ->limit(3)
+                ->get(),
+            'products' => Product::query()->get(),
         ]);
     }
 
-    public function show(Product $product)
+    public function show(Product $product): View
     {
         return view('products.show', [
             'product' => $product,
         ]);
     }
 
-    public function search(Request $request)
+    public function search(Request $request): View
     {
-        $keyword = $request->input('keyword');
-
-        $products = Product::where('name', 'like', "%{$keyword}%")->get();
-
-        $news = News::orderBy('id', 'desc')
-            ->limit(3)
-            ->get();
+        $keyword = $request->string('keyword')->toString();
 
         return view('index', [
-            'products' => $products,
-            'news' => $news,
-        ]);
-    }
-
-    public function category(Category $category)
-    {
-        return view('category', [
-            'category' => $category,
+            'news' => News::query()
+                ->latest('id')
+                ->limit(3)
+                ->get(),
+            'products' => Product::query()
+                ->where('name', 'like', "%{$keyword}%")
+                ->get(),
         ]);
     }
 }

@@ -2,38 +2,38 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreChirpRequest;
 use App\Models\Chirp;
+use Illuminate\Http\RedirectResponse;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class ChirpController extends Controller
 {
-    public function index()
+    public function index(): Response
     {
-        $chirps = Chirp::with('user')
+        $chirps = Chirp::query()
+            ->with('user:id,name')
             ->latest()
-            ->take(50)  // Limit to 50 most recent chirps
-            ->get();
+            ->get()
+            ->map(fn(Chirp $chirp): array => [
+                'id' => $chirp->id,
+                'message' => $chirp->message,
+                'created_at' => $chirp->created_at?->diffForHumans(),
+                'user' => [
+                    'name' => $chirp->user->name,
+                ],
+            ]);
 
-        return view('home', ['chirps' => $chirps]);
+        return Inertia::render('chirps/index', [
+            'chirps' => $chirps,
+        ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreChirpRequest $request): RedirectResponse
     {
-        // Validate the request
-        $validated = $request->validate([
-            'message' => 'required|string|max:30',
-        ], [
-            'message.required' => 'このフィールドは必須です。',
-            'message.max' => '30文字以内で入力してください。',
-        ]);
+        $request->user()->chirps()->create($request->validated());
 
-        // Create the chirp (no user for now - we'll add auth later)
-        \App\Models\Chirp::create([
-            'message' => $validated['message'],
-            'user_id' => null, // We'll add authentication in lesson 11
-        ]);
-
-        // Redirect back to the feed
-        return redirect('/chirps')->with('success', 'Chirp created!');
+        return to_route('chirps.index');
     }
 }

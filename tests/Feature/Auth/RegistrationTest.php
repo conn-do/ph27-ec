@@ -11,7 +11,10 @@ test('registration screen can be rendered', function () {
     /** @var \Tests\TestCase $this */
     $response = $this->get(route('register'));
 
-    $response->assertOk();
+    $response->assertOk()
+        ->assertSee('会員登録')
+        ->assertSee('パスワード（確認）')
+        ->assertSee('アカウントを作成');
 });
 
 test('new users can register', function () {

@@ -2,14 +2,17 @@
 
 namespace App\Models;
 
+use Database\Factories\ChirpFactory;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+#[Fillable(['message'])]
 class Chirp extends Model
 {
-    protected $fillable = [
-        'message',
-    ];
+    /** @use HasFactory<ChirpFactory> */
+    use HasFactory;
 
     public function user(): BelongsTo
     {

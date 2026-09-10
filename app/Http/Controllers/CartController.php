@@ -2,26 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreCartItemRequest;
+use App\Http\Requests\UpdateCartItemRequest;
 use App\Models\Product;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class CartController extends Controller
 {
-    public function store(Request $request)
+    public function store(StoreCartItemRequest $request): RedirectResponse
     {
-        // 入力チェックをして、OKならフォームの入力値を取得
-        $validated = $request->validate([
-            'productId' => 'required|integer',
-            'quantity' => 'required|integer|min:1|max:10',
-        ], [
-            'quantity.min' => '1個以上選択してください。',
-            'quantity.max' => '10個以下を選択してください。',
-        ]);
+        $validated = $request->validated();
 
-        // セッションにカートの内容を保存
         $cart = session()->get('cart', []);
-        // [1 => 2, 2 => 3] （商品ID => 個数）
-        $cart[$validated['productId']] = $validated['quantity'];
+        $currentQuantity = (int) ($cart[$validated['productId']] ?? 0);
+        $cart[$validated['productId']] = min($currentQuantity + $validated['quantity'], 10);
         session()->put('cart', $cart);
 
         $request->session()->flash('message', 'カートに追加しました。');
@@ -29,31 +25,63 @@ class CartController extends Controller
         return redirect('/cart');
     }
 
-    public function index()
+    public function index(): View
     {
-        // [1 => 2, 2 => 3] （商品ID => 個数）
         $cart = session()->get('cart', []);
-        $items = [];
-        $totalPrice = 0;
-        foreach ($cart as $productId => $quantity) {
-            $product = Product::find($productId);
-            $items[] = [
-                'product' => $product,
-                'quantity' => $quantity,
-            ];
-            $totalPrice += $product->price * $quantity;
-        }
+        $products = Product::query()
+            ->whereKey(array_keys($cart))
+            ->get()
+            ->keyBy('id');
+
+        $items = collect($cart)
+            ->map(function (int $quantity, int|string $productId) use ($products): ?array {
+                $product = $products->get((int) $productId);
+
+                return $product === null ? null : [
+                    'product' => $product,
+                    'quantity' => $quantity,
+                    'subtotal' => $product->price * $quantity,
+                ];
+            })
+            ->filter()
+            ->values();
 
         return view('cart', [
             'items' => $items,
-            'totalPrice' => $totalPrice, // 合計金額
+            'totalPrice' => $items->sum('subtotal'),
         ]);
     }
 
-    public function clear(Request $request)
+    public function update(UpdateCartItemRequest $request, Product $product): RedirectResponse
+    {
+        $cart = session()->get('cart', []);
+
+        if (! array_key_exists($product->id, $cart)) {
+            return redirect()->route('cart.index')->withErrors([
+                'cart' => '指定された商品はカートにありません。',
+            ]);
+        }
+
+        $cart[$product->id] = $request->integer('quantity');
+        session()->put('cart', $cart);
+
+        return redirect()->route('cart.index')->with('message', '数量を更新しました。');
+    }
+
+    public function destroy(Product $product): RedirectResponse
+    {
+        $cart = session()->get('cart', []);
+        unset($cart[$product->id]);
+        session()->put('cart', $cart);
+
+        return redirect()->route('cart.index')->with('message', '商品をカートから削除しました。');
+    }
+
+    public function clear(Request $request): RedirectResponse
     {
         session()->forget('cart');
         $request->session()->flash('message', 'カートを空にしました。');
-        return redirect('/cart');
+
+        return redirect()->route('cart.index');
     }
 }
