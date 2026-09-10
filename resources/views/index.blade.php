@@ -27,7 +27,7 @@
         <a href="/">検索結果をクリア</a>
     @endif
 
-    {{-- 商品一覧 --}}
+        {{-- 商品一覧 --}}
     @foreach ($products as $product)
         <ul>
             <li>
@@ -35,6 +35,13 @@
                     {{ $product['name'] }}
                     <img src="{{ $product->imageUrl() }}" width="200">
                 </a>
+                @auth
+                    <form action="/favorites" method="post">
+                        @csrf
+                        <input type="hidden" name="productId" value="{{ $product->id }}">
+                        <button type="submit">お気に入りに追加</button>
+                    </form>
+                @endauth
             </li>
         </ul>
     @endforeach

@@ -13,8 +13,9 @@
             <img src="{{ asset('images/ec-logo.png') }}" width="100">
         </a>
         <a href="/cart">カートを見る</a>
-        @auth
+                @auth
             <a href="/mypage">マイページ</a>
+            <a href="/favorites">お気に入り</a>
             <form method="POST" action="{{ route('logout') }}">
                 <button type="submit">ログアウト</button>
             </form>
