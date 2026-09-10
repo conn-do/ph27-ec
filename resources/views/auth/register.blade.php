@@ -9,7 +9,8 @@
             <article>{{ $error }}</article>
         @endforeach
     @endif
-    <form action="{{ route('register.store') }}" method="post">
+    <form action="{{ route('register.store') }}" method="post" class="account-form">
+        @csrf
         <div>
             名前:
             <input type="text" name="name">
