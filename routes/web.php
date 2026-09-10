@@ -8,6 +8,8 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\MyPageController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\ProfileController;
 
 // Route::inertia('/', 'welcome', [
 //     'canRegister' => Features::enabled(Features::registration()),
@@ -32,7 +34,7 @@ Route::get('/', [ProductController::class, 'index']);
 Route::get(
     '/products/{product}',
     [ProductController::class, 'show']
-);
+)->name('products.show');
 Route::post(
     '/cart',
     [CartController::class, 'store']
@@ -73,5 +75,33 @@ Route::middleware(['auth'])->group(function () {
     Route::get(
         '/mypage',
         [MyPageController::class, 'index']
+    );
+    Route::middleware(['auth'])->group(function () {
+
+        Route::post('/orders', [OrderController::class, 'store']);
+        Route::get('/orders', [OrderController::class, 'index']);
+        Route::get('/orders/{order}', [OrderController::class, 'show']);
+        Route::get('/mypage', [MyPageController::class, 'index']);
+
+        Route::post('/products/{product}/favorite',
+            [FavoriteController::class, 'store']
+        )->name('favorites.store');
+
+        Route::delete('/products/{product}/favorite',
+            [FavoriteController::class, 'destroy']
+        )->name('favorites.destroy');
+
+        Route::get('/favorites',
+            [FavoriteController::class, 'index']
+        )->name('favorites.index');
+
+    });
+    Route::get(
+        '/profile/edit',
+        [ProfileController::class, 'edit']
+    );
+    Route::post(
+        '/profile/update',
+        [ProfileController::class, 'update']
     );
 });

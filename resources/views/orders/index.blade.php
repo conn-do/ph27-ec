@@ -3,16 +3,37 @@
 @section('title', '注文履歴')
 
 @section('content')
-    <h1>注文履歴</h1>
-    <table>
-        @foreach ($orders as $order)
-            <tr>
-                <td>{{ $order->id }}</td>
-                <td>{{ $order->total_price }}円</td>
-                <td>
-                    <a href="/orders/{{ $order->id }}">詳細</a>
-                </td>
-            </tr>
-        @endforeach
-    </table>
+
+    <div class="order-card">
+
+        <h1 class="cart-title">
+            注文履歴
+        </h1>
+
+        <table class="cart-table">
+            <thead>
+                <tr>
+                    <th>注文番号</th>
+                    <th>合計金額</th>
+                    <th>詳細</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach ($orders as $order)
+                    <tr>
+                        <td>{{ $order->id }}</td>
+                        <td>¥{{ number_format($order->total_price) }}</td>
+                        <td>
+                            <a href="/orders/{{ $order->id }}" class="order-link">
+                                詳細を見る
+                            </a>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+
+    </div>
+
 @endsection
