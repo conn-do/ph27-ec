@@ -8,6 +8,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\MyPageController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\FavoriteController;
 
 // Route::inertia('/', 'welcome', [
 //     'canRegister' => Features::enabled(Features::registration()),
@@ -74,4 +75,12 @@ Route::middleware(['auth'])->group(function () {
         '/mypage',
         [MyPageController::class, 'index']
     );
+
+    Route::post('/products/{product}/favorite', [FavoriteController::class, 'store'])
+    ->middleware('auth')
+    ->name('favorites.store');
+
+    Route::delete('/products/{product}/favorite', [FavoriteController::class, 'destroy'])
+        ->middleware('auth')
+    ->name('favorites.destroy');
 });
