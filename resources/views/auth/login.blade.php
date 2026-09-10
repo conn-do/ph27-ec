@@ -11,6 +11,7 @@
     @endif
 
     <form action="{{ route('login') }}" method="post">
+    @csrf
         <div>
             メールアドレス:
             <input type="email" name="email" value="{{ old('email') }}">

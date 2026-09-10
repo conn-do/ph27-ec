@@ -8,6 +8,8 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\MyPageController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\AddressController;
+use App\Http\Controllers\FavoriteController;
 
 // Route::inertia('/', 'welcome', [
 //     'canRegister' => Features::enabled(Features::registration()),
@@ -41,6 +43,14 @@ Route::get(
     '/cart',
     [CartController::class, 'index']
 );
+Route::post(
+    '/cart/update',
+    [CartController::class, 'update']
+);
+Route::get(
+    '/cart/remove',
+    [CartController::class, 'remove']
+);
 Route::get(
     '/cart/clear',
     [CartController::class, 'clear']
@@ -66,12 +76,44 @@ Route::middleware(['auth'])->group(function () {
         '/orders',
         [OrderController::class, 'index']
     );
+
+    Route::get(
+        '/orders/confirm',
+        [OrderController::class, 'confirm']
+    );
+
     Route::get(
         '/orders/{order}',
         [OrderController::class, 'show']
     );
+
     Route::get(
         '/mypage',
         [MyPageController::class, 'index']
+    );
+
+    Route::get(
+        '/address',
+        [AddressController::class, 'index']
+    );
+
+    Route::get(
+        '/address/edit',
+        [AddressController::class, 'edit']
+    );
+
+    Route::post(
+        '/address',
+        [AddressController::class, 'store']
+    );
+
+    Route::post(
+        '/favorites',
+        [FavoriteController::class, 'store']
+    );
+
+    Route::get(
+        '/favorites',
+        [FavoriteController::class, 'index']
     );
 });

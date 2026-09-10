@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\News;
 use App\Models\Category;
+use App\Models\OrderDetail;
 
 class ProductController extends Controller
 {
@@ -19,10 +20,40 @@ class ProductController extends Controller
 
         $categories = Category::all();
 
+        $orderDetails = OrderDetail::all();
+
+        $sales = [];
+
+        foreach ($orderDetails as $orderDetail) {
+            if (!isset($sales[$orderDetail->product_id])) {
+                $sales[$orderDetail->product_id] = 0;
+            }
+
+            $sales[$orderDetail->product_id] += $orderDetail->quantity;
+        }
+
+        arsort($sales);
+
+        $ranking = [];
+
+        foreach ($sales as $productId => $quantity) {
+            $product = Product::find($productId);
+
+            $ranking[] = [
+                'product' => $product,
+                'quantity' => $quantity,
+            ];
+
+            if (count($ranking) >= 3) {
+                break;
+            }
+        }
+
         return view('index', [
             'products' => $products,
             'news' => $news,
             'categories' => $categories,
+            'ranking' => $ranking,
         ]);
     }
 
@@ -39,13 +70,8 @@ class ProductController extends Controller
 
         $products = Product::where('name', 'like', "%{$keyword}%")->get();
 
-        $news = News::orderBy('id', 'desc')
-            ->limit(3)
-            ->get();
-
-        return view('index', [
+        return view('search', [
             'products' => $products,
-            'news' => $news,
         ]);
     }
 

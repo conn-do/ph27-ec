@@ -12,20 +12,29 @@
         <a href="/">
             <img src="{{ asset('images/ec-logo.png') }}" width="100">
         </a>
-        <a href="/cart">カートを見る</a>
+
+        <a href="/cart">
+            カートを見る
+            @if (count(session('cart', [])) > 0)
+                ({{ count(session('cart', [])) }})
+            @endif
+        </a>
+
         @auth
+            <a href="/favorites">お気に入り</a>
+
             <a href="/mypage">マイページ</a>
-            <form method="POST" action="{{ route('logout') }}">
-                <button type="submit">ログアウト</button>
-            </form>
         @endauth
+
         @guest
             <a href="{{ route('login') }}">ログイン</a>
         @endguest
     </header>
+
     <main>
         @yield('content')
     </main>
+
     <footer>
         © HAL東京
     </footer>

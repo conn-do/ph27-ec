@@ -27,7 +27,23 @@
         <a href="/">検索結果をクリア</a>
     @endif
 
+    {{-- 商品ランキング --}}
+    <h2>商品ランキング</h2>
+
+    @foreach ($ranking as $item)
+        <ul>
+            <li>
+                <a href="/products/{{ $item['product']->id }}">
+                    {{ $item['product']->name }}
+                    <img src="{{ $item['product']->imageUrl() }}" width="200">
+                </a>
+            </li>
+        </ul>
+    @endforeach
+
     {{-- 商品一覧 --}}
+    <h2>商品一覧</h2>
+
     @foreach ($products as $product)
         <ul>
             <li>

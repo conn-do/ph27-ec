@@ -6,8 +6,12 @@ use Illuminate\Http\Request;
 
 class MyPageController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return view('mypage');
+        $address = $request->user()->address;
+
+        return view('mypage', [
+            'address' => $address,
+        ]);
     }
 }
