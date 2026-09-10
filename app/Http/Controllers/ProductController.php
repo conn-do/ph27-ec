@@ -2,57 +2,59 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Product;
-use App\Models\News;
+use App\Http\Requests\BrowseProductsRequest;
 use App\Models\Category;
+use App\Models\Product;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\RedirectResponse;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(BrowseProductsRequest $request): Response|RedirectResponse
     {
-        $products = Product::all();
+        $filters = $request->filters();
+        $products = Product::query()
+            ->with('category:id,name,slug')
+            ->where('is_active', true)
+            ->when($filters['q'] !== '', function (Builder $query) use ($filters) {
+                $query->where(function (Builder $search) use ($filters) {
+                    $search->whereLike('name', '%'.$filters['q'].'%')
+                        ->orWhereLike('description', '%'.$filters['q'].'%');
+                });
+            })
+            ->when($filters['category'] !== '', function (Builder $query) use ($filters) {
+                $query->whereHas('category', function (Builder $category) use ($filters) {
+                    $category->where('slug', $filters['category']);
+                });
+            });
 
-        $news = News::orderBy('id', 'desc')
-            ->limit(3)
-            ->get();
+        match ($filters['sort']) {
+            'price_asc' => $products->orderBy('price'),
+            'price_desc' => $products->orderByDesc('price'),
+            default => $products,
+        };
 
-        $categories = Category::all();
+        $products = $products->latest()->orderByDesc('id')->paginate(12)->withQueryString();
 
-        return view('index', [
+        if ($products->currentPage() > $products->lastPage()) {
+            return to_route('shop', $filters);
+        }
+
+        return Inertia::render('shop/index', [
             'products' => $products,
-            'news' => $news,
-            'categories' => $categories,
+            'categories' => Category::orderBy('id')->get(['id', 'name', 'slug']),
+            'filters' => $filters,
         ]);
     }
 
-    public function show(Product $product)
+    public function show(Product $product): Response
     {
-        return view('products.show', [
-            'product' => $product,
-        ]);
-    }
+        abort_unless($product->is_active, 404);
 
-    public function search(Request $request)
-    {
-        $keyword = $request->input('keyword');
-
-        $products = Product::where('name', 'like', "%{$keyword}%")->get();
-
-        $news = News::orderBy('id', 'desc')
-            ->limit(3)
-            ->get();
-
-        return view('index', [
-            'products' => $products,
-            'news' => $news,
-        ]);
-    }
-
-    public function category(Category $category)
-    {
-        return view('category', [
-            'category' => $category,
+        return Inertia::render('products/show', [
+            'product' => $product->load('category:id,name,slug'),
         ]);
     }
 }

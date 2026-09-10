@@ -2,58 +2,49 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\AddToCartRequest;
+use App\Http\Requests\UpdateCartRequest;
 use App\Models\Product;
+use App\Services\CartService;
+use Illuminate\Http\RedirectResponse;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class CartController extends Controller
 {
-    public function store(Request $request)
+    public function index(CartService $cart): Response
     {
-        // 入力チェックをして、OKならフォームの入力値を取得
-        $validated = $request->validate([
-            'productId' => 'required|integer',
-            'quantity' => 'required|integer|min:1|max:10',
-        ], [
-            'quantity.min' => '1個以上選択してください。',
-            'quantity.max' => '10個以下を選択してください。',
+        return Inertia::render('cart/index', [
+            'cart' => $cart->summary(),
         ]);
-
-        // セッションにカートの内容を保存
-        $cart = session()->get('cart', []);
-        // [1 => 2, 2 => 3] （商品ID => 個数）
-        $cart[$validated['productId']] = $validated['quantity'];
-        session()->put('cart', $cart);
-
-        $request->session()->flash('message', 'カートに追加しました。');
-
-        return redirect('/cart');
     }
 
-    public function index()
+    public function store(AddToCartRequest $request, Product $product, CartService $cart): RedirectResponse
     {
-        // [1 => 2, 2 => 3] （商品ID => 個数）
-        $cart = session()->get('cart', []);
-        $items = [];
-        $totalPrice = 0;
-        foreach ($cart as $productId => $quantity) {
-            $product = Product::find($productId);
-            $items[] = [
-                'product' => $product,
-                'quantity' => $quantity,
-            ];
-            $totalPrice += $product->price * $quantity;
+        $error = $cart->add($product, $request->integer('quantity', 1));
+
+        if ($error !== null) {
+            return back()->with('error', $error);
         }
 
-        return view('cart', [
-            'items' => $items,
-            'totalPrice' => $totalPrice, // 合計金額
-        ]);
+        return back();
     }
 
-    public function clear(Request $request)
+    public function update(UpdateCartRequest $request, Product $product, CartService $cart): RedirectResponse
     {
-        session()->forget('cart');
-        $request->session()->flash('message', 'カートを空にしました。');
-        return redirect('/cart');
+        $error = $cart->update($product, $request->integer('quantity'));
+
+        if ($error !== null) {
+            return to_route('cart.index')->with('error', $error);
+        }
+
+        return to_route('cart.index')->with('success', '数量を更新しました。');
+    }
+
+    public function destroy(Product $product, CartService $cart): RedirectResponse
+    {
+        $cart->remove($product);
+
+        return to_route('cart.index')->with('success', '商品をカートから削除しました。');
     }
 }
