@@ -3,16 +3,17 @@
 use App\Models\User;
 use Illuminate\Support\Facades\RateLimiter;
 use Laravel\Fortify\Features;
+use Tests\TestCase;
 
 test('login screen can be rendered', function () {
-    /** @var \Tests\TestCase $this */
+    /** @var TestCase $this */
     $response = $this->get(route('login'));
 
     $response->assertOk();
 });
 
 test('users can authenticate using the login screen', function () {
-    /** @var \Tests\TestCase $this */
+    /** @var TestCase $this */
     /** @var User $user */
     $user = User::factory()->create();
 
@@ -26,7 +27,7 @@ test('users can authenticate using the login screen', function () {
 });
 
 test('users with two factor enabled are redirected to two factor challenge', function () {
-    /** @var \Tests\TestCase $this */
+    /** @var TestCase $this */
     $this->skipUnlessFortifyHas(Features::twoFactorAuthentication());
 
     Features::twoFactorAuthentication([
@@ -54,7 +55,7 @@ test('users with two factor enabled are redirected to two factor challenge', fun
 });
 
 test('users can not authenticate with invalid password', function () {
-    /** @var \Tests\TestCase $this */
+    /** @var TestCase $this */
     /** @var User $user */
     $user = User::factory()->create();
 
@@ -67,7 +68,7 @@ test('users can not authenticate with invalid password', function () {
 });
 
 test('users can logout', function () {
-    /** @var \Tests\TestCase $this */
+    /** @var TestCase $this */
     /** @var User $user */
     $user = User::factory()->create();
 
@@ -78,11 +79,11 @@ test('users can logout', function () {
 });
 
 test('users are rate limited', function () {
-    /** @var \Tests\TestCase $this */
+    /** @var TestCase $this */
     /** @var User $user */
     $user = User::factory()->create();
 
-    RateLimiter::increment(md5('login' . implode('|', [$user->email, '127.0.0.1'])), amount: 5);
+    RateLimiter::increment(md5('login'.implode('|', [$user->email, '127.0.0.1'])), amount: 5);
 
     $response = $this->post(route('login.store'), [
         'email' => $user->email,
@@ -90,4 +91,20 @@ test('users are rate limited', function () {
     ]);
 
     $response->assertTooManyRequests();
+});
+
+test('login validation errors are shown in Japanese', function () {
+    /** @var TestCase $this */
+    $response = $this->from(route('login'))->post(route('login.store'), [
+        'email' => 'missing@example.com',
+        'password' => 'wrong-password',
+    ]);
+
+    $response
+        ->assertRedirect(route('login'))
+        ->assertSessionHasErrors([
+            'email' => 'メールアドレスまたはパスワードが正しくありません。',
+        ]);
+
+    $this->assertGuest();
 });

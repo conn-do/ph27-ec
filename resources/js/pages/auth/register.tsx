@@ -12,18 +12,18 @@ import { store } from '@/routes/register';
 export default function Register() {
     return (
         <>
-            <Head title="Register" />
+            <Head title="新規登録" />
             <Form
                 {...store.form()}
                 resetOnSuccess={['password', 'password_confirmation']}
                 disableWhileProcessing
-                className="flex flex-col gap-6"
+                className="rounded-2xl border border-slate-200 bg-white p-6 shadow-lg shadow-slate-200/60 sm:p-8"
             >
                 {({ processing, errors }) => (
                     <>
-                        <div className="grid gap-6">
+                        <div className="grid gap-5">
                             <div className="grid gap-2">
-                                <Label htmlFor="name">Name</Label>
+                                <Label htmlFor="name">お名前</Label>
                                 <Input
                                     id="name"
                                     type="text"
@@ -32,7 +32,7 @@ export default function Register() {
                                     tabIndex={1}
                                     autoComplete="name"
                                     name="name"
-                                    placeholder="Full name"
+                                    placeholder="例）山田 太郎"
                                 />
                                 <InputError
                                     message={errors.name}
@@ -41,7 +41,7 @@ export default function Register() {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="email">Email address</Label>
+                                <Label htmlFor="email">メールアドレス</Label>
                                 <Input
                                     id="email"
                                     type="email"
@@ -49,27 +49,27 @@ export default function Register() {
                                     tabIndex={2}
                                     autoComplete="email"
                                     name="email"
-                                    placeholder="email@example.com"
+                                    placeholder="例）taro@example.com"
                                 />
                                 <InputError message={errors.email} />
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="password">Password</Label>
+                                <Label htmlFor="password">パスワード</Label>
                                 <PasswordInput
                                     id="password"
                                     required
                                     tabIndex={3}
                                     autoComplete="new-password"
                                     name="password"
-                                    placeholder="Password"
+                                    placeholder="8文字以上で入力"
                                 />
                                 <InputError message={errors.password} />
                             </div>
 
                             <div className="grid gap-2">
                                 <Label htmlFor="password_confirmation">
-                                    Confirm password
+                                    パスワード（確認）
                                 </Label>
                                 <PasswordInput
                                     id="password_confirmation"
@@ -77,7 +77,7 @@ export default function Register() {
                                     tabIndex={4}
                                     autoComplete="new-password"
                                     name="password_confirmation"
-                                    placeholder="Confirm password"
+                                    placeholder="もう一度パスワードを入力"
                                 />
                                 <InputError
                                     message={errors.password_confirmation}
@@ -86,19 +86,19 @@ export default function Register() {
 
                             <Button
                                 type="submit"
-                                className="mt-2 w-full"
+                                className="mt-2 h-11 w-full rounded-xl text-base font-semibold"
                                 tabIndex={5}
                                 data-test="register-user-button"
                             >
                                 {processing && <Spinner />}
-                                Create account
+                                登録する
                             </Button>
                         </div>
 
-                        <div className="text-center text-sm text-muted-foreground">
-                            Already have an account?{' '}
+                        <div className="mt-5 text-center text-sm text-slate-600">
+                            すでにアカウントをお持ちの方{' '}
                             <TextLink href={login()} tabIndex={6}>
-                                Log in
+                                ログイン
                             </TextLink>
                         </div>
                     </>
@@ -109,6 +109,6 @@ export default function Register() {
 }
 
 Register.layout = {
-    title: 'Create an account',
-    description: 'Enter your details below to create your account',
+    title: '新規登録',
+    description: '必要事項を入力してアカウントを作成してください',
 };

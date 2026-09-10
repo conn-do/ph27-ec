@@ -16,24 +16,15 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        // User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
-        // $this->call(ChirpSeeder::class);
-        $this->call(CategorySeeder::class);
-        $this->call(ProductSeeder::class);
-
-        $user = new User();
-        $user->name = 'Test';
-        $user->email = 'test@example.com';
-        $user->password = Hash::make('password');
-        $user->save();
-
-        $this->call(OrderSeeder::class);
+        User::firstOrCreate(['email' => 'test@example.com'], fn (): array => [
+            'name' => 'Test User',
+            'password' => Hash::make('password'),
+            'email_verified_at' => now(),
+        ]);
 
         $this->call([
-            NewsSeeder::class,
+            CategorySeeder::class,
+            ProductSeeder::class,
         ]);
     }
 }

@@ -1,0 +1,30 @@
+<?php
+
+namespace Database\Factories;
+
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Product;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+/**
+ * @extends Factory<OrderItem>
+ */
+class OrderItemFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        return [
+            'order_id' => Order::factory(),
+            'product_id' => Product::factory(),
+            'product_name' => fn (array $attributes): string => Product::find($attributes['product_id'])?->name ?? 'Archived Notebook',
+            'quantity' => 1,
+            'price' => fn (array $attributes): int => Product::find($attributes['product_id'])?->price ?? 880,
+        ];
+    }
+}
