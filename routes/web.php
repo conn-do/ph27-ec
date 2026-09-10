@@ -5,6 +5,7 @@ use App\Http\Controllers\ChirpController;
 use App\Http\Controllers\MyPageController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
@@ -91,4 +92,19 @@ Route::middleware(['auth'])->group(function () {
         '/mypage',
         [MyPageController::class, 'index']
     );
+
+    Route::get(
+        '/checkout/success',
+        [PaymentController::class, 'success']
+    )->name('checkout.success');
+    Route::get(
+        '/checkout/cancel',
+        [PaymentController::class, 'cancel']
+    )->name('checkout.cancel');
 });
+
+// Stripeサーバーから直接POSTされるため認証・CSRF検証の対象外
+Route::post(
+    '/stripe/webhook',
+    [PaymentController::class, 'webhook']
+)->name('stripe.webhook');

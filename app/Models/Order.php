@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\OrderStatus;
+use App\Enums\PaymentStatus;
 use App\Observers\OrderObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,10 +23,14 @@ class Order extends Model
         'shipping_postal_code',
         'shipping_address',
         'shipping_phone',
+        'payment_status',
+        'stripe_checkout_session_id',
+        'stripe_payment_intent_id',
     ];
 
     protected $casts = [
         'status' => OrderStatus::class,
+        'payment_status' => PaymentStatus::class,
     ];
 
     public function details()

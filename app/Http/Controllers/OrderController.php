@@ -3,15 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Enums\OrderStatus;
+use App\Enums\PaymentStatus;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Product;
+use App\Services\StripeCheckoutService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
+    public function __construct(private StripeCheckoutService $stripeCheckout) {}
+
     public function create()
     {
         $cart = session()->get('cart', []);
@@ -49,10 +53,18 @@ class OrderController extends Controller
             $cart = session()->get('cart', []);
             $totalPrice = 0;
             foreach ($cart as $productId => $quantity) {
-                $product = Product::find($productId);
+                /** @var Product $product */
+                $product = Product::findOrFail($productId);
+
+                // 決済に進む前に在庫を確認する（在庫減算は決済完了後に行う）
+                if ($quantity > $product->stock) {
+                    throw new Exception('在庫がありません');
+                }
+
                 $totalPrice += $product->price * $quantity;
             }
 
+            // この時点ではまだ「未払い」の仮注文として保存する。在庫は減らさない。
             $order = new Order;
             $order->total_price = $totalPrice;
             $order->user_id = $request->user()->id;
@@ -61,6 +73,7 @@ class OrderController extends Controller
             $order->shipping_postal_code = $validated['shipping_postal_code'];
             $order->shipping_address = $validated['shipping_address'];
             $order->shipping_phone = $validated['shipping_phone'];
+            $order->payment_status = PaymentStatus::Unpaid;
             $order->save();
 
             foreach ($cart as $productId => $quantity) {
@@ -69,30 +82,17 @@ class OrderController extends Controller
                 $detail->product_id = $productId;
                 $detail->quantity = $quantity;
                 $detail->save();
-
-                /** @var Product $product */
-                $product = Product::find($productId);
-
-                if ($quantity > $product->stock) {
-                    // 例外を投げる
-                    throw new Exception('在庫がありません');
-                }
-
-                $product->stock -= $quantity;
-                $product->save();
             }
 
             // トランザクションが正常に終了したら
             // DBの変更を確定する
             DB::commit();
 
-            session()->forget('cart');
+            // Stripeの決済画面へリダイレクトする。
+            // カートのクリアと在庫減算は決済完了後（PaymentController）で行う。
+            $checkoutUrl = $this->stripeCheckout->createSession($order);
 
-            session()->flash('message', '注文が完了しました！');
-
-            return view('orders.complete', [
-                'order' => $order,
-            ]);
+            return redirect($checkoutUrl);
         } catch (Exception $e) {
             // エラー処理
             // DBの変更を元に戻す
