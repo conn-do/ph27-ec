@@ -93,6 +93,6 @@ test('seeding assigns legacy products a category without overwriting their data'
     $this->seed(DatabaseSeeder::class);
     expect($product->fresh()->category->slug)->toBe('pen');
     expect($product->fresh()->name)->toBe('すごいペン')->and($product->fresh()->price)->toBe(777)->and($product->fresh()->stock)->toBe(4);
-    expect($product->fresh()->image)->toBe('images/products/catalog/01-great-pen.png');
+    expect($product->fresh()->image)->toBe('images/products/catalog/01-great-pen.webp');
     $this->assertDatabaseCount('products', 12);
 });
