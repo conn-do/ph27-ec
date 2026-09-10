@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\News;
 use App\Models\Category;
+use App\Models\OrderDetail;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -19,10 +21,21 @@ class ProductController extends Controller
 
         $categories = Category::all();
 
+        $ranking = OrderDetail::select(
+                'product_id',
+                DB::raw('SUM(quantity) as total_quantity')
+            )
+            ->with('product')
+            ->groupBy('product_id')
+            ->orderByDesc('total_quantity')
+            ->limit(3)
+            ->get();
+
         return view('index', [
             'products' => $products,
             'news' => $news,
             'categories' => $categories,
+            'ranking' => $ranking,
         ]);
     }
 
