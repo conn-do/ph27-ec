@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Settings;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\ProfileDeleteRequest;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
+use App\Models\OrderDetail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -38,7 +40,7 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
-        return to_route('profile.edit');
+        return back(fallback: route('profile.edit'))->with('message', 'プロフィールを更新しました。');
     }
 
     /**
@@ -48,9 +50,12 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
-        Auth::logout();
-
-        $user->delete();
+        DB::transaction(function () use ($user): void {
+            OrderDetail::whereIn('order_id', $user->orders()->select('id'))->delete();
+            $user->orders()->delete();
+            Auth::logout();
+            $user->delete();
+        });
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

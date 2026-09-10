@@ -2,57 +2,100 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Product;
-use App\Models\News;
+use App\Http\Requests\ProductSearchRequest;
 use App\Models\Category;
+use App\Models\News;
+use App\Models\Product;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(ProductSearchRequest $request, ?Category $category = null): View
     {
-        $products = Product::all();
-
-        $news = News::orderBy('id', 'desc')
-            ->limit(3)
-            ->get();
-
-        $categories = Category::all();
+        $keyword = $request->string('keyword')->trim()->toString();
+        $sort = $request->input('sort') ?: 'newest';
+        $query = $this->productQuery($request->user())
+            ->when($category, fn ($query) => $query->where('category_id', $category->id))
+            ->when($keyword !== '', fn ($query) => $query->where('name', 'like', '%'.$keyword.'%'));
+        match ($sort) {
+            'price_asc' => $query->orderBy('price')->orderBy('id'),
+            'price_desc' => $query->orderByDesc('price')->orderBy('id'),
+            default => $query->orderByDesc('id'),
+        };
 
         return view('index', [
-            'products' => $products,
-            'news' => $news,
-            'categories' => $categories,
+            'products' => $query->paginate(9)->withQueryString(),
+            'categories' => Category::withCount('products')->get(),
+            'category' => $category,
+            'keyword' => $keyword,
+            'sort' => $sort,
+            'news' => News::latest('id')->limit(3)->get(),
+            'ranking' => $this->rankingQuery($request->user())->limit(5)->get(),
         ]);
     }
 
-    public function show(Product $product)
+    public function show(Request $request, Product $product): View
     {
+        $product->load('category');
+        $this->loadFavoriteStatus($product, $request->user());
+
         return view('products.show', [
             'product' => $product,
+            'related' => $this->productQuery($request->user())->where('category_id', $product->category_id)->whereKeyNot($product->id)->limit(3)->get(),
         ]);
     }
 
-    public function search(Request $request)
+    public function search(ProductSearchRequest $request): View
     {
-        $keyword = $request->input('keyword');
+        return $this->index($request);
+    }
 
-        $products = Product::where('name', 'like', "%{$keyword}%")->get();
+    public function category(ProductSearchRequest $request, Category $category): View
+    {
+        return $this->index($request, $category);
+    }
 
-        $news = News::orderBy('id', 'desc')
-            ->limit(3)
-            ->get();
-
-        return view('index', [
-            'products' => $products,
-            'news' => $news,
+    public function ranking(Request $request): View
+    {
+        return view('products.ranking', [
+            'products' => $this->rankingQuery($request->user())->limit(5)->get(),
         ]);
     }
 
-    public function category(Category $category)
+    private function productQuery(?User $user): Builder
     {
-        return view('category', [
-            'category' => $category,
+        $query = Product::query()->with('category');
+
+        if ($user) {
+            $query->withExists([
+                'favoritedBy as is_favorited' => fn (Builder $query) => $query->where('users.id', $user->id),
+            ]);
+        }
+
+        return $query;
+    }
+
+    private function rankingQuery(?User $user): Builder
+    {
+        return $this->productQuery($user)
+            ->withSum('orderDetails as sold_quantity', 'quantity')
+            ->orderByDesc('sold_quantity')
+            ->orderByDesc('id');
+    }
+
+    private function loadFavoriteStatus(Product $product, ?User $user): void
+    {
+        if (! $user) {
+            $product->setAttribute('is_favorited', false);
+
+            return;
+        }
+
+        $product->loadExists([
+            'favoritedBy as is_favorited' => fn (Builder $query) => $query->where('users.id', $user->id),
         ]);
     }
 }
