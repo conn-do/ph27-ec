@@ -8,7 +8,8 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\MyPageController;
 use App\Http\Controllers\NewsController;
-
+use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\ProfileController;
 // Route::inertia('/', 'welcome', [
 //     'canRegister' => Features::enabled(Features::registration()),
 // ])->name('home');
@@ -74,4 +75,17 @@ Route::middleware(['auth'])->group(function () {
         '/mypage',
         [MyPageController::class, 'index']
     );
+});Route::middleware('auth')->group(function () {
+
+    // お気に入り一覧
+    Route::get('/favorites', [FavoriteController::class, 'index'])
+        ->name('favorites.index');
+
+    // お気に入り追加
+    Route::post('/products/{product}/favorite', [FavoriteController::class, 'store'])
+        ->name('favorites.store');
+
+    // お気に入り削除
+    Route::delete('/products/{product}/favorite', [FavoriteController::class, 'destroy'])
+        ->name('favorites.destroy');
 });

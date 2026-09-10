@@ -6,27 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table
-                ->integer('stock')
-                ->default(10)
-                ->unsigned() // マイナスを許容しない
-                ->after('description');
+            $table->integer('sales_count')->default(0);
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn('stock');
+            $table->dropColumn('sales_count');
         });
     }
 };

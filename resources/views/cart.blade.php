@@ -19,6 +19,7 @@
         <p>カートに商品がありません。</p>
     @else
         <form action="/orders" method="post">
+        @csrf
             <button type="submit">購入する</button>
         </form>
     @endempty
