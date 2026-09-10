@@ -14,7 +14,7 @@
             <a href="{{ route('home') }}">商品を探す</a>
             @auth
                 <a href="/orders">注文履歴</a>
-                <a href="/mypage">マイページ</a>
+                <a href="{{ route('mypage') }}">わたしの文具棚</a>
                 <form method="POST" action="{{ route('logout') }}">@csrf<button class="text-button" type="submit">ログアウト</button></form>
             @else
                 <a href="{{ route('login') }}">ログイン</a>

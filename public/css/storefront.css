@@ -601,3 +601,105 @@ th {
     width: 100%;
     margin-top: 6px;
 }
+
+/* Personal stationery shelf */
+.shelf-intro {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    padding: 30px 0 50px;
+}
+.shelf-intro h1 {
+    margin-bottom: 16px;
+}
+.shelf-intro p:last-child {
+    color: var(--muted);
+}
+.shelf-intro .button {
+    flex-shrink: 0;
+}
+.save-product {
+    margin-top: 30px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    font-size: 0.85rem;
+}
+.product-detail .save-product button {
+    margin-left: 0;
+}
+.shelf-button {
+    background: transparent;
+    color: var(--ink);
+}
+.shelf-button:hover {
+    background: #e9ecdf;
+}
+.shelf-item {
+    border-bottom: 3px solid #c8cdbb;
+    padding-bottom: 16px;
+}
+.shelf-item-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.8rem;
+}
+.member-panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-top: 64px;
+}
+.member-panel {
+    border: 1px solid var(--line);
+    padding: 30px;
+    border-radius: 10px;
+    min-width: 0;
+}
+.member-panel h2 {
+    font-size: 1.5rem;
+    margin-bottom: 16px;
+}
+.member-panel > p:not(.eyebrow) {
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+.member-panel .account-form {
+    max-width: none;
+    margin-bottom: 0;
+}
+.member-order {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--line);
+}
+.member-order small {
+    display: block;
+    color: var(--muted);
+}
+.member-panel .back-link {
+    margin: 24px 0 0;
+}
+.member-empty {
+    padding: 24px 0;
+}
+@media (max-width: 650px) {
+    .shelf-intro {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+    .member-panels {
+        grid-template-columns: 1fr;
+    }
+    .member-panel {
+        padding: 22px;
+    }
+}

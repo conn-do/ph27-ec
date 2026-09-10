@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ChirpController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\MyPageController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\OrderController;
@@ -59,6 +60,9 @@ Route::get('/news/{news}', [NewsController::class, 'show']);
 
 // ログイン必須にする
 Route::middleware(['auth'])->group(function () {
+    Route::post('/favorites/{product}', [FavoriteController::class, 'store'])->name('favorites.store');
+    Route::delete('/favorites/{product}', [FavoriteController::class, 'destroy'])->name('favorites.destroy');
+    Route::patch('/mypage', [MyPageController::class, 'update'])->name('mypage.update');
     Route::post(
         '/orders',
         [OrderController::class, 'store']
@@ -74,5 +78,5 @@ Route::middleware(['auth'])->group(function () {
     Route::get(
         '/mypage',
         [MyPageController::class, 'index']
-    );
+    )->name('mypage');
 });
