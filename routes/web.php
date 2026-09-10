@@ -5,12 +5,16 @@ use App\Http\Controllers\ChirpController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [ProductController::class, 'index'])->name('home');
 Route::get('products', [ProductController::class, 'index'])->name('products.index');
 Route::get('products/{product}', [ProductController::class, 'show'])->name('products.show');
 Route::get('search', [ProductController::class, 'search'])->name('products.search');
+Route::get('wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
+Route::post('wishlist/{product}', [WishlistController::class, 'store'])->name('wishlist.store');
+Route::delete('wishlist/{product}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
 Route::get('cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('cart', [CartController::class, 'store'])->name('cart.store');
 Route::patch('cart/{product}', [CartController::class, 'update'])->name('cart.update');
@@ -28,4 +32,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('chirps', ChirpController::class)->only(['index', 'store']);
 });
 
-require __DIR__ . '/settings.php';
+require __DIR__.'/settings.php';

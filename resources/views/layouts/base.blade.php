@@ -14,8 +14,9 @@
                 <img src="{{ asset('images/ec-logo.png') }}" alt="" class="h-12 w-12 object-contain">
                 <span class="hidden text-lg font-black tracking-tight sm:block">すごい文房具</span>
             </a>
-            <nav class="flex items-center gap-2 text-sm font-bold" aria-label="メインナビゲーション">
+            <nav class="flex flex-wrap items-center justify-end gap-2 text-sm font-bold" aria-label="メインナビゲーション">
                 <a href="{{ route('products.index') }}" class="rounded-full px-3 py-2 hover:bg-white">商品一覧</a>
+                <a href="{{ route('wishlist.index') }}" class="rounded-full px-3 py-2 hover:bg-white">お気に入り</a>
                 <a href="{{ route('cart.index') }}" class="rounded-full bg-slate-900 px-4 py-2 text-white hover:bg-amber-600">カート <span class="ml-1 text-amber-300">{{ array_sum(session('cart', [])) }}</span></a>
                 @guest
                     <a href="{{ route('login') }}" class="hidden rounded-full px-3 py-2 hover:bg-white sm:block">ログイン</a>

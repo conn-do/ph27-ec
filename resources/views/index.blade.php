@@ -8,15 +8,25 @@
         </div>
     </section>
     <section id="products" class="mx-auto max-w-7xl px-5 py-16 lg:px-8">
-        <div class="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between"><div><p class="font-black text-amber-600">OUR PICKS</p><h2 class="text-4xl font-black tracking-tight">おすすめの商品</h2></div><form action="{{ route('products.search') }}" method="GET" class="flex max-w-md gap-2"><label for="keyword" class="sr-only">商品名を検索</label><input id="keyword" type="search" name="keyword" value="{{ request('keyword') }}" placeholder="商品名を検索" class="min-w-0 flex-1 rounded-full border border-stone-300 bg-white px-5 py-3 outline-none ring-amber-500 focus:ring-2"><button class="rounded-full bg-amber-500 px-5 py-3 font-black text-slate-950 hover:bg-amber-400">検索</button></form></div>
-        @if (request('keyword'))<p class="mt-5 text-slate-600">「{{ request('keyword') }}」の検索結果 · <a href="{{ route('products.index') }}" class="font-bold text-amber-700 underline">クリア</a></p>@endif
+        <div><p class="font-black text-amber-600">OUR PICKS</p><h2 class="text-4xl font-black tracking-tight">おすすめの商品</h2></div>
+        <form action="{{ route('products.search') }}#products" method="GET" class="mt-8 grid gap-4 rounded-3xl border border-stone-200 bg-white p-5 sm:grid-cols-2 lg:grid-cols-3">
+            <label class="text-sm font-bold">キーワード<input type="search" name="keyword" value="{{ $filters['keyword'] ?? '' }}" maxlength="100" placeholder="商品名・説明を検索" class="mt-2 block w-full rounded-xl border border-stone-300 px-4 py-3"></label>
+            <label class="text-sm font-bold">カテゴリー<select name="category" class="mt-2 block w-full rounded-xl border border-stone-300 px-4 py-3"><option value="">すべてのカテゴリー</option>@foreach ($categories as $category)<option value="{{ $category->id }}" @selected(($filters['category'] ?? '') == $category->id)>{{ $category->name }}</option>@endforeach</select></label>
+            <label class="text-sm font-bold">並び順<select name="sort" class="mt-2 block w-full rounded-xl border border-stone-300 px-4 py-3">@foreach (['newest' => '新着順', 'price_asc' => '価格の安い順', 'price_desc' => '価格の高い順', 'name' => '商品名順'] as $value => $label)<option value="{{ $value }}" @selected(($filters['sort'] ?? 'newest') === $value)>{{ $label }}</option>@endforeach</select></label>
+            <label class="text-sm font-bold">最低価格（円）<input type="number" name="min_price" min="0" max="2147483647" value="{{ $filters['min_price'] ?? '' }}" class="mt-2 block w-full rounded-xl border border-stone-300 px-4 py-3"></label>
+            <label class="text-sm font-bold">最高価格（円）<input type="number" name="max_price" min="0" max="2147483647" value="{{ $filters['max_price'] ?? '' }}" class="mt-2 block w-full rounded-xl border border-stone-300 px-4 py-3"></label>
+            <div class="flex items-end gap-4"><button class="rounded-full bg-amber-500 px-6 py-3 font-black hover:bg-amber-400">検索</button><a href="{{ route('products.index') }}#products" class="py-3 font-bold text-slate-600 underline">クリア</a></div>
+            @if ($errors->any())<ul class="text-sm text-rose-700 sm:col-span-2 lg:col-span-3" role="alert">@foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>@endif
+        </form>
+        <p class="mt-5 text-slate-600">{{ number_format($products->total()) }}件の商品</p>
         <div class="mt-10 grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
             @forelse ($products as $product)
-                <article class="group overflow-hidden rounded-[2rem] border border-stone-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"><a href="{{ route('products.show', $product) }}" class="block overflow-hidden bg-stone-100"><img src="{{ asset($product->image) }}" alt="{{ $product->name }}" class="aspect-[4/3] w-full object-cover transition duration-500 group-hover:scale-105"></a><div class="p-6"><div class="flex items-start justify-between gap-4"><h3 class="text-2xl font-black">{{ $product->name }}</h3><p class="shrink-0 text-xl font-black text-amber-600">¥{{ number_format($product->price) }}</p></div><p class="mt-3 line-clamp-2 text-sm leading-6 text-slate-600">{{ $product->description }}</p><a href="{{ route('products.show', $product) }}" class="mt-6 inline-flex font-black text-slate-900 underline decoration-amber-400 decoration-4 underline-offset-4">詳しく見る →</a></div></article>
+                <x-product-card :product="$product" />
             @empty
                 <p class="col-span-full rounded-3xl border border-dashed border-stone-300 bg-white p-12 text-center text-slate-500">該当する商品はありません。</p>
             @endforelse
         </div>
+        <div class="mt-8">{{ $products->links() }}</div>
     </section>
     @if ($news->isNotEmpty())
         <section class="bg-slate-950 text-white"><div class="mx-auto max-w-7xl px-5 py-16 lg:px-8"><p class="font-black text-amber-400">NEWS</p><h2 class="mt-1 text-3xl font-black">お知らせ</h2><div class="mt-8 grid gap-4 md:grid-cols-3">@foreach ($news as $item)<a href="{{ route('news.show', $item) }}" class="rounded-3xl border border-slate-700 bg-slate-900 p-6 transition hover:border-amber-400"><time class="text-xs font-bold text-slate-400">{{ $item->created_at->format('Y.m.d') }}</time><h3 class="mt-2 text-lg font-black">{{ $item->title }}</h3><p class="mt-3 line-clamp-2 text-sm leading-6 text-slate-400">{{ strip_tags($item->content) }}</p></a>@endforeach</div></div></section>
