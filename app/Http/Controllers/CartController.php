@@ -56,4 +56,34 @@ class CartController extends Controller
         $request->session()->flash('message', 'カートを空にしました。');
         return redirect('/cart');
     }
+
+    public function remove(Request $request, $productId)
+    {
+        $cart = session()->get('cart', []);
+        if (isset($cart[$productId])) {
+            unset($cart[$productId]);
+            session()->put('cart', $cart);
+            $request->session()->flash('message', '商品をカートから削除しました。');
+        }
+        return redirect('/cart');
+    }
+
+    public function update(Request $request)
+    {
+        $validated = $request->validate([
+            'productId' => 'required|integer',
+            'quantity' => 'required|integer|min:1|max:10',
+        ], [
+            'quantity.min' => '1個以上選択してください。',
+            'quantity.max' => '10個以下を選択してください。',
+        ]);
+
+        $cart = session()->get('cart', []);
+        if (isset($cart[$validated['productId']])) {
+            $cart[$validated['productId']] = $validated['quantity'];
+            session()->put('cart', $cart);
+            $request->session()->flash('message', '数量を変更しました。');
+        }
+        return redirect('/cart');
+    }
 }

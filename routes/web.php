@@ -8,6 +8,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\MyPageController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\FavoriteController;
 
 // Route::inertia('/', 'welcome', [
 //     'canRegister' => Features::enabled(Features::registration()),
@@ -46,6 +47,14 @@ Route::get(
     [CartController::class, 'clear']
 );
 Route::get(
+    '/cart/remove/{productId}',
+    [CartController::class, 'remove']
+);
+Route::post(
+    '/cart/update',
+    [CartController::class, 'update']
+);
+Route::get(
     '/search',
     [ProductController::class, 'search']
 );
@@ -70,8 +79,24 @@ Route::middleware(['auth'])->group(function () {
         '/orders/{order}',
         [OrderController::class, 'show']
     );
+    Route::post(
+        '/orders/{order}/cancel',
+        [OrderController::class, 'cancel']
+    );
     Route::get(
         '/mypage',
         [MyPageController::class, 'index']
+    );
+    Route::post(
+        '/favorites', 
+        [FavoriteController::class, 'store']
+    );
+    Route::get(
+        '/favorites', 
+        [FavoriteController::class, 'index']
+    );
+    Route::get(
+        '/favorites/remove/{productId}', 
+        [FavoriteController::class, 'remove']
     );
 });

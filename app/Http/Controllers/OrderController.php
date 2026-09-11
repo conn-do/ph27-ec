@@ -87,4 +87,37 @@ class OrderController extends Controller
             'order' => $order,
         ]);
     }
+
+    public function cancel(Request $request, Order $order)
+    {
+        // 自分以外の注文はキャンセルできないようにする
+        if ($order->user_id !== $request->user()->id) {
+            abort(403);
+        }
+
+        if ($order->is_canceled) {
+            return redirect('/orders')->with('message', 'この注文は既にキャンセル済みです。');
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // 注文で減っていた在庫を元に戻す
+            foreach ($order->details as $detail) {
+                $product = Product::find($detail->product_id);
+                $product->stock += $detail->quantity;
+                $product->save();
+            }
+
+            $order->is_canceled = true;
+            $order->save();
+
+            DB::commit();
+
+            return redirect('/orders')->with('message', '注文をキャンセルしました。');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect('/orders')->with('message', 'キャンセルに失敗しました。');
+        }
+    }
 }
