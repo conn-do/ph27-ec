@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Services\CartService;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
+    public function __construct(private CartService $cart) {}
+
     public function store(Request $request)
     {
         // 入力チェックをして、OKならフォームの入力値を取得
@@ -25,11 +28,8 @@ class CartController extends Controller
                 'quantity' => '在庫が不足しています。',
             ])->withInput();
         }
-        // セッションにカートの内容を保存
-        $cart = session()->get('cart', []);
-        // [1 => 2, 2 => 3] （商品ID => 個数）
-        $cart[$validated['productId']] = $validated['quantity'];
-        session()->put('cart', $cart);
+
+        $this->cart->put($validated['productId'], $validated['quantity']);
 
         $request->session()->flash('message', 'カートに追加しました。');
 
@@ -39,7 +39,7 @@ class CartController extends Controller
     public function index()
     {
         // [1 => 2, 2 => 3] （商品ID => 個数）
-        $cart = session()->get('cart', []);
+        $cart = $this->cart->items();
         $items = [];
         $totalPrice = 0;
         foreach ($cart as $productId => $quantity) {
@@ -74,14 +74,11 @@ class CartController extends Controller
             ])->withInput();
         }
 
-        $cart = session()->get('cart', []);
-
-        if (! array_key_exists($productId, $cart)) {
+        if (! array_key_exists($productId, $this->cart->items())) {
             abort(404);
         }
 
-        $cart[$productId] = $validated['quantity'];
-        session()->put('cart', $cart);
+        $this->cart->put($productId, $validated['quantity']);
 
         $request->session()->flash('message', 'カートを更新しました。');
 
@@ -90,9 +87,7 @@ class CartController extends Controller
 
     public function destroy(Request $request, int $productId)
     {
-        $cart = session()->get('cart', []);
-        unset($cart[$productId]);
-        session()->put('cart', $cart);
+        $this->cart->remove($productId);
 
         $request->session()->flash('message', '商品をカートから削除しました。');
 
@@ -101,7 +96,7 @@ class CartController extends Controller
 
     public function clear(Request $request)
     {
-        session()->forget('cart');
+        $this->cart->clear();
         $request->session()->flash('message', 'カートを空にしました。');
 
         return redirect('/cart');

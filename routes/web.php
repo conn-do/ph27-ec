@@ -2,11 +2,13 @@
 
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ChirpController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\MyPageController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
@@ -101,6 +103,28 @@ Route::middleware(['auth'])->group(function () {
         '/checkout/cancel',
         [PaymentController::class, 'cancel']
     )->name('checkout.cancel');
+
+    Route::post(
+        '/products/{product}/reviews',
+        [ReviewController::class, 'store']
+    );
+    Route::post(
+        '/reviews/{review}/delete',
+        [ReviewController::class, 'destroy']
+    );
+
+    Route::get(
+        '/favorites',
+        [FavoriteController::class, 'index']
+    );
+    Route::post(
+        '/products/{product}/favorite',
+        [FavoriteController::class, 'store']
+    );
+    Route::post(
+        '/products/{product}/unfavorite',
+        [FavoriteController::class, 'destroy']
+    );
 });
 
 // Stripeサーバーから直接POSTされるため認証・CSRF検証の対象外

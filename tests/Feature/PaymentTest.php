@@ -2,6 +2,7 @@
 
 use App\Enums\PaymentStatus;
 use App\Mail\OrderConfirmationMail;
+use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Product;
@@ -34,17 +35,18 @@ test('決済成功時に注文が確定し在庫が減ってカートが空に�
         $mock->shouldReceive('retrieveSession')->once()->andReturn($session);
     });
 
+    CartItem::factory()->create(['user_id' => $user->id, 'product_id' => $product->id, 'quantity' => 3]);
+
     Mail::fake();
 
     $this->actingAs($user)
-        ->withSession(['cart' => [$product->id => 3]])
         ->get('/checkout/success?order_id='.$order->id)
         ->assertOk();
 
     expect($order->fresh()->payment_status)->toBe(PaymentStatus::Paid);
     expect($order->fresh()->stripe_payment_intent_id)->toBe('pi_test_123');
     expect($product->fresh()->stock)->toBe(7);
-    expect(session('cart'))->toBeNull();
+    expect(CartItem::where('user_id', $user->id)->exists())->toBeFalse();
 
     Mail::assertQueued(OrderConfirmationMail::class, function ($mail) use ($order, $user) {
         return $mail->order->id === $order->id

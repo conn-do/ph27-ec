@@ -24,16 +24,17 @@ class DatabaseSeeder extends Seeder
         $this->call(CategorySeeder::class);
         $this->call(ProductSeeder::class);
 
-        $user = new User();
+        $user = new User;
         $user->name = 'Test';
         $user->email = 'test@example.com';
         $user->password = Hash::make('password');
+        $user->is_admin = true;
         $user->save();
 
         $this->call(OrderSeeder::class);
 
-         $this->call([
-        NewsSeeder::class,
-    ]);
+        $this->call([
+            NewsSeeder::class,
+        ]);
     }
 }

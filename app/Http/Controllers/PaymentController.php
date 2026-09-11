@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\PaymentStatus;
 use App\Mail\OrderConfirmationMail;
 use App\Models\Order;
+use App\Services\CartService;
 use App\Services\StripeCheckoutService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,10 @@ use UnexpectedValueException;
 
 class PaymentController extends Controller
 {
-    public function __construct(private StripeCheckoutService $stripeCheckout) {}
+    public function __construct(
+        private StripeCheckoutService $stripeCheckout,
+        private CartService $cart,
+    ) {}
 
     /**
      * Stripeの決済画面から「成功」で戻ってきた時の処理。
@@ -32,7 +36,7 @@ class PaymentController extends Controller
 
         if ($session->payment_status === 'paid') {
             $this->confirmOrder($order, $session->payment_intent);
-            session()->forget('cart');
+            $this->cart->clear();
 
             return view('orders.complete', [
                 'order' => $order->fresh(),

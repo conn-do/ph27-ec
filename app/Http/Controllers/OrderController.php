@@ -7,6 +7,7 @@ use App\Enums\PaymentStatus;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Product;
+use App\Services\CartService;
 use App\Services\StripeCheckoutService;
 use Exception;
 use Illuminate\Http\Request;
@@ -14,14 +15,15 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
-    public function __construct(private StripeCheckoutService $stripeCheckout) {}
+    public function __construct(
+        private StripeCheckoutService $stripeCheckout,
+        private CartService $cart,
+    ) {}
 
     public function create()
     {
-        $cart = session()->get('cart', []);
-
         // カートが空なら配送先入力に進ませず、カート画面に戻す
-        if (empty($cart)) {
+        if ($this->cart->isEmpty()) {
             return redirect('/cart')->with('message', 'カートに商品がありません。');
         }
 
@@ -39,7 +41,7 @@ class OrderController extends Controller
         ]);
 
         // カートが空のままPOSTされた場合はここで弾く（直接URLアクセス対策）
-        if (empty(session()->get('cart', []))) {
+        if ($this->cart->isEmpty()) {
             return redirect('/cart')->with('message', 'カートに商品がありません。');
         }
 
@@ -50,7 +52,7 @@ class OrderController extends Controller
             DB::beginTransaction();
             // 注文処理
             // [1 => 3, 2 => 5] (商品ID => 数量)
-            $cart = session()->get('cart', []);
+            $cart = $this->cart->items();
             $totalPrice = 0;
             foreach ($cart as $productId => $quantity) {
                 /** @var Product $product */

@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\PaymentStatus;
+use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
@@ -9,9 +10,9 @@ use App\Services\StripeCheckoutService;
 test('カートに商品があれば配送先入力画面を表示できる', function () {
     $user = User::factory()->create();
     $product = Product::factory()->create(['stock' => 5]);
-    $this->actingAs($user)->withSession(['cart' => [$product->id => 2]]);
+    CartItem::factory()->create(['user_id' => $user->id, 'product_id' => $product->id, 'quantity' => 2]);
 
-    $this->get('/orders/create')->assertOk();
+    $this->actingAs($user)->get('/orders/create')->assertOk();
 });
 
 test('カートが空だと配送先入力画面に進めずカートへ戻される', function () {
@@ -25,7 +26,7 @@ test('カートが空だと配送先入力画面に進めずカートへ戻さ�
 test('配送先を入力すると未払いの注文が作成され決済画面へリダイレクトされる', function () {
     $user = User::factory()->create();
     $product = Product::factory()->create(['stock' => 5, 'price' => 1000]);
-    $this->actingAs($user)->withSession(['cart' => [$product->id => 2]]);
+    CartItem::factory()->create(['user_id' => $user->id, 'product_id' => $product->id, 'quantity' => 2]);
 
     $this->mock(StripeCheckoutService::class, function ($mock) {
         $mock->shouldReceive('createSession')
@@ -33,7 +34,7 @@ test('配送先を入力すると未払いの注文が作成され決済画面�
             ->andReturn('https://checkout.stripe.com/test-session');
     });
 
-    $response = $this->post('/orders', [
+    $response = $this->actingAs($user)->post('/orders', [
         'shipping_name' => '山田太郎',
         'shipping_postal_code' => '123-4567',
         'shipping_address' => '東京都渋谷区1-1-1',
@@ -50,16 +51,16 @@ test('配送先を入力すると未払いの注文が作成され決済画面�
     expect($order->total_price)->toBe(2000);
     expect($order->payment_status)->toBe(PaymentStatus::Unpaid);
     // 決済完了前なのでカートはまだ残っており、在庫も減っていない
-    expect(session('cart'))->not->toBeNull();
+    expect(CartItem::where('user_id', $user->id)->exists())->toBeTrue();
     expect($product->fresh()->stock)->toBe(5);
 });
 
 test('在庫を超える注文はできない', function () {
     $user = User::factory()->create();
     $product = Product::factory()->create(['stock' => 1, 'price' => 1000]);
-    $this->actingAs($user)->withSession(['cart' => [$product->id => 2]]);
+    CartItem::factory()->create(['user_id' => $user->id, 'product_id' => $product->id, 'quantity' => 2]);
 
-    $response = $this->post('/orders', [
+    $response = $this->actingAs($user)->post('/orders', [
         'shipping_name' => '山田太郎',
         'shipping_postal_code' => '123-4567',
         'shipping_address' => '東京都渋谷区1-1-1',
@@ -73,9 +74,9 @@ test('在庫を超える注文はできない', function () {
 test('配送先を入力しないと注文できない', function () {
     $user = User::factory()->create();
     $product = Product::factory()->create(['stock' => 5]);
-    $this->actingAs($user)->withSession(['cart' => [$product->id => 1]]);
+    CartItem::factory()->create(['user_id' => $user->id, 'product_id' => $product->id, 'quantity' => 1]);
 
-    $response = $this->post('/orders', []);
+    $response = $this->actingAs($user)->post('/orders', []);
 
     $response->assertSessionHasErrors([
         'shipping_name',

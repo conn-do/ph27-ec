@@ -4,7 +4,7 @@ namespace App\Filament\Resources\Users\Schemas;
 
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 
 class UserForm
@@ -22,7 +22,10 @@ class UserForm
                 DateTimePicker::make('email_verified_at'),
                 TextInput::make('password')
                     ->password()
-                    ->required(fn(string $operation): bool => $operation === 'create'),
+                    ->required(fn (string $operation): bool => $operation === 'create'),
+                Toggle::make('is_admin')
+                    ->label('管理者')
+                    ->helperText('ONにすると管理画面にログインできるようになります。'),
             ]);
     }
 }

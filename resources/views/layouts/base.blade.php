@@ -1,32 +1,57 @@
-<html>
+<html lang="ja">
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title') - すごい文房具サイト</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="container">
-    <header>
-        <a href="/">
-            <img src="{{ asset('images/ec-logo.png') }}" width="100">
-        </a>
-        <a href="/cart">カートを見る</a>
-        @auth
-            <a href="/mypage">マイページ</a>
-            <form method="POST" action="{{ route('logout') }}">
-                <button type="submit">ログアウト</button>
-            </form>
-        @endauth
-        @guest
-            <a href="{{ route('login') }}">ログイン</a>
-        @endguest
+<body class="min-h-screen bg-stone-50 text-stone-800 antialiased flex flex-col">
+    <header class="sticky top-0 z-10 border-b border-stone-200 bg-white/90 backdrop-blur">
+        <div class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3">
+            <a href="/" class="flex items-center gap-2 shrink-0">
+                <img src="{{ asset('images/ec-logo.png') }}" width="36" height="36" class="rounded-md">
+                <span class="hidden text-lg font-bold tracking-tight text-stone-900 sm:inline">すごい文房具サイト</span>
+            </a>
+
+            <nav class="flex items-center gap-4 text-sm font-medium text-stone-600">
+                <a href="/cart" class="rounded-lg px-3 py-2 transition hover:bg-stone-100 hover:text-stone-900">
+                    カートを見る
+                </a>
+                @auth
+                    <a href="/mypage" class="rounded-lg px-3 py-2 transition hover:bg-stone-100 hover:text-stone-900">
+                        マイページ
+                    </a>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit"
+                            class="rounded-lg px-3 py-2 transition hover:bg-stone-100 hover:text-stone-900">
+                            ログアウト
+                        </button>
+                    </form>
+                @endauth
+                @guest
+                    <a href="{{ route('login') }}"
+                        class="rounded-lg bg-amber-600 px-4 py-2 text-white shadow-sm transition hover:bg-amber-700">
+                        ログイン
+                    </a>
+                @endguest
+            </nav>
+        </div>
     </header>
-    <main>
+
+    <main class="mx-auto w-full max-w-5xl flex-1 px-4 py-8">
+        @if (session('message'))
+            <div class="mb-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+                {!! session('message') !!}
+            </div>
+        @endif
+
         @yield('content')
     </main>
-    <footer>
+
+    <footer class="border-t border-stone-200 bg-white py-6 text-center text-sm text-stone-500">
         © HAL東京
     </footer>
 </body>
