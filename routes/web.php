@@ -8,6 +8,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\MyPageController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\ReviewController; // ← ここでReviewControllerをインポート！
 
 // Route::inertia('/', 'welcome', [
 //     'canRegister' => Features::enabled(Features::registration()),
@@ -74,4 +75,10 @@ Route::middleware(['auth'])->group(function () {
         '/mypage',
         [MyPageController::class, 'index']
     );
+
+    // レビュー投稿用ルート
+    Route::post(
+        '/products/{product}/reviews',
+        [ReviewController::class, 'store']
+    )->name('reviews.store');
 });

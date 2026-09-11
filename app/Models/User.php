@@ -21,11 +21,6 @@ class User extends Authenticatable implements FilamentUser
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, TwoFactorAuthenticatable;
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -43,6 +38,20 @@ class User extends Authenticatable implements FilamentUser
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
+    }
+
+    // ▼ 追加：ユーザーのレビュー
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    // ▼ 追加：特定の商品を購入したことがあるか判定するメソッド
+    public function hasPurchased($productId): bool
+    {
+        return $this->orders()->whereHas('items', function ($query) use ($productId) {
+            $query->where('product_id', $productId);
+        })->exists();
     }
 
     public function canAccessPanel(Panel $panel): bool
