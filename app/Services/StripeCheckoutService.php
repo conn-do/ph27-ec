@@ -33,7 +33,7 @@ class StripeCheckoutService
             'quantity' => $detail->quantity,
         ])->all();
 
-        $session = $this->client->checkout->sessions->create([
+        $params = [
             'mode' => 'payment',
             'line_items' => $lineItems,
             'success_url' => route('checkout.success').'?order_id='.$order->id,
@@ -41,7 +41,23 @@ class StripeCheckoutService
             'metadata' => [
                 'order_id' => (string) $order->id,
             ],
-        ]);
+        ];
+
+        // クーポン割引がある場合、その場でStripeクーポンを作成しセッションに割引として適用する。
+        if ($order->discount_amount > 0) {
+            $stripeCoupon = $this->client->coupons->create([
+                'amount_off' => $order->discount_amount,
+                'currency' => 'jpy',
+                'duration' => 'once',
+                'name' => 'クーポン割引'.($order->coupon_code ? " ({$order->coupon_code})" : ''),
+            ]);
+
+            $params['discounts'] = [
+                ['coupon' => $stripeCoupon->id],
+            ];
+        }
+
+        $session = $this->client->checkout->sessions->create($params);
 
         $order->update(['stripe_checkout_session_id' => $session->id]);
 

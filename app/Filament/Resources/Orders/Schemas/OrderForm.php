@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Orders\Schemas;
 use App\Enums\OrderStatus;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 
 class OrderForm
@@ -26,7 +27,16 @@ class OrderForm
                         OrderStatus::Shipped->value => '発送済み',
                         OrderStatus::Cancelled->value => 'キャンセル',
                     ])
-                    ->required(),
+                    ->required()
+                    ->live(),
+                TextInput::make('carrier')
+                    ->label('配送業者')
+                    ->maxLength(255)
+                    ->visible(fn (Get $get): bool => $get('status') === OrderStatus::Shipped->value),
+                TextInput::make('tracking_number')
+                    ->label('追跡番号')
+                    ->maxLength(255)
+                    ->visible(fn (Get $get): bool => $get('status') === OrderStatus::Shipped->value),
             ]);
     }
 }

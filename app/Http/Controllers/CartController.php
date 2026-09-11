@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Coupon;
 use App\Models\Product;
 use App\Services\CartService;
 use Illuminate\Http\Request;
@@ -51,9 +52,26 @@ class CartController extends Controller
             $totalPrice += $product->price * $quantity;
         }
 
+        $coupon = null;
+        $discountAmount = 0;
+
+        if ($code = session('coupon_code')) {
+            $coupon = Coupon::where('code', $code)->first();
+
+            if (! $coupon || ! $coupon->isValid()) {
+                session()->forget('coupon_code');
+                $coupon = null;
+            } else {
+                $discountAmount = $coupon->calculateDiscount($totalPrice);
+            }
+        }
+
         return view('cart', [
             'items' => $items,
-            'totalPrice' => $totalPrice, // 合計金額
+            'totalPrice' => $totalPrice, // 割引前の合計金額
+            'coupon' => $coupon,
+            'discountAmount' => $discountAmount,
+            'finalPrice' => $totalPrice - $discountAmount,
         ]);
     }
 

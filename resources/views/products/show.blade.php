@@ -76,7 +76,7 @@
                     @csrf
                     <div>
                         <label class="mb-1 block text-xs font-medium text-stone-600">個数</label>
-                        <input type="number" name="quantity" min="1" max="10" value="{{ old('quantity', 1) }}"
+                        <input type="number" name="quantity" min="1" max="{{ min($product->stock, 10) }}" value="{{ old('quantity', 1) }}"
                             class="w-20 rounded-lg border border-stone-300 px-3 py-2 text-sm @error('quantity') border-red-400 @enderror focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500">
                     </div>
                     <input type="hidden" name="productId" value="{{ $product->id }}">

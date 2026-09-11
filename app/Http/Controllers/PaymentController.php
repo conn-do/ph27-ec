@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\PaymentStatus;
 use App\Mail\OrderConfirmationMail;
+use App\Models\Coupon;
 use App\Models\Order;
 use App\Services\CartService;
 use App\Services\StripeCheckoutService;
@@ -37,6 +38,7 @@ class PaymentController extends Controller
         if ($session->payment_status === 'paid') {
             $this->confirmOrder($order, $session->payment_intent);
             $this->cart->clear();
+            session()->forget('coupon_code');
 
             return view('orders.complete', [
                 'order' => $order->fresh(),
@@ -107,6 +109,10 @@ class PaymentController extends Controller
         DB::transaction(function () use ($order, $paymentIntentId) {
             foreach ($order->details as $detail) {
                 $detail->product->decrement('stock', $detail->quantity);
+            }
+
+            if ($order->coupon_code) {
+                Coupon::where('code', $order->coupon_code)->increment('used_count');
             }
 
             $order->update([

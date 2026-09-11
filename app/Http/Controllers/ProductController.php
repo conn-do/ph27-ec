@@ -5,13 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\News;
 use App\Models\Product;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::all();
+        $products = $this->applySort(Product::query(), $request->input('sort'))->get();
 
         $news = News::orderBy('id', 'desc')
             ->limit(3)
@@ -63,7 +65,7 @@ class ProductController extends Controller
             $query->where('stock', '>', 0);
         }
 
-        $products = $query->get();
+        $products = $this->applySort($query, $request->input('sort'))->get();
 
         $news = News::orderBy('id', 'desc')
             ->limit(3)
@@ -78,10 +80,25 @@ class ProductController extends Controller
         ]);
     }
 
-    public function category(Category $category)
+    public function category(Category $category, Request $request)
     {
+        $products = $this->applySort($category->products(), $request->input('sort'))->get();
+
         return view('category', [
             'category' => $category,
+            'products' => $products,
         ]);
+    }
+
+    /**
+     * 並び替え指定に応じてクエリへorderByを適用する。
+     */
+    private function applySort(Builder|Relation $query, ?string $sort): Builder|Relation
+    {
+        return match ($sort) {
+            'price_asc' => $query->orderBy('price', 'asc'),
+            'price_desc' => $query->orderBy('price', 'desc'),
+            default => $query->orderBy('id', 'desc'),
+        };
     }
 }

@@ -59,3 +59,18 @@ test('カートから商品を削除できる', function () {
     $response->assertRedirect('/cart');
     expect(session('cart'))->toBe([]);
 });
+
+test('商品詳細ページの個数入力の上限は在庫数と10個の小さい方になる', function () {
+    $lowStock = Product::factory()->create(['stock' => 3]);
+    $highStock = Product::factory()->create(['stock' => 50]);
+
+    $this->get("/products/{$lowStock->id}")->assertSee('max="3"', false);
+    $this->get("/products/{$highStock->id}")->assertSee('max="10"', false);
+});
+
+test('カートページの個数入力の上限は在庫数と10個の小さい方になる', function () {
+    $product = Product::factory()->create(['stock' => 3]);
+    $this->withSession(['cart' => [$product->id => 1]]);
+
+    $this->get('/cart')->assertSee('max="3"', false);
+});

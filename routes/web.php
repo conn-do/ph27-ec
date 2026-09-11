@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\CartController;
-use App\Http\Controllers\ChirpController;
+use App\Http\Controllers\CouponController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\MyPageController;
 use App\Http\Controllers\NewsController;
@@ -22,15 +22,6 @@ use Laravel\Fortify\Features;
 
 require __DIR__.'/settings.php';
 
-Route::get(
-    '/chirps',
-    [ChirpController::class, 'index']
-);
-Route::post(
-    '/chirps',
-    [ChirpController::class, 'store']
-);
-
 Route::get('/', [ProductController::class, 'index']);
 Route::get(
     '/products/{product}',
@@ -44,6 +35,19 @@ Route::get(
     '/cart',
     [CartController::class, 'index']
 );
+Route::get(
+    '/cart/clear',
+    [CartController::class, 'clear']
+);
+// {productId}のワイルドカードルートより前に置き、/cart/couponがそちらに吸われないようにする
+Route::post(
+    '/cart/coupon',
+    [CouponController::class, 'store']
+);
+Route::get(
+    '/cart/coupon/remove',
+    [CouponController::class, 'destroy']
+);
 Route::post(
     '/cart/{productId}',
     [CartController::class, 'update']
@@ -51,10 +55,6 @@ Route::post(
 Route::get(
     '/cart/{productId}/remove',
     [CartController::class, 'destroy']
-);
-Route::get(
-    '/cart/clear',
-    [CartController::class, 'clear']
 );
 Route::get(
     '/search',

@@ -28,6 +28,10 @@ class OrdersTable
                     ->label('ステータス')
                     ->formatStateUsing(fn (OrderStatus $state) => $state->label())
                     ->sortable(),
+                TextColumn::make('tracking_number')
+                    ->label('追跡番号')
+                    ->placeholder('-')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->label('注文日時')
                     ->dateTime()

@@ -41,7 +41,26 @@
                 <a href="/" class="mb-4 inline-block text-sm text-amber-700 hover:underline">検索結果をクリア</a>
             @endif
 
-            <h2 class="mb-4 text-xl font-bold text-stone-900">商品一覧</h2>
+            <div class="mb-4 flex items-center justify-between">
+                <h2 class="text-xl font-bold text-stone-900">商品一覧</h2>
+
+                <form action="/search" method="GET">
+                    <input type="hidden" name="keyword" value="{{ request('keyword') }}">
+                    <input type="hidden" name="min_price" value="{{ request('min_price') }}">
+                    <input type="hidden" name="max_price" value="{{ request('max_price') }}">
+                    <input type="hidden" name="in_stock_only" value="{{ request('in_stock_only') }}">
+
+                    <label class="flex items-center gap-2 text-sm text-stone-600">
+                        並び替え
+                        <select name="sort" onchange="this.form.submit()"
+                            class="rounded-lg border border-stone-300 px-2 py-1.5 text-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500">
+                            <option value="new" @selected(request('sort', 'new') === 'new')>新着順</option>
+                            <option value="price_asc" @selected(request('sort') === 'price_asc')>価格が安い順</option>
+                            <option value="price_desc" @selected(request('sort') === 'price_desc')>価格が高い順</option>
+                        </select>
+                    </label>
+                </form>
+            </div>
 
             @if ($products->isEmpty())
                 <p class="text-sm text-stone-500">商品が見つかりませんでした。</p>

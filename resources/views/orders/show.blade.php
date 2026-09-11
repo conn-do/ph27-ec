@@ -22,7 +22,16 @@
                     </li>
                 @endforeach
             </ul>
-            <div class="mt-3 flex justify-end border-t border-stone-100 pt-3">
+            <div class="mt-3 border-t border-stone-100 pt-3 text-right">
+                @if ($order->discount_amount > 0)
+                    <p class="text-sm text-stone-500">小計: {{ number_format($order->total_price + $order->discount_amount) }}円</p>
+                    <p class="text-sm text-red-600">
+                        割引: -{{ number_format($order->discount_amount) }}円
+                        @if ($order->coupon_code)
+                            （{{ $order->coupon_code }}）
+                        @endif
+                    </p>
+                @endif
                 <p class="text-base font-bold text-stone-900">合計: {{ number_format($order->total_price) }}円</p>
             </div>
         </div>
@@ -34,6 +43,24 @@
             <p class="text-sm text-stone-500">{{ $order->shipping_address }}</p>
             <p class="text-sm text-stone-500">{{ $order->shipping_phone }}</p>
         </div>
+
+        @if ($order->status === \App\Enums\OrderStatus::Shipped)
+            <div class="mt-6 rounded-xl border border-stone-200 bg-white p-5">
+                <h2 class="mb-3 text-sm font-bold text-stone-900">配送状況</h2>
+                @if ($order->shipped_at)
+                    <p class="text-sm text-stone-500">発送日時: {{ $order->shipped_at->format('Y/m/d H:i') }}</p>
+                @endif
+                @if ($order->carrier)
+                    <p class="text-sm text-stone-500">配送業者: {{ $order->carrier }}</p>
+                @endif
+                @if ($order->tracking_number)
+                    <p class="text-sm text-stone-500">追跡番号: {{ $order->tracking_number }}</p>
+                @endif
+                @if (! $order->carrier && ! $order->tracking_number)
+                    <p class="text-sm text-stone-500">発送済みです。追跡情報は準備中です。</p>
+                @endif
+            </div>
+        @endif
 
         @if ($order->status === \App\Enums\OrderStatus::Pending)
             <form action="/orders/{{ $order->id }}/cancel" method="POST" class="mt-6">

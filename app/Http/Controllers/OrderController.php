@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
+use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Product;
@@ -66,9 +67,25 @@ class OrderController extends Controller
                 $totalPrice += $product->price * $quantity;
             }
 
+            // カートに適用中のクーポンがあれば割引額を計算する（有効期限切れ等は再チェックする）
+            $coupon = null;
+            $discountAmount = 0;
+
+            if ($couponCode = session('coupon_code')) {
+                $coupon = Coupon::where('code', $couponCode)->first();
+
+                if (! $coupon || ! $coupon->isValid()) {
+                    throw new Exception('クーポンの有効期限が切れているか、利用できなくなりました。カートをご確認ください。');
+                }
+
+                $discountAmount = $coupon->calculateDiscount($totalPrice);
+            }
+
             // この時点ではまだ「未払い」の仮注文として保存する。在庫は減らさない。
             $order = new Order;
-            $order->total_price = $totalPrice;
+            $order->total_price = $totalPrice - $discountAmount;
+            $order->coupon_code = $coupon?->code;
+            $order->discount_amount = $discountAmount;
             $order->user_id = $request->user()->id;
             // バリデーション済みの配送先情報を設定
             $order->shipping_name = $validated['shipping_name'];

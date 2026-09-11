@@ -16,6 +16,9 @@
             </a>
 
             <nav class="flex items-center gap-4 text-sm font-medium text-stone-600">
+                <a href="/" class="rounded-lg px-3 py-2 transition hover:bg-stone-100 hover:text-stone-900">
+                    ホーム
+                </a>
                 <a href="/cart" class="rounded-lg px-3 py-2 transition hover:bg-stone-100 hover:text-stone-900">
                     カートを見る
                 </a>

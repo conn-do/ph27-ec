@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Category;
 use App\Models\Product;
 
 test('キーワードで商品名を検索できる', function () {
@@ -66,4 +67,53 @@ test('絞り込み条件がなければ全商品が表示される', function ()
 
     $response->assertOk();
     expect(Product::count())->toBe(3);
+});
+
+test('商品一覧を価格が安い順に並び替えられる', function () {
+    $expensive = Product::factory()->create(['name' => '高い商品', 'price' => 5000]);
+    $cheap = Product::factory()->create(['name' => '安い商品', 'price' => 100]);
+
+    $response = $this->get('/?sort=price_asc');
+
+    $response->assertOk();
+    $cheapPosition = strpos($response->getContent(), $cheap->name);
+    $expensivePosition = strpos($response->getContent(), $expensive->name);
+    expect($cheapPosition)->toBeLessThan($expensivePosition);
+});
+
+test('商品一覧を価格が高い順に並び替えられる', function () {
+    $expensive = Product::factory()->create(['name' => '高い商品', 'price' => 5000]);
+    $cheap = Product::factory()->create(['name' => '安い商品', 'price' => 100]);
+
+    $response = $this->get('/?sort=price_desc');
+
+    $response->assertOk();
+    $cheapPosition = strpos($response->getContent(), $cheap->name);
+    $expensivePosition = strpos($response->getContent(), $expensive->name);
+    expect($expensivePosition)->toBeLessThan($cheapPosition);
+});
+
+test('検索結果も価格順に並び替えられる', function () {
+    $expensive = Product::factory()->create(['name' => 'すごい高い商品', 'price' => 5000]);
+    $cheap = Product::factory()->create(['name' => 'すごい安い商品', 'price' => 100]);
+
+    $response = $this->get('/search?keyword=すごい&sort=price_asc');
+
+    $response->assertOk();
+    $cheapPosition = strpos($response->getContent(), $cheap->name);
+    $expensivePosition = strpos($response->getContent(), $expensive->name);
+    expect($cheapPosition)->toBeLessThan($expensivePosition);
+});
+
+test('カテゴリページの商品も価格順に並び替えられる', function () {
+    $category = Category::factory()->create();
+    $expensive = Product::factory()->create(['name' => '高い商品', 'price' => 5000, 'category_id' => $category->id]);
+    $cheap = Product::factory()->create(['name' => '安い商品', 'price' => 100, 'category_id' => $category->id]);
+
+    $response = $this->get("/categories/{$category->slug}?sort=price_asc");
+
+    $response->assertOk();
+    $cheapPosition = strpos($response->getContent(), $cheap->name);
+    $expensivePosition = strpos($response->getContent(), $expensive->name);
+    expect($cheapPosition)->toBeLessThan($expensivePosition);
 });

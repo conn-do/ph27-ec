@@ -36,11 +36,6 @@ class User extends Authenticatable implements FilamentUser
         ];
     }
 
-    public function chirps(): HasMany
-    {
-        return $this->hasMany(Chirp::class);
-    }
-
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
