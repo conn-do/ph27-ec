@@ -3,21 +3,54 @@
 @section('title', '配送先住所の編集')
 
 @section('content')
-    <h2>配送先住所の編集</h2>
 
-    <form action="/address" method="POST">
-        @csrf
+    <section class="address-edit-page">
 
-        <label>
-            郵便番号
-            <input type="text" name="postal_code" value="{{ $address->postal_code }}">
-        </label>
+        <div class="address-edit-heading">
+            <h2>ADDRESS</h2>
+            <p>配送先住所の編集</p>
+        </div>
 
-        <label>
-            住所
-            <input type="text" name="address" value="{{ $address->address }}">
-        </label>
+        <div class="address-edit-content">
 
-        <input type="submit" value="保存">
-    </form>
+            <form action="/address" method="POST" class="address-edit-form">
+                @csrf
+
+                <div class="address-edit-field">
+                    <label for="postal_code">
+                        郵便番号
+                    </label>
+
+                    <input
+                        type="text"
+                        id="postal_code"
+                        name="postal_code"
+                        value="{{ $address->postal_code }}"
+                    >
+                </div>
+
+                <div class="address-edit-field">
+                    <label for="address">
+                        住所
+                    </label>
+
+                    <input
+                        type="text"
+                        id="address"
+                        name="address"
+                        value="{{ $address->address }}"
+                    >
+                </div>
+
+                <input
+                    type="submit"
+                    value="保存する"
+                    class="address-edit-submit"
+                >
+            </form>
+
+        </div>
+
+    </section>
+
 @endsection

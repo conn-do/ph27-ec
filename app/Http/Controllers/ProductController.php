@@ -12,13 +12,18 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::all();
+        $products = Product::where('is_active', true)->get();
 
         $news = News::orderBy('id', 'desc')
             ->limit(3)
             ->get();
 
-        $categories = Category::all();
+        $categories = Category::whereIn('slug', [
+            'writing',
+            'notebook',
+            'rubber-stamps',
+            'clips-pins',
+        ])->get();
 
         $orderDetails = OrderDetail::all();
 
@@ -38,6 +43,10 @@ class ProductController extends Controller
 
         foreach ($sales as $productId => $quantity) {
             $product = Product::find($productId);
+
+            if (!$product || !$product->is_active) {
+                continue;
+            }
 
             $ranking[] = [
                 'product' => $product,
@@ -68,7 +77,12 @@ class ProductController extends Controller
     {
         $keyword = $request->input('keyword');
 
-        $products = Product::where('name', 'like', "%{$keyword}%")->get();
+        $products = Product::where('is_active', true)
+            ->where(function ($query) use ($keyword) {
+                $query->where('name', 'like', "%{$keyword}%")
+                    ->orWhere('description', 'like', "%{$keyword}%");
+            })
+            ->get();
 
         return view('search', [
             'products' => $products,

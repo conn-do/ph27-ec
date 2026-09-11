@@ -4,18 +4,26 @@
 
 @section('content')
 
-    <div class="news-detail">
+    <section class="news-detail-page">
 
-        <h1 class="news-detail-title">
-            {{ $news->title }}
-        </h1>
-
-        <div class="news-detail-body">
-            {!! $news->content !!}
+        <div class="news-detail-heading">
+            <span>NEWS</span>
+            <h2>{{ $news->title }}</h2>
         </div>
 
-        <a href="/" class="back-link">← 戻る</a>
+        <div class="news-detail-content">
+            <div class="news-detail-body">
+                {!! $news->content !!}
+            </div>
+        </div>
 
-    </div>
+        <div class="news-detail-back">
+            <a href="/">
+                <span>←</span>
+                NEWS一覧に戻る
+            </a>
+        </div>
+
+    </section>
 
 @endsection

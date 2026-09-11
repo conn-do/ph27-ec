@@ -14,13 +14,23 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         $category1 = new Category();
-        $category1->name = '筆記用具';
-        $category1->slug = 'pen';
+        $category1->name = '筆記具';
+        $category1->slug = 'writing';
         $category1->save();
 
         $category2 = new Category();
-        $category2->name = '収納';
-        $category2->slug = 'storage';
+        $category2->name = 'ノート・手帳';
+        $category2->slug = 'notebook';
         $category2->save();
+
+        $category3 = new Category();
+        $category3->name = 'スタンプ';
+        $category3->slug = 'rubber-stamps';
+        $category3->save();
+
+        $category4 = new Category();
+        $category4->name = 'クリップ・ピン';
+        $category4->slug = 'clips-pins';
+        $category4->save();
     }
 }

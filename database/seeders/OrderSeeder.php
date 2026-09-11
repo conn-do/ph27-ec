@@ -19,8 +19,9 @@ class OrderSeeder extends Seeder
         $user = User::first();
         $product1 = Product::find(1);
         $product2 = Product::find(2);
+        $product3 = Product::find(3);
 
-        $totalPrice = $product1->price + $product2->price * 2;
+        $totalPrice = $product1->price + $product2->price * 2 + $product3->price * 3;
 
         $order = new Order();
         $order->user_id = $user->id;
@@ -38,5 +39,11 @@ class OrderSeeder extends Seeder
         $detail2->product_id = $product2->id;
         $detail2->quantity = 2;
         $detail2->save();
+
+        $detail3 = new OrderDetail();
+        $detail3->order_id = $order->id;
+        $detail3->product_id = $product3->id;
+        $detail3->quantity = 3;
+        $detail3->save();
     }
 }

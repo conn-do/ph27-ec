@@ -3,111 +3,174 @@
 @section('title', 'カート')
 
 @section('content')
-    @if (session('message'))
-        <article>{{ session('message') }}</article>
-    @endif
+    <section class="cart-page">
 
-    @empty($items)
-        <p>カートに商品がありません。</p>
-    @else
+        <div class="cart-heading">
+            <h2>CART</h2>
+            <p>カート</p>
+        </div>
 
-        @foreach ($items as $item)
-            <article>
-                <div>
-                    <img src="{{ $item['product']->imageUrl() }}" width="200">
+        @if (session('message'))
+            <div class="cart-message">
+                <p>{{ session('message') }}</p>
+            </div>
+        @endif
+
+        @empty($items)
+            <div class="cart-empty">
+                <p>カートに商品がありません。</p>
+                <a href="/">商品一覧へ戻る</a>
+            </div>
+        @else
+
+            <div class="cart-content">
+
+                <div class="cart-items">
+                    @foreach ($items as $item)
+                        <article class="cart-item">
+
+                            <div class="cart-item-image">
+                                <img
+                                    src="{{ $item['product']->imageUrl() }}"
+                                    alt="{{ $item['product']->name }}"
+                                >
+                            </div>
+
+                            <div class="cart-item-info">
+
+                                <div class="cart-item-name">
+                                    <p>{{ $item['product']->name }}</p>
+                                </div>
+
+                                <p class="cart-item-price">
+                                    {{ number_format($item['product']->price) }}円
+                                </p>
+
+                                <form
+                                    action="/cart/update"
+                                    method="POST"
+                                    class="cart-item-quantity"
+                                >
+                                    @csrf
+
+                                    <input
+                                        type="hidden"
+                                        name="productId"
+                                        value="{{ $item['product']->id }}"
+                                    >
+
+                                    <div class="quantity-control">
+                                        <span class="quantity-label">数量</span>
+
+                                        <div class="quantity-input">
+                                            <button
+                                                type="submit"
+                                                name="quantity"
+                                                value="{{ $item['quantity'] - 1 }}"
+                                                class="quantity-button"
+                                                @if ($item['quantity'] <= 1) disabled @endif
+                                            >
+                                                −
+                                            </button>
+
+                                            <span class="quantity-value">
+                                                {{ $item['quantity'] }}
+                                            </span>
+
+                                            <button
+                                                type="submit"
+                                                name="quantity"
+                                                value="{{ $item['quantity'] + 1 }}"
+                                                class="quantity-button"
+                                                @if ($item['quantity'] >= $item['product']->stock) disabled @endif
+                                            >
+                                                ＋
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <p class="cart-item-subtotal">
+                                    小計
+                                    <span>
+                                        {{ number_format($item['product']->price * $item['quantity']) }}円
+                                    </span>
+                                </p>
+
+                                <a
+                                    href="/cart/remove?productId={{ $item['product']->id }}"
+                                    class="cart-item-remove"
+                                >
+                                    削除
+                                </a>
+
+                            </div>
+
+                        </article>
+                    @endforeach
                 </div>
 
-                <div>
-                    <p>{{ $item['product']->name }}</p>
+                <aside class="cart-summary">
 
-                    <p>{{ number_format($item['product']->price) }}円</p>
+                    <h3>ORDER SUMMARY</h3>
 
-                    <form action="/cart/update" method="POST">
-                        @csrf
+                    <div class="cart-summary-row">
+                        <span>商品</span>
+                        <span>{{ count($items) }} 件</span>
+                    </div>
 
-                        <input
-                            type="hidden"
-                            name="productId"
-                            value="{{ $item['product']->id }}"
-                        >
+                    <div class="cart-summary-row">
+                        <span>商品合計</span>
+                        <span>{{ number_format($totalPrice) }}円</span>
+                    </div>
 
-                        <button
-                            type="submit"
-                            name="quantity"
-                            value="{{ $item['quantity'] - 1 }}"
-                            @if ($item['quantity'] <= 1) disabled @endif
-                        >
-                            −
-                        </button>
+                    <div class="cart-summary-row">
+                        <span>送料</span>
+                        <span>{{ number_format($shippingFee) }}円</span>
+                    </div>
 
-                        <span>{{ $item['quantity'] }}</span>
+                    <div class="cart-summary-total">
+                        <span>合計</span>
+                        <strong>{{ number_format($grandTotal) }}円</strong>
+                    </div>
 
-                        <button
-                            type="submit"
-                            name="quantity"
-                            value="{{ $item['quantity'] + 1 }}"
-                            @if ($item['quantity'] >= $item['product']->stock) disabled @endif
-                        >
-                            ＋
-                        </button>
-                    </form>
-
-                    <p>
-                        小計：
-                        {{ number_format($item['product']->price * $item['quantity']) }}円
+                    <p class="cart-shipping-note">
+                        ※送料は通常500円、北海道は1,000円、沖縄は1,500円です。
                     </p>
 
-                    <a href="/cart/remove?productId={{ $item['product']->id }}">
-                        削除
+                    @auth
+                        <a href="/orders/confirm" class="cart-purchase-button">
+                            購入手続きへ
+                        </a>
+                    @else
+                        <p class="cart-login-message">
+                            購入するにはログインまたは会員登録が必要です。
+                        </p>
+
+                        <a
+                            href="{{ route('login') }}"
+                            class="cart-purchase-button"
+                        >
+                            ログインして購入
+                        </a>
+
+                        <a
+                            href="{{ route('register') }}"
+                            class="cart-register-button"
+                        >
+                            新規会員登録
+                        </a>
+                    @endauth
+
+                    <a href="/cart/clear" class="cart-clear">
+                        カートを空にする
                     </a>
-                </div>
-            </article>
-        @endforeach
 
-        <div>
-            <h3>注文内容</h3>
+                </aside>
 
-            <p>{{ count($items) }} 件</p>
+            </div>
 
-            <p>
-                商品合計
-                {{ number_format($totalPrice) }}円
-            </p>
+        @endempty
 
-            <p>
-                送料
-                {{ number_format($shippingFee) }}円
-            </p>
-
-            <p>
-                <strong>合計</strong>
-                <strong>{{ number_format($grandTotal) }}円</strong>
-            </p>
-        </div>
-
-        <div>
-            <small>
-                ※送料は通常500円、北海道は1,000円、沖縄は1,500円です。
-            </small>
-        </div>
-
-        @auth
-            <a href="/orders/confirm">
-                購入手続きへ
-            </a>
-        @else
-            <p>購入するにはログインまたは会員登録が必要です。</p>
-
-            <a href="{{ route('login') }}">
-                ログインして購入
-            </a>
-
-            <a href="{{ route('register') }}">
-                新規会員登録
-            </a>
-        @endauth
-
-    @endempty
-
-    <a href="/cart/clear">カートを空にする</a>
+    </section>
 @endsection
