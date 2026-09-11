@@ -1,5 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@300;400;500;700&display=swap');
 @import 'tailwindcss';
-
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
@@ -7,9 +7,18 @@
 
 @theme {
     --font-sans:
-        'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
+        'Zen Kaku Gothic New', 'Hiragino Sans', -apple-system, BlinkMacSystemFont,
+        ui-sans-serif, system-ui, sans-serif,
         'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
         'Noto Color Emoji';
+
+    --color-navy-950: oklch(0.2 0.02 258);
+    --color-navy-700: oklch(0.35 0.025 258);
+    --color-navy-500: oklch(0.5 0.015 258);
+    --color-navy-300: oklch(0.8 0.01 258);
+    --color-navy-200: oklch(0.9 0.006 258);
+    --color-navy-100: oklch(0.96 0.004 258);
+    --color-navy-50: oklch(0.995 0.002 258);
 
     --animate-fade-out: fade-out 4s ease-in-out forwards;
 
@@ -25,63 +34,59 @@
     }
 }
 
-.error {
-    color: red;
-    border: 1px solid red;
-}
+@layer base {
+    body {
+        font-family: var(--font-sans);
+        font-weight: 400;
+        background-color: var(--color-navy-50);
+        color: var(--color-navy-950);
+    }
 
-.news-title {
-    font-size: 40px;
-    font-weight: bold;
-    margin-bottom: 5px;
-}
+    a {
+        color: var(--color-navy-700);
+        text-decoration: none;
+    }
 
-.news-subtitle {
-    font-size: 18px;
-    color: #666;
-    margin-bottom: 30px;
-}
+    a:hover {
+        color: var(--color-navy-950);
+    }
 
-.news-list {
-    margin-left: 200px;
-}
+    .error {
+        color: red;
+        border: 1px solid red;
+    }
 
-/* 1件ずつ */
-.news-item {
-    padding: 15px 0;
-    border-bottom: 1px solid #ddd;
-}
+    .news-title { font-size: 40px; font-weight: bold; margin-bottom: 5px; }
+    .news-subtitle { font-size: 18px; color: #666; margin-bottom: 30px; }
+    .news-list { margin-left: 200px; }
+    .news-item { padding: 15px 0; border-bottom: 1px solid #ddd; }
+    .news-item-title { font-size: 16px; font-weight: bold; margin-bottom: 5px; }
+    .news-item-body { font-size: 14px; color: #333; }
+    .news-detail { max-width: 960px; margin: 40px auto; }
+    .news-detail-title { font-size: 28px; margin-bottom: 20px; }
+    .news-detail-body { font-size: 16px; line-height: 1.8; }
+    .back-link { display: inline-block; margin-top: 30px; color: #666; }
 
-/* タイトル */
-.news-item-title {
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 5px;
-}
+    button,
+    input[type="submit"],
+    input[type="button"] {
+        font: inherit;
+        color: inherit;
+        background: none;
+        border-width: 0;
+        cursor: pointer;
+    }
 
-/* 本文 */
-.news-item-body {
-    font-size: 14px;
-    color: #333;
-}
+    input[type="text"],
+    input[type="number"],
+    input[type="email"],
+    input[type="password"] {
+        font: inherit;
+        color: inherit;
+    }
 
-.news-detail {
-    max-width: 960px;
-    margin: 40px auto;
-}
-
-.news-detail-title {
-    font-size: 28px;
-    margin-bottom: 20px;
-}
-
-.news-detail-body {
-    font-size: 16px;
-    line-height: 1.8;
-}
-
-.back-link {
-    display: inline-block;
-    margin-top: 30px;
-    color: #666;
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
 }
