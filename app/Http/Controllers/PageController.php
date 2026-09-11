@@ -1,0 +1,26 @@
+<?php
+
+namespace App\Http\Controllers;
+
+class PageController extends Controller
+{
+    public function terms()
+    {
+        return view('pages.terms');
+    }
+
+    public function privacy()
+    {
+        return view('pages.privacy');
+    }
+
+    public function legal()
+    {
+        return view('pages.legal');
+    }
+
+    public function faq()
+    {
+        return view('pages.faq');
+    }
+}

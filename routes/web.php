@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\MyPageController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
@@ -66,6 +68,14 @@ Route::get(
 );
 
 Route::get('/news/{news}', [NewsController::class, 'show']);
+
+Route::get('/contact', [ContactController::class, 'create']);
+Route::post('/contact', [ContactController::class, 'store']);
+
+Route::get('/terms', [PageController::class, 'terms']);
+Route::get('/privacy', [PageController::class, 'privacy']);
+Route::get('/legal', [PageController::class, 'legal']);
+Route::get('/faq', [PageController::class, 'faq']);
 
 // ログイン必須にする
 Route::middleware(['auth'])->group(function () {

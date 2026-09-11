@@ -55,6 +55,13 @@
     </main>
 
     <footer class="border-t border-stone-200 bg-white py-6 text-center text-sm text-stone-500">
+        <nav class="mb-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+            <a href="/faq" class="hover:text-stone-900 hover:underline">よくあるご質問</a>
+            <a href="/contact" class="hover:text-stone-900 hover:underline">お問い合わせ</a>
+            <a href="/terms" class="hover:text-stone-900 hover:underline">利用規約</a>
+            <a href="/privacy" class="hover:text-stone-900 hover:underline">プライバシーポリシー</a>
+            <a href="/legal" class="hover:text-stone-900 hover:underline">特定商取引法に基づく表記</a>
+        </nav>
         © HAL東京
     </footer>
 </body>
