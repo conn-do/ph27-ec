@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\News;
+use Illuminate\Database\Seeder;
 
 class NewsSeeder extends Seeder
 {
@@ -13,19 +12,41 @@ class NewsSeeder extends Seeder
      */
     public function run(): void
     {
-        $p1 = new News();
-        $p1->title = 'しっくりこないニュース';
-        $p1->content = '【マリオ氏無免許が発覚】サーキットから公道に着地したところをそのまま逮捕';
-        $p1->save();
+        $topics = [
+            [
+                'title' => 'あたらしい ふでばこが とどいたよ',
+                'emoji' => '🎒',
+                'content' => 'ボタンを おすと ひきだしが とびだす「ロボットふでばこ」が おみせに ならびました。かずが すくないので はやい者がちです。',
+                'published_at' => now()->subDays(1),
+            ],
+            [
+                'title' => 'しょうひぜいの しくみを おぼえよう',
+                'emoji' => '🧮',
+                'content' => 'ぶんぼうぐは 10%、おかしは 8% の しょうひぜいが かかります。レジの がめんで けいさんの じゅんばんが 見られるので、じぶんでも けいさんして くらべてみてね。',
+                'published_at' => now()->subDays(3),
+            ],
+            [
+                'title' => 'おかしコーナーが できました',
+                'emoji' => '🍬',
+                'content' => 'ラムネや ガムなどの おかしを はじめました。たべものは しょうひぜいが 8% になるので、ぶんぼうぐと くらべてみると おもしろいよ。',
+                'published_at' => now()->subDays(5),
+            ],
+            [
+                'title' => 'おこづかい帳を つかってみよう',
+                'emoji' => '👛',
+                'content' => 'マイページから おこづかい帳が 見られます。いつ なにに いくら つかったのかを ふりかえると、つぎの かいものが じょうずに なります。',
+                'published_at' => now()->subDays(8),
+            ],
+            [
+                'title' => 'かんそうを かいてみよう',
+                'emoji' => '💬',
+                'content' => 'かったことの ある しょうひんには、ほしの かずと かんそうを かけます。つぎに かうひとの ヒントに なるので、ぜひ かいてね。',
+                'published_at' => now()->subDays(12),
+            ],
+        ];
 
-        $p2 = new News();
-        $p2->title = '株と為替のトピック';
-        $p2->content = '【日経平均70,000円大台突破】イランとアメリカの停戦協議の結果を受け、半導体関連銘柄を中心に値上がり';
-        $p2->save();
-
-        $p3 = new News();
-        $p3->title = '世界のニュース';
-        $p3->content = '【ソ連の台頭「鉄のカーテン」チャーチル氏】1946年3月、アメリカを遊説中のチャーチル元英国首相がミズーリ州で行われた集会にて、ソ連がシュッテティンからトリエステのラインに社会主義の「鉄のカーテン」を敷こうとしていると批判を展開';
-        $p3->save();
+        foreach ($topics as $topic) {
+            News::updateOrCreate(['title' => $topic['title']], $topic);
+        }
     }
 }

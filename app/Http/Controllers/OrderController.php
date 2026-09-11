@@ -2,57 +2,45 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Actions\Shop\ChangeCalculator;
 use App\Models\Order;
-use App\Models\Product;
-use App\Models\OrderDetail;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    public function store(Request $request)
+    public function index(Request $request): View
     {
-        // [1 => 3, 2 => 5] (商品ID => 数量)
-        $cart = session()->get('cart', []);
-        $totalPrice = 0;
-        foreach ($cart as $productId => $quantity) {
-            $product = Product::find($productId);
-            $totalPrice += $product->price * $quantity;
-        }
+        $orders = $request->user()
+            ->orders()
+            ->withSum('details', 'quantity')
+            ->orderByDesc('created_at')
+            ->paginate(10);
 
-        $order = new Order();
-        $order->total_price = $totalPrice;
-        $order->user_id = $request->user()->id;
-        $order->save();
+        return view('orders.index', [
+            'orders' => $orders,
+        ]);
+    }
 
-        foreach ($cart as $productId => $quantity) {
-            $detail = new OrderDetail();
-            $detail->order_id = $order->id;
-            $detail->product_id = $productId;
-            $detail->quantity = $quantity;
-            $detail->save();
-        }
+    public function show(Order $order): View
+    {
+        $this->authorize('view', $order);
 
-        session()->forget('cart');
+        return view('orders.show', [
+            'order' => $order->load('details.product'),
+        ]);
+    }
 
-        session()->flash('message', '注文が完了しました！');
+    /**
+     * おかいけいが おわったあとの「レシート」画面。
+     */
+    public function complete(Order $order, ChangeCalculator $changeCalculator): View
+    {
+        $this->authorize('view', $order);
 
         return view('orders.complete', [
-            'order' => $order,
-        ]);
-    }
-
-    public function index(Request $request)
-    {
-        $orders = $request->user()->orders;
-        return view('orders.index', [
-            'orders' => $orders->sortByDesc('created_at'),
-        ]);
-    }
-
-    public function show(Order $order)
-    {
-        return view('orders.show', [
-            'order' => $order,
+            'order' => $order->load('details'),
+            'changeBreakdown' => $changeCalculator->breakdown($order->change_amount),
         ]);
     }
 }

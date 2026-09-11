@@ -9,7 +9,30 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 
+    /* こども向けの まるっこい フォント */
+    --font-round: 'M PLUS Rounded 1c', 'Hiragino Maru Gothic ProN', 'Yu Gothic UI', system-ui, sans-serif;
+
+    /* レゴブロックみたいな はっきりした いろ */
+    --color-pop-red: #ff3b4a;
+    --color-pop-orange: #ff8a00;
+    --color-pop-yellow: #ffd400;
+    --color-pop-green: #2ecc40;
+    --color-pop-blue: #1e90ff;
+    --color-pop-purple: #9b59ff;
+    --color-pop-pink: #ff5fa2;
+    --color-pop-cyan: #00cfd1;
+
+    --color-ink: #1f2a44;
+    --color-paper: #fff8e8;
+    --color-paper-deep: #ffeec4;
+
+    /* ブロックの あつみ（したに おちる かげ） */
+    --shadow-block: 0 6px 0 0 var(--color-ink);
+    --shadow-block-sm: 0 4px 0 0 var(--color-ink);
+    --shadow-block-lg: 0 10px 0 0 var(--color-ink);
+
     --animate-fade-out: fade-out 4s ease-in-out forwards;
+    --animate-pop-in: pop-in 0.25s ease-out;
 
     @keyframes fade-out {
         0%, 70% {
@@ -20,9 +43,48 @@
             pointer-events: none;
         }
     }
+
+    @keyframes pop-in {
+        0% {
+            transform: scale(0.9);
+            opacity: 0;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+}
+
+/*
+| おしたときに ペコッと へこむ ボタン。
+*/
+@utility block-press {
+    transition-property: transform, box-shadow;
+    transition-duration: 100ms;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-block-lg);
+    }
+
+    &:active {
+        transform: translateY(6px);
+        box-shadow: 0 0 0 0 var(--color-ink);
+    }
+}
+
+/*
+| お会計の「けいさんしき」に つかう すうじ。
+| 手書きの ドリルみたいに、けたを そろえて 大きく出す。
+*/
+@utility calc-number {
+    font-variant-numeric: tabular-nums;
+    font-weight: 800;
+    letter-spacing: 0.02em;
 }
 
 .error {
-    color: red;
-    border: 1px solid red;
+    color: var(--color-pop-red);
+    border: 2px solid var(--color-pop-red);
 }

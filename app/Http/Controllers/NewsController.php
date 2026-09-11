@@ -1,16 +1,25 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\News;
-use Illuminate\Http\Request;
+use Illuminate\Contracts\View\View;
 
 class NewsController extends Controller
 {
-    public function index()
+    public function index(): View
     {
-        $news = News::all();
         return view('news.index', [
-            'news' => $news,
+            'news' => News::published()->paginate(10),
+        ]);
+    }
+
+    public function show(News $news): View
+    {
+        abort_if($news->published_at === null || $news->published_at->isFuture(), 404);
+
+        return view('news.show', [
+            'topic' => $news,
         ]);
     }
 }
