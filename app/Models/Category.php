@@ -2,22 +2,31 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
-    protected $fillable = [
-        'name',
-        'slug',
-    ];
+    use HasFactory;
 
-    public function getRouteKeyName()
+    protected $fillable = ['name', 'parent_id', 'slug'];
+
+    // 親カテゴリーを取得
+    public function parent()
     {
-        return 'slug';
+        return $this->belongsTo(Category::class, 'parent_id');
     }
 
+    // 子カテゴリー一覧を取得
+    public function children()
+    {
+        return $this->hasMany(Category::class, 'parent_id');
+    }
+
+    // カテゴリーに属する商品一覧
     public function products()
     {
         return $this->hasMany(Product::class);
     }
+    
 }

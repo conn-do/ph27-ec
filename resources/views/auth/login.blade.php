@@ -25,7 +25,7 @@
                     <label for="email" style="font-weight: bold; margin-bottom: 0.4rem; display: block; font-size: 0.95rem;">
                         メールアドレス
                     </label>
-                    <input type="email" id="email" name="email" value="{{ old('email') }}" required autofocus placeholder="example@email.com" style="margin: 0;">
+                    <input type="email" id="email" name="email" value="{{ old('email') }}" required autofocus placeholder="Email" style="margin: 0;">
                 </div>
 
                 <div style="margin-bottom: 1.5rem;">

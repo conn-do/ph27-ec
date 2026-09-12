@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\View;
+use App\Models\Category;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,6 +26,15 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+
+        // 📁 サイドバー用の階層カテゴリー（親カテゴリー＋子カテゴリー）を全てのビューに共有
+        View::composer('*', function ($view) {
+            $sidebarCategories = Category::whereNull('parent_id')
+                ->with('children')
+                ->get();
+
+            $view->with('sidebarCategories', $sidebarCategories);
+        });
     }
 
     /**

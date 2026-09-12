@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Order;
+use App\Models\OrderDetail;
+use Stripe\Stripe;
+use Stripe\Checkout\Session;
 
 class CartController extends Controller
 {
@@ -71,4 +75,26 @@ class CartController extends Controller
         $request->session()->flash('message', 'カートを空にしました。');
         return redirect('/cart');
     }
+
+    public function reorder(Request $request, $productId)
+    {
+        $product = Product::findOrFail($productId);
+        $quantity = (int)$request->input('quantity', 1);
+
+        $cart = session()->get('cart', []);
+
+        // 既存のカートに存在する場合は数量を加算
+        if (isset($cart[$productId])) {
+            $cart[$productId] += $quantity;
+        } else {
+            $cart[$productId] = $quantity;
+        }
+
+        session()->put('cart', $cart);
+
+        $request->session()->flash('message', "「{$product->name}」をカートに追加しました。");
+
+        return redirect('/cart');
+    }
+    
 }

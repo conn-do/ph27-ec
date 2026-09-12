@@ -4,27 +4,76 @@
 
 @section('content')
 
-    <!-- カテゴリ一覧 -->
-    @if (isset($categories) && $categories->count() > 0)
-        <section style="margin-bottom: 2.5rem;">
-            <h3 style="font-size: 1.2rem; margin-bottom: 0.8rem;">カテゴリ</h3>
-            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                <a href="/" role="button" class="{{ !request()->route('category') && !request('keyword') ? '' : 'outline' }}" style="padding: 0.3rem 0.8rem; font-size: 0.85rem;">
-                    すべて
+    {{-- Amazon風：1行ニュースバー --}}
+    <div style="
+        background: var(--pico-card-background-color);
+        border: 1px solid var(--pico-muted-border-color);
+        border-radius: 8px;
+        padding: 0.6rem 1.2rem;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    ">
+        <div style="display: flex; align-items: center; gap: 1rem; overflow: hidden; white-space: nowrap;">
+            <span style="
+                background: #2563eb;
+                color: #ffffff;
+                font-size: 0.75rem;
+                font-weight: bold;
+                padding: 0.2rem 0.6rem;
+                border-radius: 4px;
+                flex-shrink: 0;
+                letter-spacing: 0.05em;
+            ">
+                NEWS
+            </span>
+
+            @if (isset($latestNews) && $latestNews)
+                <span style="color: var(--pico-muted-color); font-size: 0.85rem; flex-shrink: 0;">
+                    {{ $latestNews->created_at->format('Y.m.d') }}
+                </span>
+                <a href="/news/{{ $latestNews->id }}" style="
+                    color: var(--pico-color);
+                    text-decoration: none;
+                    font-size: 0.9rem;
+                    font-weight: 500;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                ">
+                    {{ $latestNews->title }}
                 </a>
-                @foreach ($categories as $category)
-                    <a href="/categories/{{ $category->slug }}" role="button" class="outline" style="padding: 0.3rem 0.8rem; font-size: 0.85rem;">
-                        {{ $category->name }}
-                    </a>
-                @endforeach
-            </div>
-        </section>
-    @endif
+            @else
+                <span style="color: var(--pico-muted-color); font-size: 0.85rem; flex-shrink: 0;">2026.09.10</span>
+                <a href="/news" style="
+                    color: var(--pico-color);
+                    text-decoration: none;
+                    font-size: 0.9rem;
+                    font-weight: 500;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                ">
+                    【新商品】レトロポップな新作シャープペンシルが入荷しました！
+                </a>
+            @endif
+        </div>
+
+        <a href="/news" style="
+            font-size: 0.85rem;
+            color: #2563eb;
+            text-decoration: none;
+            flex-shrink: 0;
+            font-weight: bold;
+        ">
+            お知らせ一覧 →
+        </a>
+    </div>
 
     <!-- ランキングセクション -->
     @if (isset($rankingProducts) && $rankingProducts->count() > 0)
         <section style="margin-bottom: 3.5rem;">
-            {{-- 見出しエリア --}}
             <div style="display: flex; align-items: flex-end; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 2px solid var(--pico-muted-border-color); padding-bottom: 0.5rem;">
                 <h2 style="margin: 0; font-size: 1.8rem; line-height: 1.2;">
                     👑 人気商品ランキング
@@ -34,16 +83,14 @@
                 </span>
             </div>
 
-            {{-- ランキングカードリスト --}}
             <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem;">
                 @foreach ($rankingProducts as $index => $product)
                     @php
-                        // 順位ごとのバッジカラー設定
                         $badgeBg = match($index) {
-                            0 => 'linear-gradient(135deg, #f59e0b, #d97706)', // 1位: 金
-                            1 => 'linear-gradient(135deg, #94a3b8, #64748b)', // 2位: 銀
-                            2 => 'linear-gradient(135deg, #d97706, #92400e)', // 3位: 銅
-                            default => '#4b5563',                             // 4位以降: グレー
+                            0 => 'linear-gradient(135deg, #f59e0b, #d97706)',
+                            1 => 'linear-gradient(135deg, #94a3b8, #64748b)',
+                            2 => 'linear-gradient(135deg, #d97706, #92400e)',
+                            default => '#4b5563',
                         };
                     @endphp
 
@@ -54,6 +101,13 @@
                             {{ $index + 1 }}
                         </div>
 
+                        {{-- SALEバッジ --}}
+                        @if ($product->is_sale)
+                            <div style="position: absolute; top: 12px; right: 12px; background: #ef4444; color: white; font-weight: bold; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; z-index: 2;">
+                                SALE
+                            </div>
+                        @endif
+
                         <div>
                             <a href="/products/{{ $product->id }}" style="text-decoration: none;">
                                 <img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}" style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 0.8rem;">
@@ -61,9 +115,30 @@
                                     {{ $product->name }}
                                 </h4>
                             </a>
-                            <p style="font-weight: bold; color: #2563eb; font-size: 1.15rem; margin-bottom: 0.5rem;">
-                                ¥{{ number_format($product->price) }}
-                            </p>
+
+                            {{-- セール価格表示 --}}
+                            <div style="margin-bottom: 0.5rem;">
+                                @if ($product->is_sale && $product->sale_price)
+                                    @php
+                                        $discountRate = round((($product->price - $product->sale_price) / $product->price) * 100);
+                                    @endphp
+                                    <div style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
+                                        <span style="text-decoration: line-through; color: #9ca3af; font-size: 0.85rem;">
+                                            ¥{{ number_format($product->price) }}
+                                        </span>
+                                        <strong style="color: #ef4444; font-size: 1.15rem;">
+                                            ¥{{ number_format($product->sale_price) }}
+                                        </strong>
+                                        <span style="color: #ef4444; font-size: 0.75rem; font-weight: bold; background: #fee2e2; padding: 0.1rem 0.35rem; border-radius: 4px;">
+                                            {{ $discountRate }}% OFF
+                                        </span>
+                                    </div>
+                                @else
+                                    <strong style="color: #2563eb; font-size: 1.15rem;">
+                                        ¥{{ number_format($product->price) }}
+                                    </strong>
+                                @endif
+                            </div>
                         </div>
 
                         <a href="/products/{{ $product->id }}" role="button" class="outline" style="width: 100%; text-align: center; padding: 0.4rem 0; margin-top: 0.5rem; font-size: 0.85rem; border-radius: 6px;">
@@ -92,16 +167,67 @@
         @if (isset($products) && $products->count() > 0)
             <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem;">
                 @foreach ($products as $product)
-                    <article style="padding: 1rem; margin: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                    <article style="padding: 1rem; margin: 0; display: flex; flex-direction: column; justify-content: space-between; position: relative;">
+                        
+                        {{-- SALEバッジ --}}
+                        @if ($product->is_sale)
+                            <div style="position: absolute; top: 12px; right: 12px; background: #ef4444; color: white; font-weight: bold; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; z-index: 2;">
+                                SALE
+                            </div>
+                        @endif
+
                         <div>
                             <a href="/products/{{ $product->id }}" style="text-decoration: none;">
                                 <img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}" style="width: 100%; height: 160px; object-fit: cover; border-radius: 6px; margin-bottom: 0.8rem;">
                                 <h4 style="font-size: 1.05rem; margin-bottom: 0.4rem; color: var(--pico-color);">{{ $product->name }}</h4>
                             </a>
-                            <p style="font-weight: bold; color: #2563eb; font-size: 1.1rem; margin-bottom: 0.5rem;">
-                                ¥{{ number_format($product->price) }}
-                            </p>
+
+                            {{-- セール価格表示 --}}
+                            <div style="margin-bottom: 0.5rem;">
+                                @if ($product->is_sale && $product->sale_price)
+                                    @php
+                                        $discountRate = round((($product->price - $product->sale_price) / $product->price) * 100);
+                                    @endphp
+                                    <div style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
+                                        <span style="text-decoration: line-through; color: #9ca3af; font-size: 0.85rem;">
+                                            ¥{{ number_format($product->price) }}
+                                        </span>
+                                        <strong style="color: #ef4444; font-size: 1.1rem;">
+                                            ¥{{ number_format($product->sale_price) }}
+                                        </strong>
+                                        <span style="color: #ef4444; font-size: 0.75rem; font-weight: bold; background: #fee2e2; padding: 0.1rem 0.35rem; border-radius: 4px;">
+                                            {{ $discountRate }}% OFF
+                                        </span>
+                                    </div>
+
+                                    @else
+                                        <strong style="color: #2563eb; font-size: 1.1rem;">
+                                            ¥{{ number_format($product->price) }}
+                                        </strong>
+                                    @endif
+
+                                    {{-- カラーアイコン（カラーチップ）表示エリア --}}
+                                    @if (!empty($product->colors))
+                                        <div style="display: flex; gap: 0.35rem; align-items: center; margin-bottom: 0.8rem; flex-wrap: wrap;">
+                                            @foreach ($product->colors as $colorName => $colorData)
+                                                @php
+                                                    // 配列（新構造）と文字列（旧構造）の両方に対応
+                                                    $colorCode = is_array($colorData) ? ($colorData['code'] ?? '#ccc') : $colorData;
+                                                @endphp
+                                                <span title="{{ $colorName }}" style="
+                                                    width: 14px;
+                                                    height: 14px;
+                                                    background-color: {{ $colorCode }};
+                                                    border-radius: 50%;
+                                                    border: 1px solid #e2e8f0;
+                                                    display: inline-block;
+                                                "></span>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                            </div>
                         </div>
+
                         <a href="/products/{{ $product->id }}" role="button" class="outline" style="width: 100%; text-align: center; padding: 0.4rem 0; margin-top: 0.5rem; font-size: 0.9rem;">
                             詳細を見る
                         </a>
@@ -112,41 +238,5 @@
             <p>該当する商品が見つかりませんでした。</p>
         @endif
     </section>
-
-    <!-- NEWS（お知らせ） -->
-    @if (isset($news) && $news->count() > 0)
-        <section style="margin-top: 3rem; margin-bottom: 3rem;">
-            {{-- 見出しと一覧リンクのエリア --}}
-            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem; border-bottom: 2px solid var(--pico-muted-border-color); padding-bottom: 0.5rem;">
-                <h2 style="margin: 0; font-size: 1.8rem; line-height: 1.2;">
-                    NEWS <span style="font-size: 1rem; color: #666; font-weight: normal; margin-left: 0.5rem;">お知らせ</span>
-                </h2>
-                <a href="/news" role="button" class="secondary outline" style="padding: 0.35rem 0.8rem; font-size: 0.85rem; margin: 0; width: auto;">
-                    お知らせ一覧を見る →
-                </a>
-            </div>
-
-            {{-- ニュースリスト --}}
-            <div style="display: flex; flex-direction: column; gap: 1rem;">
-                @foreach ($news as $item)
-                    <article style="padding: 1.2rem; margin: 0; border-radius: 8px;">
-                        @if (isset($item->created_at))
-                            <small style="color: #6b7280; display: block; margin-bottom: 0.3rem;">
-                                {{ $item->created_at->format('Y.m.d') }}
-                            </small>
-                        @endif
-                        <h4 style="font-size: 1.1rem; margin-bottom: 0.4rem;">
-                            <a href="/news/{{ $item->id }}" style="text-decoration: none; font-weight: bold;">
-                                {{ $item->title }}
-                            </a>
-                        </h4>
-                        <p style="margin: 0; color: #4b5563; font-size: 0.95rem;">
-                            {{ Str::limit(strip_tags($item->content ?? $item->body ?? ''), 80) }}
-                        </p>
-                    </article>
-                @endforeach
-            </div>
-        </section>
-    @endif
 
 @endsection
