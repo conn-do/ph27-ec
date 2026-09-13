@@ -3,62 +3,62 @@
 @section('title', '商品一覧')
 
 @section('content')
+    <section class="hero-section">
+        <p class="eyebrow">STATIONERY STORE</p>
+        <h1>すごい文房具サイト</h1>
+        <p>毎日使いたくなるペン、ノート、鉛筆をそろえました。</p>
+    </section>
 
-    {{-- カテゴリ一覧 --}}
-    <h3>カテゴリ</h3>
-    <ul>
-        @foreach ($categories as $category)
-            <li>
-                <a href="/categories/{{ $category->slug }}">
-                    {{ $category->name }}
-                </a>
-            </li>
-        @endforeach
-    </ul>
+    <section class="category-section" aria-labelledby="category-title">
+        <h2 id="category-title">カテゴリ</h2>
+        <div class="category-list">
+            @foreach ($categories as $category)
+                <a href="/categories/{{ $category->slug }}">{{ $category->name }}</a>
+            @endforeach
+        </div>
+    </section>
 
-    <h2>商品一覧</h2>
+    <section aria-labelledby="products-title">
+        <div class="section-heading">
+            <h2 id="products-title">商品一覧</h2>
+            <form class="search-form" action="/search" method="GET">
+                <input type="text" name="keyword" value="{{ request('keyword') }}" placeholder="商品名で検索">
+                <input type="submit" value="検索">
+            </form>
+        </div>
 
-    <form action="/search" method="GET">
-        <input type="text" name="keyword" value="{{ request('keyword') }}">
-        <input type="submit" value="検索">
-    </form>
+        @if (request('keyword'))
+            <a class="clear-link" href="/">検索結果をクリア</a>
+        @endif
 
-    @if (request('keyword'))
-        <a href="/">検索結果をクリア</a>
-    @endif
-
-    {{-- 商品一覧 --}}
-    @foreach ($products as $product)
-        <ul>
-            <li>
-                <a href="/products/{{ $product->id }}">
-                    {{ $product['name'] }}
-                    <img src="{{ $product->imageUrl() }}" width="200">
-                </a>
-            </li>
-        </ul>
-    @endforeach
-
-    {{-- お知らせ --}}
-    <h2 class="news-title">NEWS</h2>
-    <h3 class="news-subtitle">お知らせ</h3>
-
-    <div class="news-list">
-        @foreach ($news as $item)
-            <div class="news-item">
-
-                <h4 class="news-item-title">
-                    <a href="/news/{{ $item->id }}">
-                        {{ $item->title }}
+        <div class="product-grid">
+            @forelse ($products as $product)
+                <article class="product-card">
+                    <a href="/products/{{ $product->id }}">
+                        <img src="{{ $product->imageUrl() }}" width="200" alt="{{ $product->name }}">
+                        <span class="product-name">{{ $product->name }}</span>
+                        <span class="product-price">{{ number_format($product->price) }}円</span>
                     </a>
-                </h4>
+                </article>
+            @empty
+                <p>商品が見つかりませんでした。</p>
+            @endforelse
+        </div>
+    </section>
 
-                <p class="news-item-body">
-                    {!! $item->content !!}
-                </p>
+    <section class="news-section" aria-labelledby="news-title">
+        <p class="eyebrow">NEWS</p>
+        <h2 id="news-title" class="news-title">お知らせ</h2>
 
-            </div>
-        @endforeach
-    </div>
-
+        <div class="news-list">
+            @foreach ($news as $item)
+                <article class="news-item">
+                    <h3 class="news-item-title">
+                        <a href="/news/{{ $item->id }}">{{ $item->title }}</a>
+                    </h3>
+                    <p class="news-item-body">{!! $item->content !!}</p>
+                </article>
+            @endforeach
+        </div>
+    </section>
 @endsection

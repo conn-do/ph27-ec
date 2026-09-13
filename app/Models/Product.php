@@ -11,12 +11,13 @@ class Product extends Model
         'price',
         'description',
         'image',
+        'category_id',
         'stock',
     ];
 
     public function imageUrl(): string
     {
-        return asset('storage/' . $this->image);
+        return asset('storage/'.$this->image);
     }
 
     public function category()

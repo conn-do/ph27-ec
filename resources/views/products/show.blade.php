@@ -3,14 +3,16 @@
 @section('title', $product->name)
 
 @section('content')
-    <h2>{{ $product->name }}</h2>
-    <div>
-        カテゴリー:
-        <a href="/categories/{{ $product->category->slug }}">
-            {{ $product->category->name }}
-        </a>
-    </div>
-    <img src="{{ $product->imageUrl() }}" width="400">
+    <h1>{{ $product->name }}</h1>
+    @if ($product->category)
+        <p>
+            カテゴリー:
+            <a href="/categories/{{ $product->category->slug }}">
+                {{ $product->category->name }}
+            </a>
+        </p>
+    @endif
+    <img src="{{ $product->imageUrl() }}" width="400" alt="{{ $product->name }}">
     <p>{{ $product->price }}円</p>
     <p>{{ $product->description }}</p>
     @if ($product->stock <= 0)
@@ -27,9 +29,17 @@
             </article>
         @endforeach
     @endif
-    <form action="/cart" method="POST">
-        個数:<input type="number" name="quantity" class="@error('quantity') error @enderror" value="{{ old('quantity', 1) }}">
-        <input type="hidden" name="productId" value="{{ $product->id }}">
-        <input type="submit" value="カートに入れる">
-    </form>
+    @if ($product->stock > 0)
+        <form action="/cart" method="POST">
+            @csrf
+            <label>
+                個数
+                <input type="number" name="quantity" class="@error('quantity') error @enderror" value="{{ old('quantity', 1) }}" min="1" max="{{ min($product->stock, 10) }}">
+            </label>
+            <input type="hidden" name="productId" value="{{ $product->id }}">
+            <input type="submit" value="カートに入れる">
+        </form>
+    @else
+        <p>この商品は現在購入できません。</p>
+    @endif
 @endsection

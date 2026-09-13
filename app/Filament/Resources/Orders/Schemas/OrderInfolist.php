@@ -5,8 +5,8 @@ namespace App\Filament\Resources\Orders\Schemas;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\RepeatableEntry\TableColumn;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 
 class OrderInfolist
 {
@@ -31,7 +31,7 @@ class OrderInfolist
                         TextEntry::make('user.name')
                             ->label('Name'),
                         TextEntry::make('user.email')
-                            ->label('Email')
+                            ->label('Email'),
                     ]),
 
                 Section::make('Order Details')

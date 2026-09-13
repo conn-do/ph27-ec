@@ -14,7 +14,9 @@ class ProductInfolist
             ->components([
                 TextEntry::make('name'),
                 TextEntry::make('price')
-                    ->money(),
+                    ->money('JPY'),
+                TextEntry::make('category.name')
+                    ->label('Category'),
                 TextEntry::make('stock'),
                 TextEntry::make('description')
                     ->columnSpanFull(),

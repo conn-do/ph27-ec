@@ -19,8 +19,11 @@ class ProductsTable
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('price')
-                    ->money()
+                    ->money('JPY')
                     ->sortable(),
+                TextColumn::make('category.name')
+                    ->label('Category')
+                    ->searchable(),
                 TextColumn::make('stock'),
                 ImageColumn::make('image')
                     ->disk('public'),

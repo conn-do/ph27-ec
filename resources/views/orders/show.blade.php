@@ -3,15 +3,29 @@
 @section('title', '注文詳細')
 
 @section('content')
-    <h1>注文ID: {{ $order->id }}</h1>
-    <p>注文日時: {{ $order->created_at->format('Y/m/d H:i') }}</p>
-    <p>金額: {{ number_format($order->total_price) }}円</p>
-    <table>
-        @foreach ($order->details as $detail)
+    <section class="page-heading compact-heading">
+        <p class="eyebrow">ORDER DETAIL</p>
+        <h1>注文ID: #{{ $order->id }}</h1>
+        <p>注文日時: {{ $order->created_at->format('Y/m/d H:i') }}</p>
+        <p class="cart-total">金額: {{ number_format($order->total_price) }}円</p>
+    </section>
+
+    <table class="data-table">
+        <thead>
             <tr>
-                <td>{{ $detail->product->name }}</td>
-                <td>{{ $detail->quantity }}個</td>
+                <th>商品</th>
+                <th>数量</th>
             </tr>
-        @endforeach
+        </thead>
+        <tbody>
+            @foreach ($order->details as $detail)
+                <tr>
+                    <td>{{ $detail->product->name }}</td>
+                    <td>{{ $detail->quantity }}個</td>
+                </tr>
+            @endforeach
+        </tbody>
     </table>
+
+    <a class="clear-link" href="/orders">注文履歴へ戻る</a>
 @endsection
