@@ -135,14 +135,17 @@ class ProductSeeder extends Seeder
                     'サクラピンク' => [
                         'code' => '#f472b6',
                         'image' => 'images/products/pen.png',
+                        'stock' => 50
                     ],
                     'スカイブルー' => [
                         'code' => '#38bdf8',
                         'image' => 'images/products/pen_skyblue.png',
+                        'stock' => 30
                     ],
                     'ブラック' => [
                         'code' => '#1e293b',
                         'image' => 'images/products/pen_black.png',
+                        'stock' => 20
                     ],
                 ]
             ],
@@ -157,14 +160,17 @@ class ProductSeeder extends Seeder
                     'アイスブルー' => [
                         'code' => '#cbd5e1',
                         'image' => 'images/products/note.png',
+                        'stock' => 40
                     ],
                     'ミルキーホワイト' => [
                         'code' => '#f8fafc',
                         'image' => 'images/products/note_milky.png',
+                        'stock' => 35
                     ],
                     'ミントグリーン' => [
                         'code' => '#86efac',
                         'image' => 'images/products/note_mint.png',
+                        'stock' => 30
                     ],
                 ]
             ],
@@ -195,14 +201,17 @@ class ProductSeeder extends Seeder
                     'ブラック' => [
                         'code' => '#0f172a',
                         'image' => 'images/products/pencase_black.png',
+                        'stock' => 25
                     ],
                     'ベージュ' => [
                         'code' => '#d4d4d8',
                         'image' => 'images/products/pencase_beige.png',
+                        'stock' => 30
                     ],
                     'ネイビー' => [
                         'code' => '#1e3a8a',
                         'image' => 'images/products/pencase_navy.png',
+                        'stock' => 20
                     ],
                 ]
             ],
@@ -235,14 +244,17 @@ class ProductSeeder extends Seeder
                     'ブラック' => [
                         'code' => '#000000',
                         'image' => 'images/products/ball_pen_black.png',
+                        'stock' => 50
                     ],
                     'レッド' => [
                         'code' => '#ef4444',
                         'image' => 'images/products/ball_pen_red.png',
+                        'stock' => 30
                     ],
                     'ブルー' => [
                         'code' => '#2563eb',
                         'image' => 'images/products/ball_pen_blue.png',
+                        'stock' => 20
                     ],
                 ]
             ],
@@ -263,10 +275,12 @@ class ProductSeeder extends Seeder
                     'ナチュラル' => [
                         'code' => '#d97706',
                         'image' => 'images/products/shape_pen.png',
+                        'stock' => 40
                     ],
                     'ダークブラウン' => [
                         'code' => '#451a03',
                         'image' => 'images/products/shape_pen_darkbrown.png',
+                        'stock' => 35
                     ],
                 ]
             ],
@@ -286,10 +300,12 @@ class ProductSeeder extends Seeder
                     'ウォームセット' => [
                         'code' => '#f87171',
                         'image' => 'images/products/marker_warm.png',
+                        'stock' => 40
                     ],
                     'クールセット' => [
                         'code' => '#60a5fa',
                         'image' => 'images/products/marker_cool.png',
+                        'stock' => 30
                     ],
                 ]
             ],
@@ -330,14 +346,17 @@ class ProductSeeder extends Seeder
                     'キャメル' => [
                         'code' => '#b45309',
                         'image' => 'images/products/本革_キャメル.png',
+                        'stock' => 25
                     ],
                     'ダークブラウン' => [
                         'code' => '#451a03',
                         'image' => 'images/products/本革_ダークブラウン.png',
+                        'stock' => 30
                     ],
                     'ブラック' => [
                         'code' => '#000000',
                         'image' => 'images/products/本革_ブラック.png',
+                        'stock' => 20
                     ],
                 ]
             ],

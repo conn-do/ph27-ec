@@ -10,8 +10,6 @@ use App\Models\Category;
 class ProductController extends Controller
 {
     // トップページ・商品一覧（カテゴリー絞り込み対応）
-    // ProductController.php
-
     public function index(Request $request)
     {
         $query = Product::query();
@@ -121,5 +119,99 @@ class ProductController extends Controller
         ]);
 
         return back()->with('message', "「{$product->name}」のセール情報を更新しました。");
+    }
+
+    // --- 管理者・在庫管理用メソッド ---
+
+    // 新規登録画面の表示
+    public function adminCreate()
+    {
+        return view('admin.products.create');
+    }
+
+    // 新規登録の保存処理
+    public function adminStore(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|max:255',
+            'price' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+            'description' => 'nullable|string',
+        ]);
+
+        Product::create($validated);
+
+        return redirect()->route('admin.products.manage')->with('success', '商品を追加しました。');
+    }
+
+    // 編集画面の表示
+    public function adminEdit(Product $product)
+    {
+        return view('admin.products.edit', compact('product'));
+    }
+
+    // 更新処理
+    public function adminUpdate(Request $request, Product $product)
+    {
+        $validated = $request->validate([
+            'name' => 'required|max:255',
+            'price' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+            'description' => 'nullable|string',
+        ]);
+
+        $product->update($validated);
+
+        return redirect()->route('admin.products.manage')->with('success', '商品を更新しました。');
+    }
+
+    // 削除処理
+    public function adminDestroy(Product $product)
+    {
+        $product->delete();
+
+        return redirect()->route('admin.products.manage')->with('success', '商品を削除しました。');
+    }
+
+    // --- 在庫管理専用ページの表示 ---
+    public function inventoryIndex()
+    {
+        $products = Product::all();
+        return view('admin.inventory.index', compact('products'));
+    }
+
+    // 在庫数の単体（またはカラー別）更新
+    public function updateStock(Request $request, Product $product)
+    {
+        $request->validate([
+            'stock' => 'required|integer|min:0',
+            'color_name' => 'nullable|string',
+        ]);
+
+        $colorName = $request->input('color_name');
+        $newStock = (int)$request->input('stock');
+
+        // カラー別の更新の場合
+        if (!empty($colorName) && !empty($product->colors) && isset($product->colors[$colorName])) {
+            $colors = $product->colors;
+            $colors[$colorName]['stock'] = $newStock; // 指定されたカラーの在庫を更新
+
+            // 合計在庫数を全体の stock に自動反映させる場合
+            $totalStock = collect($colors)->sum(fn($c) => $c['stock'] ?? 0);
+
+            $product->update([
+                'colors' => $colors,
+                'stock'  => $totalStock, // 全体の在庫も連動して更新
+            ]);
+
+            return back()->with('message', "「{$product->name} ({$colorName})」の在庫数を更新しました。");
+        }
+
+        // 通常商品（カラーなし）の場合
+        $product->update([
+            'stock' => $newStock,
+        ]);
+
+        return back()->with('message', "「{$product->name}」の在庫数を更新しました。");
     }
 }

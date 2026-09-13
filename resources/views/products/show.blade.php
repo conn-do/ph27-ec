@@ -70,6 +70,11 @@
 
                 <!-- 在庫切れ時の「再入荷リクエスト」ボタン -->
                 @if (($product->stock ?? 0) <= 0)
+                    @if (session('message'))
+                        <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; color: #16a34a; padding: 10px; border-radius: 6px; margin-bottom: 1rem; font-size: 0.9rem;">
+                            {{ session('message') }}
+                        </div>
+                    @endif
                     <div style="background: #fef2f2; border: 1px solid #fecaca; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
                         <p style="color: #dc2626; font-weight: bold; margin-bottom: 0.5rem;">現在在庫切れです</p>
                         <form action="{{ route('products.restock', $product->id) }}" method="POST" style="margin: 0;">
@@ -108,11 +113,11 @@
 
                                         <label style="cursor: pointer; margin: 0;">
                                             <input type="radio" 
-                                                   name="color" 
-                                                   value="{{ $colorName }}" 
-                                                   {{ $loop->first ? 'checked' : '' }} 
-                                                   style="display: none;" 
-                                                   onchange="changeProductColor('{{ $colorName }}', '{{ $imageUrl }}')">
+                                                name="color" 
+                                                value="{{ $colorName }}" 
+                                                {{ $loop->first ? 'checked' : '' }} 
+                                                style="display: none;" 
+                                                onchange="changeProductColor('{{ $colorName }}', '{{ $imageUrl }}')">
                                             <span class="color-option" style="
                                                 display: flex;
                                                 align-items: center;

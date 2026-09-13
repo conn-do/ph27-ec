@@ -51,11 +51,17 @@ class OrderController extends Controller
         // 送信されたポイントを取得
         $usePoint = (int) $request->input('use_point', 0);
 
-        // 注文合計金額の事前面出
+        // 注文合計金額の事前面出 ＆ 【追加】在庫不足チェック
         $totalPrice = 0;
         foreach ($cart as $productId => $quantity) {
             $product = Product::find($productId);
             if ($product) {
+                // --- 在庫チェック ---
+                if ($product->stock < $quantity) {
+                    return back()->with('error', "「{$product->name}」の在庫が不足しています。（現在庫: {$product->stock}個）");
+                }
+                // ------------------
+
                 $price = ($product->is_sale && $product->sale_price) ? $product->sale_price : $product->price;
                 $totalPrice += $price * $quantity;
             }

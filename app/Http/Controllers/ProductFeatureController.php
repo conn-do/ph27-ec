@@ -46,7 +46,7 @@ class ProductFeatureController extends Controller
         $coupon = Coupon::where('code', $code)
             ->where(function ($query) {
                 $query->whereNull('expires_at')
-                      ->orWhere('expires_at', '>', now());
+                    ->orWhere('expires_at', '>', now());
             })->first();
 
         if (!$coupon) {

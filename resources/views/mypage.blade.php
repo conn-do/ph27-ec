@@ -222,7 +222,7 @@
                     <strong style="font-size: 1.05rem; display: block; margin-bottom: 0.25rem;">⚙️ 管理者権限メニュー</strong>
                     <small style="color: #64748b;">商品の登録・編集や注文データの管理を行えます。</small>
                 </div>
-                <a href="/admin/orders" role="button" class="contrast" style="width: auto; margin: 0; padding: 0.5rem 1.2rem; font-weight: bold; text-decoration: none;">
+                <a href="/admin/dashboard" role="button" class="contrast" style="width: auto; margin: 0; padding: 0.5rem 1.2rem; font-weight: bold; text-decoration: none;">
                     管理画面へ進む →
                 </a>
             </div>

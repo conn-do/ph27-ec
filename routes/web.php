@@ -66,18 +66,22 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/products/{product}/restock', [ProductFeatureController::class, 'requestRestock'])->name('products.restock');
     Route::post('/cart/coupon', [ProductFeatureController::class, 'applyCoupon'])->name('cart.coupon');
 
-    // 管理者機能
+    // 管理者機能（Blade形式の管理画面）
+    Route::get('/admin/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('admin.dashboard');
+
     Route::get('/admin/orders', [OrderController::class, 'adminIndex'])->name('admin.orders.index');
     Route::patch('/admin/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+    Route::delete('/admin/orders/{order}', [OrderController::class, 'destroy'])->name('admin.orders.destroy');
+    
+    // --- 在庫管理専用ページ & 在庫更新 ---
+    Route::get('/admin/inventory', [ProductController::class, 'inventoryIndex'])->name('admin.inventory.index');
+    Route::patch('/admin/products/{product}/stock', [ProductController::class, 'updateStock'])->name('admin.products.updateStock');
+
+    // セール価格管理
     Route::get('/admin/sales', [ProductController::class, 'adminIndex'])->name('admin.products.index');
     Route::patch('/admin/products/{product}/sale', [ProductController::class, 'updateSale'])->name('admin.products.updateSale');
 });
 
-// 管理者トップへのリダイレクト（1つに集約）
-Route::get('/admin', function () {
-    return redirect('/admin/orders');
-});
-
 require __DIR__ . '/settings.php';
-
-Route::delete('/admin/orders/{order}', [OrderController::class, 'destroy'])->name('admin.orders.destroy');

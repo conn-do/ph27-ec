@@ -206,48 +206,50 @@
 
     <div class="layout-container">
         {{-- 📁 左側：カテゴリーサイドバー --}}
-        <aside class="sidebar">
-            <h3 style="font-size: 1.05rem; font-weight: bold; border-bottom: 2px solid #2563eb; padding-bottom: 0.5rem; margin-bottom: 1rem; color: #1e293b;">
-                📁 カテゴリーから探す
-            </h3>
+        @if(request()->is('/'))
+            <aside class="sidebar">
+                <h3 style="font-size: 1.05rem; font-weight: bold; border-bottom: 2px solid #2563eb; padding-bottom: 0.5rem; margin-bottom: 1rem; color: #1e293b;">
+                    📁 カテゴリーから探す
+                </h3>
 
-            <ul>
-                <li style="margin-bottom: 0.5rem;">
-                    <a href="/" style="text-decoration: none; font-weight: bold; color: #2563eb; display: block; padding: 0.3rem 0.2rem;">
-                        🏠 すべての商品
-                    </a>
-                </li>
+                <ul>
+                    <li style="margin-bottom: 0.5rem;">
+                        <a href="/" style="text-decoration: none; font-weight: bold; color: #2563eb; display: block; padding: 0.3rem 0.2rem;">
+                            🏠 すべての商品
+                        </a>
+                    </li>
 
-                @if (isset($sidebarCategories) && $sidebarCategories->count() > 0)
-                    @foreach ($sidebarCategories as $parentCategory)
-                        <li style="margin-bottom: 0.5rem;">
-                            @if ($parentCategory->children->count() > 0)
-                                <details open style="margin: 0; border: none; padding: 0;">
-                                    <summary>
+                    @if (isset($sidebarCategories) && $sidebarCategories->count() > 0)
+                        @foreach ($sidebarCategories as $parentCategory)
+                            <li style="margin-bottom: 0.5rem;">
+                                @if ($parentCategory->children->count() > 0)
+                                    <details open style="margin: 0; border: none; padding: 0;">
+                                        <summary>
+                                            {{ $parentCategory->name }}
+                                        </summary>
+                                        <ul style="padding-left: 0.8rem; margin: 0.3rem 0 0.5rem 0; display: flex; flex-direction: column; gap: 0.2rem;">
+                                            @foreach ($parentCategory->children as $child)
+                                                <li class="sidebar-child-item">
+                                                    <a href="/?category_id={{ $child->id }}">
+                                                        └ {{ $child->name }}
+                                                    </a>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </details>
+                                @else
+                                    <a href="/?category_id={{ $parentCategory->id }}" style="text-decoration: none; font-weight: bold; color: #334155; display: block; padding: 0.3rem 0.2rem;">
                                         {{ $parentCategory->name }}
-                                    </summary>
-                                    <ul style="padding-left: 0.8rem; margin: 0.3rem 0 0.5rem 0; display: flex; flex-direction: column; gap: 0.2rem;">
-                                        @foreach ($parentCategory->children as $child)
-                                            <li class="sidebar-child-item">
-                                                <a href="/?category_id={{ $child->id }}">
-                                                    └ {{ $child->name }}
-                                                </a>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                </details>
-                            @else
-                                <a href="/?category_id={{ $parentCategory->id }}" style="text-decoration: none; font-weight: bold; color: #334155; display: block; padding: 0.3rem 0.2rem;">
-                                    {{ $parentCategory->name }}
-                                </a>
-                            @endif
-                        </li>
-                    @endforeach
-                @else
-                    <p style="font-size: 0.85rem; color: #94a3b8;">カテゴリーが登録されていません。</p>
-                @endif
-            </ul>
-        </aside>
+                                    </a>
+                                @endif
+                            </li>
+                        @endforeach
+                    @else
+                        <p style="font-size: 0.85rem; color: #94a3b8;">カテゴリーが登録されていません。</p>
+                    @endif
+                </ul>
+            </aside>
+        @endif
 
         {{-- 📦 右側：メインコンテンツ表示エリア --}}
         <main class="main-content">
