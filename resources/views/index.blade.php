@@ -3,6 +3,21 @@
 @section('title', 'TOPページ')
 
 @section('content')
+    @if ($ranking->isNotEmpty())
+        <h2>売れ筋ランキング</h2>
+        <ul>
+            @foreach ($ranking as $product)
+                <li>
+                    <a href="{{ route('products.show', $product) }}">
+                        {{ $loop->iteration }}位 {{ $product->name }}
+                        <img src="{{ asset($product->imageUrl()) }}" alt="{{ $product->name }}" width="200">
+                    </a>
+                    <p>販売数: {{ $product->sales_quantity }}</p>
+                </li>
+            @endforeach
+        </ul>
+    @endif
+
     <h2>商品一覧</h2>
     <form action="{{ route('search') }}" method="get">
         <input type="text" name="keyword" placeholder="商品検索" value="{{ request('keyword') }}">
