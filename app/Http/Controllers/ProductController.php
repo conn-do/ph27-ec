@@ -6,6 +6,8 @@ use App\Models\Category;
 use App\Models\News;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class ProductController extends Controller
 {
@@ -14,14 +16,7 @@ class ProductController extends Controller
         $products = Product::all();
         $categories = Category::all();
         $news = News::orderBy('id', 'desc')->limit(3)->get();
-        $ranking = Product::query()
-            ->select('products.*')
-            ->join('order_details', 'products.id', '=', 'order_details.product_id')
-            ->selectRaw('SUM(order_details.quantity) as sales_quantity')
-            ->groupBy('products.id')
-            ->orderByDesc('sales_quantity')
-            ->limit(5)
-            ->get();
+        $ranking = $this->ranking();
 
         return view('index', [
             'products' => $products,
@@ -42,14 +37,7 @@ class ProductController extends Controller
     {
         $keyword = $request->input('keyword');
         $products = Product::where('name', 'like', "%$keyword%")->get();
-        $ranking = Product::query()
-            ->select('products.*')
-            ->join('order_details', 'products.id', '=', 'order_details.product_id')
-            ->selectRaw('SUM(order_details.quantity) as sales_quantity')
-            ->groupBy('products.id')
-            ->orderByDesc('sales_quantity')
-            ->limit(5)
-            ->get();
+        $ranking = $this->ranking();
 
         return view('index', [
             'products' => $products,
@@ -65,5 +53,22 @@ class ProductController extends Controller
             'category' => $category,
             'products' => $products,
         ]);
+    }
+
+    /**
+     * @return array<int, Product>
+     */
+    private function ranking(): array
+    {
+        $productIds = Cache::get('product-ranking', []);
+        $products = [];
+        foreach ($productIds as $id) {
+            $product = Product::find($id);
+            if ($product) {
+                $products[] = $product;
+            }
+        }
+
+        return $products;
     }
 }

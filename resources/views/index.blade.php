@@ -3,7 +3,7 @@
 @section('title', 'TOPページ')
 
 @section('content')
-    @if ($ranking->isNotEmpty())
+    @if (!empty($ranking))
         <h2>売れ筋ランキング</h2>
         <ul>
             @foreach ($ranking as $product)
@@ -12,7 +12,6 @@
                         {{ $loop->iteration }}位 {{ $product->name }}
                         <img src="{{ asset($product->imageUrl()) }}" alt="{{ $product->name }}" width="200">
                     </a>
-                    <p>販売数: {{ $product->sales_quantity }}</p>
                 </li>
             @endforeach
         </ul>
