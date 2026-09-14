@@ -21,6 +21,7 @@ class ProductsTable
                 TextColumn::make('price')
                     ->money()
                     ->sortable(),
+                TextColumn::make(name:'stock'),
                 ImageColumn::make('image')
                     ->disk('public'),
                 TextColumn::make('created_at')

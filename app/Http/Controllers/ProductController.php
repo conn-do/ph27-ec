@@ -19,6 +19,20 @@ class ProductController extends Controller
 
         $categories = Category::all();
 
+        $rankingProducts = Product::query()
+            ->select('products.*')
+            ->join(
+                'order_details',
+                'products.id',
+                '=',
+                'order_details.product_id'
+            )
+            ->groupBy('products.id')
+            ->selectRaw('SUM(order_details.quantity) as quantity')
+            ->orderByRaw('quantity DESC')
+            ->limit(5)
+            ->get();
+
         return view('index', [
             'products' => $products,
             'news' => $news,
@@ -46,6 +60,13 @@ class ProductController extends Controller
         return view('index', [
             'products' => $products,
             'news' => $news,
+        ]);
+    }
+
+    public function category(Category $category)
+    {
+        return view('category', [
+            'category' => $category,
         ]);
     }
 }

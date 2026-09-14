@@ -19,6 +19,9 @@ class ProductForm
                     ->required()
                     ->numeric()
                     ->prefix('$'),
+                TextInput::make('stock')
+                    ->required()
+                    ->numeric(),
                 Textarea::make('description')
                     ->required()
                     ->columnSpanFull(),
