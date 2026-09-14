@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\News;
 use App\Models\Category;
+use Illuminate\Support\Facades\Cache;
 
 class ProductController extends Controller
 {
@@ -19,10 +20,22 @@ class ProductController extends Controller
 
         $categories = Category::all();
 
+        // キャッシュから商品IDを取得
+        $rankingIds = Cache::get(
+            'ranking_products',
+            []
+        );
+        // 商品IDから商品を取得
+        $rankingProducts = Product::whereIn(
+            'id',
+            $rankingIds
+        )->get();
+
         return view('index', [
             'products' => $products,
             'news' => $news,
             'categories' => $categories,
+            'rankingProducts' => $rankingProducts,
         ]);
     }
 
