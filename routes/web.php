@@ -23,7 +23,7 @@ Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear')
 Route::get('/search', [ProductController::class, 'search'])->name('search');
 Route::get('/categories/{category}', [ProductController::class, 'category'])->name('products.category');
 Route::get('/news/{news}', [NewsController::class, 'show'])->name('news.show');
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/orders/complete', [OrderController::class, 'complete'])->name('orders.complete');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');

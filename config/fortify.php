@@ -155,7 +155,7 @@ return [
     ],
 
     'redirects' => [
-        'email-verification' => '/mypage',
+        'email-verification' => '/my-page',
     ],
 
 ];
