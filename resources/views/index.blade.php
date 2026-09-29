@@ -8,11 +8,56 @@
     <section class="category-section">
         <h3>カテゴリ</h3>
 
+<<<<<<< Updated upstream
         <ul class="category-list">
             @foreach ($categories as $category)
                 <li>
                     <a href="/categories/{{ $category->slug }}">
                         {{ $category->name }}
+=======
+    <h2>ランキング</h2>
+    @foreach ($rankingProducts as $product)
+        <p>
+            {{ $loop->iteration }}位
+            {{ $product->name }}
+        </p>
+    @endforeach
+
+    <h2>商品一覧</h2>
+
+    <form action="/search" method="GET">
+        <input type="text" name="keyword" value="{{ request('keyword') }}">
+        <input type="submit" value="検索">
+    </form>
+
+    @if (request('keyword'))
+        <a href="/">検索結果をクリア</a>
+    @endif
+
+    {{-- 商品一覧 --}}
+    @foreach ($products as $product)
+        <ul>
+            <li>
+                <a href="/products/{{ $product->id }}">
+                    {{ $product['name'] }}
+                    <img src="{{ $product->imageUrl() }}" width="200">
+                </a>
+            </li>
+        </ul>
+    @endforeach
+
+    {{-- お知らせ --}}
+    <h2 class="news-title">NEWS</h2>
+    <h3 class="news-subtitle">お知らせ</h3>
+
+    <div class="news-list">
+        @foreach ($news as $item)
+            <div class="news-item">
+
+                <h4 class="news-item-title">
+                    <a href="/news/{{ $item->id }}">
+                        {{ $item->title }}
+>>>>>>> Stashed changes
                     </a>
                 </li>
             @endforeach

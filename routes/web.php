@@ -75,6 +75,7 @@ Route::middleware(['auth'])->group(function () {
         '/mypage',
         [MyPageController::class, 'index']
     );
+<<<<<<< Updated upstream
 
     Route::post('/products/{product}/favorite', [FavoriteController::class, 'store'])
     ->middleware('auth')
@@ -84,3 +85,6 @@ Route::middleware(['auth'])->group(function () {
         ->middleware('auth')
     ->name('favorites.destroy');
 });
+=======
+});
+>>>>>>> Stashed changes
