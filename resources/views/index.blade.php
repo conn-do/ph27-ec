@@ -14,6 +14,14 @@
         @endforeach
     </ul>
 
+    <h2>ランキング</h2>
+    @foreach ($rankingProducts as $product)
+        <p>
+            {{ $loop->iteration }}位
+            {{ $product->name }}
+        </p>
+    @endforeach
+
     <h1 class="page-title">商品一覧</h1>
 
     <form class="search-form" action="/search" method="GET">
