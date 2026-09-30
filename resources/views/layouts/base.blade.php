@@ -29,6 +29,7 @@
     <footer>
         © HAL東京
     </footer>
+    test
 </body>
 
 </html>
