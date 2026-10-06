@@ -40,13 +40,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(Chirp::class);
     }
 
-    public function orders(): HasMany
-    {
-        return $this->hasMany(Order::class);
-    }
-
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->email === 'masaki.kondo@thi.hal.ac.jp';
+        return str_contains(
+            $this->email,
+            '@thi.hal.ac.jp'
+        );
     }
 }
