@@ -45,7 +45,7 @@
     </script>
 
     {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
-    @vite(['resources/css/app.css', 'resources/js/main.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.tsx'])
 
     <link
     rel="stylesheet"

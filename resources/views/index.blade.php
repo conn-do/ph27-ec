@@ -118,6 +118,7 @@
         <div class="ranking-space-column"></div>
     </div>
 
+
     {{-- RANKING --}}
     <section id="ranking" class="ranking">
         <div class="section-heading">
@@ -126,24 +127,26 @@
         </div>
 
         <div class="ranking-list">
-            @foreach ($ranking as $item)
+           
+
+            @foreach ($rankingProducts as $item)
                 <article class="ranking-item">
-                    <a href="/products/{{ $item['product']->id }}">
+                    <a href="/products/{{ $item->id }}">
                         <div class="ranking-image">
                             <div class="ranking-label">
                                 <span>{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
                             </div>
 
                             <img
-                                src="{{ $item['product']->imageUrl() }}"
-                                alt="{{ $item['product']->name }}"
+                                src="{{ $item->imageUrl() }}"
+                                alt="{{ $item->name }}"
                             >
                         </div>
 
                         <div class="ranking-info">
-                            <h3>{{ $item['product']->name }}</h3>
+                            <h3>{{ $item->name }}</h3>
                             <p class="ranking-price">
-                                ¥{{ number_format($item['product']->price) }}
+                                ¥{{ number_format($item->price) }}
                             </p>
                         </div>
                     </a>
