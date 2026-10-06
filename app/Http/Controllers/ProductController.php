@@ -6,63 +6,36 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\News;
 use App\Models\Category;
-use App\Models\OrderDetail;
+use Illuminate\Support\Facades\Cache;
 
 class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::where('is_active', true)->get();
+        $products = Product::all();
 
         $news = News::orderBy('id', 'desc')
             ->limit(3)
             ->get();
 
-        $categories = Category::whereIn('slug', [
-            'writing',
-            'notebook',
-            'rubber-stamps',
-            'clips-pins',
-        ])->get();
+        $categories = Category::all();
 
-        $orderDetails = OrderDetail::all();
-
-        $sales = [];
-
-        foreach ($orderDetails as $orderDetail) {
-            if (!isset($sales[$orderDetail->product_id])) {
-                $sales[$orderDetail->product_id] = 0;
-            }
-
-            $sales[$orderDetail->product_id] += $orderDetail->quantity;
-        }
-
-        arsort($sales);
-
-        $ranking = [];
-
-        foreach ($sales as $productId => $quantity) {
-            $product = Product::find($productId);
-
-            if (!$product || !$product->is_active) {
-                continue;
-            }
-
-            $ranking[] = [
-                'product' => $product,
-                'quantity' => $quantity,
-            ];
-
-            if (count($ranking) >= 3) {
-                break;
-            }
-        }
+        // キャッシュから商品IDを取得
+        $rankingIds = Cache::get(
+            'ranking_products',
+            []
+        );
+        // 商品IDから商品を取得
+        $rankingProducts = Product::whereIn(
+            'id',
+            $rankingIds
+        )->get();
 
         return view('index', [
             'products' => $products,
             'news' => $news,
             'categories' => $categories,
-            'ranking' => $ranking,
+            'rankingProducts' => $rankingProducts,
         ]);
     }
 
@@ -77,15 +50,15 @@ class ProductController extends Controller
     {
         $keyword = $request->input('keyword');
 
-        $products = Product::where('is_active', true)
-            ->where(function ($query) use ($keyword) {
-                $query->where('name', 'like', "%{$keyword}%")
-                    ->orWhere('description', 'like', "%{$keyword}%");
-            })
+        $products = Product::where('name', 'like', "%{$keyword}%")->get();
+
+        $news = News::orderBy('id', 'desc')
+            ->limit(3)
             ->get();
 
-        return view('search', [
+        return view('index', [
             'products' => $products,
+            'news' => $news,
         ]);
     }
 
