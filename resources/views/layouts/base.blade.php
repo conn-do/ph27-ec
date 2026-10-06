@@ -6,7 +6,7 @@
 
     <title>@yield('title') - すごい文房具サイト</title>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.tsx'])
 </head>
 
 <body>

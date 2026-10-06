@@ -6,12 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\News;
 use App\Models\Category;
-<<<<<<< Updated upstream
-use App\Models\OrderDetail;
-use Illuminate\Support\Facades\DB;
-=======
 use Illuminate\Support\Facades\Cache;
->>>>>>> Stashed changes
 
 class ProductController extends Controller
 {
@@ -25,40 +20,22 @@ class ProductController extends Controller
 
         $categories = Category::all();
 
-<<<<<<< Updated upstream
-        $ranking = OrderDetail::select(
-                'product_id',
-                DB::raw('SUM(quantity) as total_quantity')
-            )
-            ->with('product')
-            ->groupBy('product_id')
-            ->orderByDesc('total_quantity')
-            ->limit(3)
-=======
-        $rankingProducts = Product::query()
-            ->select('products.name')
-            ->join(
-                'order_details',
-                'products.id',
-                '=',
-                'order_details.product_id'
-            )
-            ->groupBy('products.id', 'products.name')
-            ->selectRaw('SUM(order_details.quantity) as quantity')
-            ->orderByRaw('quantity DESC')
-            ->limit(5)
->>>>>>> Stashed changes
-            ->get();
+        // キャッシュから商品IDを取得
+        $rankingIds = Cache::get(
+            'ranking_products',
+            []
+        );
+        // 商品IDから商品を取得
+        $rankingProducts = Product::whereIn(
+            'id',
+            $rankingIds
+        )->get();
 
         return view('index', [
             'products' => $products,
             'news' => $news,
             'categories' => $categories,
-<<<<<<< Updated upstream
-            'ranking' => $ranking,
-=======
             'rankingProducts' => $rankingProducts,
->>>>>>> Stashed changes
         ]);
     }
 
