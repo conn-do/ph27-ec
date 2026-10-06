@@ -64,4 +64,12 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->belongsToMany(Product::class, 'favorites');
     }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return str_contains(
+            $this->email,
+            '@thi.hal.ac.jp'
+        );
+    }
 }
